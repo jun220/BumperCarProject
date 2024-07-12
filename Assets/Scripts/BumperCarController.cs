@@ -3,12 +3,12 @@ using UnityEngine.UI;
 
 public class BumperCarController : MonoBehaviour
 {
-    public float acceleration = 10f; // ±âº» °¡¼Ó·Â
-    public float steering = 100f; // È¸Àü·Â
-    public float maxSpeed = 20f; // ÃÖ´ë ¼Óµµ
-    public float boosterMaxSpeed = 30f; // ºÎ½ºÅÍ¸¦ »ç¿ëÇßÀ» ¶§ ÃÖ´ë ¼Óµµ
+    public float acceleration = 10f; // ê¸°ë³¸ ê°€ì†ë ¥
+    public float steering = 100f; // íšŒì „ë ¥
+    public float maxSpeed = 20f; // ìµœëŒ€ ì†ë„
+    public float boosterMaxSpeed = 30f; // ë¶€ìŠ¤í„°ë¥¼ ì‚¬ìš©í–ˆì„ ë•Œ ìµœëŒ€ ì†ë„
 
-    public float deceleration = 5f; // ¼ÕÀ» ¶ÃÀ» ¶§ °¨¼ÓÇÏ´Â Èû
+    public float deceleration = 5f; // ì†ì„ ë—ì„ ë•Œ ê°ì†í•˜ëŠ” í˜
     private Rigidbody rb;
 
     public Text speedText;
@@ -16,37 +16,37 @@ public class BumperCarController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous; // Ãæµ¹ Å½Áö ¸ğµå¸¦ continuous·Î ¼³Á¤
-        // rb.interpolation = RigidbodyInterpolation.Interpolate; // º¸°£À» interpolate·Î ¼³Á¤
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous; // ì¶©ëŒ íƒì§€ ëª¨ë“œë¥¼ continuousë¡œ ì„¤ì •
+        // rb.interpolation = RigidbodyInterpolation.Interpolate; // ë³´ê°„ì„ interpolateë¡œ ì„¤ì •
     }
 
 
     void FixedUpdate()
     {
-        // ¹æÇâ ÀüÈ¯
+        // ë°©í–¥ ì „í™˜
         float steer = Input.GetAxis("Horizontal");
         transform.Rotate(0, steer * steering * Time.fixedDeltaTime, 0);
 
-        // °¡¼Ó/°¨¼Ó
+        // ê°€ì†/ê°ì†
         float move = Input.GetAxis("Vertical");
         Vector3 forward = transform.forward * move * acceleration * Time.fixedDeltaTime;
 
         if (move != 0)
         {
-            // °¡¼Ó/°¨¼Ó Áß
-            if (rb.velocity.magnitude < maxSpeed || move < 0) // ÃÖ´ë ¼Óµµ Á¦ÇÑ
+            // ê°€ì†/ê°ì† ì¤‘
+            if (rb.velocity.magnitude < maxSpeed || move < 0) // ìµœëŒ€ ì†ë„ ì œí•œ
             {
                 rb.AddForce(forward, ForceMode.VelocityChange);
             }
         }
         else
         {
-            // Å°º¸µå ÀÔ·ÂÀÌ ¾øÀ» ¶§ ¼Óµµ °¨¼Ò
+            // í‚¤ë³´ë“œ ì…ë ¥ì´ ì—†ì„ ë•Œ ì†ë„ ê°ì†Œ
             rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, deceleration * Time.fixedDeltaTime);
         }
 
 
-        // ÇöÀç ¼Óµµ Ãâ·Â
+        // í˜„ì¬ ì†ë„ ì¶œë ¥
         float currentSpeed = rb.velocity.magnitude;
         float roundedSpeed = Mathf.Round(currentSpeed * 10f) / 10f;
 

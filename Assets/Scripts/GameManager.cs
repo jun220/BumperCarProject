@@ -6,13 +6,13 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        // °ÔÀÓ ½ÃÀÛ ½Ã Å¸°Ù ÇÁ·¹ÀÓ ·¹ÀÌÆ® ¼³Á¤
+        // ê²Œì„ ì‹œì‘ ì‹œ íƒ€ê²Ÿ í”„ë ˆì„ ë ˆì´íŠ¸ ì„¤ì •
         Application.targetFrameRate = targetFrameRate;
     }
 
     void Update()
     {
         float currentFrameRate = 1f / Time.deltaTime;
-        //Debug.Log("ÇöÀç ÇÁ·¹ÀÓ ·¹ÀÌÆ®: " + currentFrameRate.ToString("F1")); // ¼Ò¼öÁ¡ Ã¹Â° ÀÚ¸®±îÁö Ãâ·Â
+        //Debug.Log("í˜„ì¬ í”„ë ˆì„ ë ˆì´íŠ¸: " + currentFrameRate.ToString("F1")); // ì†Œìˆ˜ì  ì²«ì§¸ ìë¦¬ê¹Œì§€ ì¶œë ¥
     }
 }

@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class DynamicCamera : MonoBehaviour
 {
-    public Transform car; // Â÷ÀÇ Transform
-    public Rigidbody carRigidbody; // Â÷ÀÇ Rigidbody
-    public Camera mainCamera; // ¸ŞÀÎ Ä«¸Ş¶ó
-    public float minFOV = 60f; // ÃÖ¼Ò FOV
-    public float maxFOV = 90f; // ÃÖ´ë FOV
-    public float maxSpeed = 20f; // ÃÖ´ë ¼Óµµ (FOV°¡ ÃÖ´ë°¡ µÇ´Â ¼Óµµ)
+    public Transform car; // ì°¨ì˜ Transform
+    public Rigidbody carRigidbody; // ì°¨ì˜ Rigidbody
+    public Camera mainCamera; // ë©”ì¸ ì¹´ë©”ë¼
+    public float minFOV = 60f; // ìµœì†Œ FOV
+    public float maxFOV = 90f; // ìµœëŒ€ FOV
+    public float maxSpeed = 20f; // ìµœëŒ€ ì†ë„ (FOVê°€ ìµœëŒ€ê°€ ë˜ëŠ” ì†ë„)
 
     void Start()
     {

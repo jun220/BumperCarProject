@@ -2,19 +2,19 @@ using UnityEngine;
 
 public class CreateCubes : MonoBehaviour
 {
-    public int numberOfCubes = 10; // »ı¼ºÇÒ Å¥ºêÀÇ ¼ö
-    public GameObject cubePrefab; // »ı¼ºÇÒ Å¥ºêÀÇ ÇÁ¸®ÆÕ
+    public int numberOfCubes = 10; // ìƒì„±í•  íë¸Œì˜ ìˆ˜
+    public GameObject cubePrefab; // ìƒì„±í•  íë¸Œì˜ í”„ë¦¬íŒ¹
 
     void Start()
     {
         for (int i = 0; i < numberOfCubes; i++)
         {
-            // x¿Í z´Â 0¿¡¼­ 40 »çÀÌÀÇ ³­¼ö, y´Â 0.5·Î °íÁ¤
+            // xì™€ zëŠ” 0ì—ì„œ 40 ì‚¬ì´ì˜ ë‚œìˆ˜, yëŠ” 0.5ë¡œ ê³ ì •
             float x = Random.Range(0f, 40f);
             float z = Random.Range(0f, 40f);
             float y = 0.5f;
 
-            // Å¥ºê »ı¼º ¹× À§Ä¡ ¼³Á¤
+            // íë¸Œ ìƒì„± ë° ìœ„ì¹˜ ì„¤ì •
             Vector3 position = new Vector3(x, y, z);
             Instantiate(cubePrefab, position, Quaternion.identity);
         }
