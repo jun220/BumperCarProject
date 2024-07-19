@@ -1,5 +1,6 @@
 using BumperCarProject.UI.Model;
 using BumperCarProject.UI.Presenter;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,8 @@ namespace BumperCarProject.UI.View
         private Text _speedText;
         [SerializeField]
         private Text _damageText;
+        [SerializeField]
+        private TMP_Text damageTMP;
         [SerializeField]
         private Text _boostCoolTime;
         [SerializeField]
@@ -27,6 +30,7 @@ namespace BumperCarProject.UI.View
         }
 
         public void UpdateDamageText(float curDamage) {
+            damageTMP.text = curDamage.ToString("N1");
             _damageText.text = curDamage.ToString("N1");
         }
 

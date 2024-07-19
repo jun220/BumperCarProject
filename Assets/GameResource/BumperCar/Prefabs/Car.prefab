@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7440860298984645764}
   - component: {fileID: 8509575817808436638}
   - component: {fileID: 2304828926970187661}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,7 +119,7 @@ GameObject:
   - component: {fileID: 3849095362745892025}
   - component: {fileID: 2341241874369147531}
   - component: {fileID: 8024953528008118865}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cylinder (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -226,9 +226,9 @@ GameObject:
   - component: {fileID: 300256588825340092}
   - component: {fileID: 8082988777612265376}
   - component: {fileID: 7798331637266143805}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Car
-  m_TagString: Untagged
+  m_TagString: Damagable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -291,12 +291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29d9be83beb2a79498178a347ff7b6ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceleration: 10
-  steering: 100
-  maxSpeed: 20
-  boosterMaxSpeed: 30
-  deceleration: 5
-  speedText: {fileID: 0}
+  bumperCar: {fileID: 0}
 --- !u!114 &7798331637266143805
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -327,7 +322,7 @@ GameObject:
   - component: {fileID: 1863161942191867750}
   - component: {fileID: 4367985307005739344}
   - component: {fileID: 4833491235764689176}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -464,7 +459,7 @@ GameObject:
   - component: {fileID: 3027424559982832803}
   - component: {fileID: 383276772758110601}
   - component: {fileID: 307953552655352512}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
