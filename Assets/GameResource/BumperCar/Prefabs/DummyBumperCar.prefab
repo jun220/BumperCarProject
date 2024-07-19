@@ -196,6 +196,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isMine: 0
+  canControl: 0
   bumperCar: {fileID: 11400000, guid: 8dd27edaeae86814183394aca996bc72, type: 2}
   damageTMP: {fileID: 4247449224734641453}
 --- !u!1 &1736391619118909864
