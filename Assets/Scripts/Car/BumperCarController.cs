@@ -3,23 +3,31 @@ using BumperCarProject.UI.View;
 using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
+using TMPro;
+using System.Collections;
 
 namespace BumperCarProject.Car 
 {
     public class BumperCarController : MonoBehaviour
     {
+        public bool isMine;
+        public bool canControl;
+
         [SerializeField]
         private BumperCar bumperCar;
 
         private Rigidbody _rb;
         private PhysicMaterial _physicMaterial;
 
+        public TMP_Text damageTMP;
+
         private float _damage;
         public float Damage {
             get => _damage;
             set {
                 _damage = value;
-                DashboardView.presenter.UpdateCurDamage(value);
+                damageTMP.text = _damage.ToString("N1");
+                //DashboardView.presenter.UpdateCurDamage(value);
             }
         }
 
@@ -47,6 +55,12 @@ namespace BumperCarProject.Car
         private float _acceleration;
 
         private void Start() {
+            if (!isMine)
+            {
+                canControl = false;
+                return;
+            }
+
             _rb = GetComponent<Rigidbody>();
             _rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
@@ -64,6 +78,7 @@ namespace BumperCarProject.Car
         }
 
         private void FixedUpdate() {
+            if(!canControl) return;
             float steer = Input.GetAxis("Horizontal");
             transform.Rotate(0, steer * bumperCar.steering * Time.fixedDeltaTime, 0);
 
@@ -123,25 +138,27 @@ namespace BumperCarProject.Car
 
         private void OnCollisionEnter(Collision collision)
         {
+            //if (!isMine) return;
+
             if (!collision.transform.CompareTag("Damagable")) return;
             // 충돌한 객체 정보
             Debug.Log($"충돌한 객체: {collision.gameObject.name}");
-
+            StartCoroutine(StopControl());
             // 충돌 지점 정보
             foreach (ContactPoint contact in collision.contacts)
             {
-                Debug.Log($"충돌 지점: {contact.point}");
-                Debug.Log($"충돌 표면 법선 벡터: {contact.normal}");
+                //Debug.Log($"충돌 지점: {contact.point}");
+                //Debug.Log($"충돌 표면 법선 벡터: {contact.normal}");
             }
 
             // 충돌 상대 속도
-            Debug.Log($"충돌 상대 속도: {collision.relativeVelocity}");
+            //Debug.Log($"충돌 상대 속도: {collision.relativeVelocity}");
 
             // 충돌 힘 (Approximation)
             if (collision.impulse != Vector3.zero && collision.rigidbody != null)
             {
                 Vector3 collisionForce = collision.impulse / Time.fixedDeltaTime;
-                Debug.Log($"충돌 힘: {collisionForce}");
+                //Debug.Log($"충돌 힘: {collisionForce}");
 
                 // 대미지 계산 및 누적
                 int damage = CalculateDamage(collision.impulse);
@@ -151,7 +168,7 @@ namespace BumperCarProject.Car
                 // 충돌 후 반발력 조정
                 Rigidbody rb = collision.rigidbody;
                 Vector3 bounceDirection = -collision.relativeVelocity.normalized;
-                float bounceStrength = damage * 0.1f; // 대미지를 기반으로 반발력 조정
+                float bounceStrength = damage * 0.5f; // 대미지를 기반으로 반발력 조정
 
                 // 반발력 적용
                 rb.AddForce(bounceDirection * bounceStrength, ForceMode.Impulse);
@@ -168,7 +185,7 @@ namespace BumperCarProject.Car
             {
                 if (collision.impulse == Vector3.zero)
                 {
-                    Debug.Log("충돌에서 impulse가 0입니다.");
+                    //Debug.Log("충돌에서 impulse가 0입니다.");
                 }
             }
         }
@@ -177,6 +194,20 @@ namespace BumperCarProject.Car
         private int CalculateDamage(Vector3 impulse)
         {
             return Mathf.RoundToInt(impulse.magnitude);
+        }
+
+        private IEnumerator StopControl()
+        {
+            // canControl을 false로 설정합니다.
+            canControl = false;
+            Debug.Log("canControl: false");
+
+            // 5초 동안 대기합니다.
+            yield return new WaitForSeconds(bumperCar.stunDuration);
+
+            // canControl을 true로 설정합니다.
+            canControl = true;
+            Debug.Log("canControl: true");
         }
     }
 }

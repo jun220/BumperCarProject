@@ -17,6 +17,8 @@ namespace BumperCarProject.Car.SO
         public float boosterMaxSpeed = 30f;
         [Tooltip("부스트 쿨타임(초)")]
         public float boostCoolTime = 15f;
+        [Tooltip("충돌시 경직 시간")]
+        public float stunDuration = 1f;
         [Tooltip("물리 머테리얼")]
         public PhysicMaterial physicMaterial;
     }
