@@ -143,7 +143,7 @@ namespace BumperCarProject.Car
             if (!collision.transform.CompareTag("Damagable")) return;
             // 충돌한 객체 정보
             Debug.Log($"충돌한 객체: {collision.gameObject.name}");
-            StartCoroutine(StopControl());
+            //StartCoroutine(StopControl());
             // 충돌 지점 정보
             foreach (ContactPoint contact in collision.contacts)
             {
