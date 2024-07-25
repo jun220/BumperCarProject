@@ -19,14 +19,12 @@ namespace BumperCarProject.Car
         private Rigidbody _rb;
         private PhysicMaterial _physicMaterial;
 
-        public TMP_Text damageTMP;
 
         private float _damage;
         public float Damage {
             get => _damage;
             set {
                 _damage = value;
-                damageTMP.text = _damage.ToString("N1");
                 //DashboardView.presenter.UpdateCurDamage(value);
             }
         }
