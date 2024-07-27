@@ -3,16 +3,23 @@ using BumperCarProject.UI.View;
 using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
+using TMPro;
+using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace BumperCarProject.Car 
 {
     public class BumperCarController : MonoBehaviour
     {
+        public bool isMine;
+        public bool canControl;
+
         [SerializeField]
         private BumperCar bumperCar;
 
         private Rigidbody _rb;
         private PhysicMaterial _physicMaterial;
+
 
         private float _damage;
         public float Damage {
@@ -46,9 +53,20 @@ namespace BumperCarProject.Car
         private float _maxSpeed;
         private float _acceleration;
 
-        private void Start() {
+        private void Awake()
+        {
+            if (!isMine)
+            {
+                canControl = false;
+                return;
+            }
+
             _rb = GetComponent<Rigidbody>();
             _rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        }
+
+        private void Start() {
+
 
             _physicMaterial = Instantiate(bumperCar.physicMaterial);
             Span<Collider> colliders = GetComponentsInChildren<Collider>();
@@ -64,6 +82,12 @@ namespace BumperCarProject.Car
         }
 
         private void FixedUpdate() {
+            if (!_rb) return;
+            Quaternion currentRotation = _rb.rotation;
+            currentRotation.z = 0;
+            _rb.rotation = Quaternion.Euler(currentRotation.eulerAngles.x, currentRotation.eulerAngles.y, 0);
+
+            if (!canControl) return;
             float steer = Input.GetAxis("Horizontal");
             transform.Rotate(0, steer * bumperCar.steering * Time.fixedDeltaTime, 0);
 
@@ -112,13 +136,113 @@ namespace BumperCarProject.Car
             IsBoosting = false;
         }
 
-        private void OnCollisionEnter(Collision collision) {
-            if (collision.transform.CompareTag("Bounceable")) {
-                ContactPoint cp = collision.GetContact(0);
-                Vector3 incidentVec = cp.point - transform.position;
-                float collisionWeight = Mathf.Abs(Vector3.Dot(incidentVec, transform.forward));
-                Damage += Mathf.Pow(_rb.velocity.magnitude / bumperCar.maxSpeed, 1.5f) * collisionWeight + Damage * 0.09f;
+        //private void OnCollisionEnter(Collision collision) {
+        //    if (collision.transform.CompareTag("Bounceable")) {
+        //        ContactPoint cp = collision.GetContact(0);
+        //        Vector3 incidentVec = cp.point - transform.position;
+        //        float collisionWeight = Mathf.Abs(Vector3.Dot(incidentVec, transform.forward));
+        //        Damage += Mathf.Pow(_rb.velocity.magnitude / bumperCar.maxSpeed, 1.5f) * collisionWeight + Damage * 0.09f;
+        //    }
+        //}
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            // 대미지 계산이 필요없는 객체라면 조기 리턴
+            if (!collision.transform.CompareTag("Damagable")) return;
+
+            // 충돌한 객체 정보
+            Debug.Log($"충돌한 객체: {collision.gameObject.name}");
+
+            //StartCoroutine(StopControl());
+            // 충돌 지점 정보
+            foreach (ContactPoint contact in collision.contacts)
+            {
+                //Debug.Log($"충돌 지점: {contact.point}");
+                //Debug.Log($"충돌 표면 법선 벡터: {contact.normal}");
             }
+
+            // 충돌 상대 속도
+            //Debug.Log($"충돌 상대 속도: {collision.relativeVelocity}");
+
+            // 충돌 힘 (Approximation)
+            if (collision.impulse != Vector3.zero && collision.rigidbody != null)
+            {
+                Vector3 collisionForce = collision.impulse / Time.fixedDeltaTime;
+                //Debug.Log($"충돌 힘: {collisionForce}");
+
+                // 대미지 계산 및 누적
+                int damage = CalculateDamage(collision.impulse);
+                Damage += damage;
+                Debug.Log($"현재 누적 대미지: {Damage}");
+                ApplyAdditionalForce(collision);
+                //if (isMine)
+                //{
+                //    ApplyAdditionalForce(collision);
+                //}
+
+                
+
+
+            }
+            else
+            {
+                if (collision.impulse == Vector3.zero)
+                {
+                    //Debug.Log("충돌에서 impulse가 0입니다.");
+                }
+            }
+        }
+
+        // 충격을 대미지 값으로 변환
+        private int CalculateDamage(Vector3 impulse)
+        {
+            return Mathf.RoundToInt(impulse.magnitude);
+        }
+
+        private void ApplyAdditionalForce(Collision collision)
+        {
+            BumperCarController _opponentCar;
+            try
+            {
+
+                _opponentCar = collision.gameObject.GetComponent<BumperCarController>();
+            }
+            catch
+            {
+                Debug.LogError("범퍼카를 찾을 수 없음");
+                return;
+            }
+
+            // 충돌 후 반발력 조정
+            Rigidbody rb = collision.rigidbody;
+            Vector3 bounceDirection = -collision.relativeVelocity.normalized;
+            float damage = _opponentCar.Damage;
+            float bounceStrength = damage * 0.5f; // 대미지를 기반으로 반발력 조정
+
+            // 반발력 적용
+            rb.AddForce(bounceDirection * bounceStrength, ForceMode.Impulse);
+
+            // 회전력 최소화
+            rb.angularVelocity = Vector3.zero;
+
+            // 충돌 각도에 따라 뒤로 튕겨나게 조정
+            Vector3 localVelocity = transform.InverseTransformDirection(rb.velocity);
+            localVelocity.x = 0; // 좌우 이동 속도 제거
+            rb.velocity = transform.TransformDirection(localVelocity);
+        }
+
+        private IEnumerator StopControl()
+        {
+            // canControl을 false로 설정합니다.
+            canControl = false;
+            Debug.Log("canControl: false");
+
+            // 5초 동안 대기합니다.
+            yield return new WaitForSeconds(bumperCar.stunDuration);
+
+            // canControl을 true로 설정합니다.
+            canControl = true;
+            Debug.Log("canControl: true");
         }
     }
 }
