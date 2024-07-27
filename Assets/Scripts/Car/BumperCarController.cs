@@ -5,6 +5,7 @@ using System;
 using UnityEngine;
 using TMPro;
 using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace BumperCarProject.Car 
 {
@@ -25,7 +26,7 @@ namespace BumperCarProject.Car
             get => _damage;
             set {
                 _damage = value;
-                //DashboardView.presenter.UpdateCurDamage(value);
+                DashboardView.presenter.UpdateCurDamage(value);
             }
         }
 
@@ -52,7 +53,8 @@ namespace BumperCarProject.Car
         private float _maxSpeed;
         private float _acceleration;
 
-        private void Start() {
+        private void Awake()
+        {
             if (!isMine)
             {
                 canControl = false;
@@ -61,6 +63,10 @@ namespace BumperCarProject.Car
 
             _rb = GetComponent<Rigidbody>();
             _rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        }
+
+        private void Start() {
+
 
             _physicMaterial = Instantiate(bumperCar.physicMaterial);
             Span<Collider> colliders = GetComponentsInChildren<Collider>();
@@ -76,7 +82,12 @@ namespace BumperCarProject.Car
         }
 
         private void FixedUpdate() {
-            if(!canControl) return;
+            if (!_rb) return;
+            Quaternion currentRotation = _rb.rotation;
+            currentRotation.z = 0;
+            _rb.rotation = Quaternion.Euler(currentRotation.eulerAngles.x, currentRotation.eulerAngles.y, 0);
+
+            if (!canControl) return;
             float steer = Input.GetAxis("Horizontal");
             transform.Rotate(0, steer * bumperCar.steering * Time.fixedDeltaTime, 0);
 
@@ -136,11 +147,12 @@ namespace BumperCarProject.Car
 
         private void OnCollisionEnter(Collision collision)
         {
-            //if (!isMine) return;
-
+            // 대미지 계산이 필요없는 객체라면 조기 리턴
             if (!collision.transform.CompareTag("Damagable")) return;
+
             // 충돌한 객체 정보
             Debug.Log($"충돌한 객체: {collision.gameObject.name}");
+
             //StartCoroutine(StopControl());
             // 충돌 지점 정보
             foreach (ContactPoint contact in collision.contacts)
@@ -162,22 +174,15 @@ namespace BumperCarProject.Car
                 int damage = CalculateDamage(collision.impulse);
                 Damage += damage;
                 Debug.Log($"현재 누적 대미지: {Damage}");
+                ApplyAdditionalForce(collision);
+                //if (isMine)
+                //{
+                //    ApplyAdditionalForce(collision);
+                //}
 
-                // 충돌 후 반발력 조정
-                Rigidbody rb = collision.rigidbody;
-                Vector3 bounceDirection = -collision.relativeVelocity.normalized;
-                float bounceStrength = damage * 0.5f; // 대미지를 기반으로 반발력 조정
+                
 
-                // 반발력 적용
-                rb.AddForce(bounceDirection * bounceStrength, ForceMode.Impulse);
 
-                // 회전력 최소화
-                rb.angularVelocity = Vector3.zero;
-
-                // 충돌 각도에 따라 뒤로 튕겨나게 조정
-                Vector3 localVelocity = transform.InverseTransformDirection(rb.velocity);
-                localVelocity.x = 0; // 좌우 이동 속도 제거
-                rb.velocity = transform.TransformDirection(localVelocity);
             }
             else
             {
@@ -192,6 +197,38 @@ namespace BumperCarProject.Car
         private int CalculateDamage(Vector3 impulse)
         {
             return Mathf.RoundToInt(impulse.magnitude);
+        }
+
+        private void ApplyAdditionalForce(Collision collision)
+        {
+            BumperCarController _opponentCar;
+            try
+            {
+
+                _opponentCar = collision.gameObject.GetComponent<BumperCarController>();
+            }
+            catch
+            {
+                Debug.LogError("범퍼카를 찾을 수 없음");
+                return;
+            }
+
+            // 충돌 후 반발력 조정
+            Rigidbody rb = collision.rigidbody;
+            Vector3 bounceDirection = -collision.relativeVelocity.normalized;
+            float damage = _opponentCar.Damage;
+            float bounceStrength = damage * 0.5f; // 대미지를 기반으로 반발력 조정
+
+            // 반발력 적용
+            rb.AddForce(bounceDirection * bounceStrength, ForceMode.Impulse);
+
+            // 회전력 최소화
+            rb.angularVelocity = Vector3.zero;
+
+            // 충돌 각도에 따라 뒤로 튕겨나게 조정
+            Vector3 localVelocity = transform.InverseTransformDirection(rb.velocity);
+            localVelocity.x = 0; // 좌우 이동 속도 제거
+            rb.velocity = transform.TransformDirection(localVelocity);
         }
 
         private IEnumerator StopControl()

@@ -13,8 +13,6 @@ namespace BumperCarProject.UI.View
         [SerializeField]
         private Text _damageText;
         [SerializeField]
-        private TMP_Text damageTMP;
-        [SerializeField]
         private Text _boostCoolTime;
         [SerializeField]
         private Image _boostTimeImage;
@@ -30,7 +28,6 @@ namespace BumperCarProject.UI.View
         }
 
         public void UpdateDamageText(float curDamage) {
-            damageTMP.text = curDamage.ToString("N1");
             _damageText.text = curDamage.ToString("N1");
         }
 
