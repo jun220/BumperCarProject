@@ -104,7 +104,7 @@ namespace BumperCarProject.Car
             }
 
             float currentSpeed = _rb.velocity.magnitude;
-            DashboardView.presenter.UpdateCurSpeed(currentSpeed);
+            //DashboardView.presenter.UpdateCurSpeed(currentSpeed);
 
             // boost
             if (Input.GetKeyDown(KeyCode.Q) && _canBoost) {
