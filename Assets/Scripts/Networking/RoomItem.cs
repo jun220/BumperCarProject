@@ -26,7 +26,7 @@ public class RoomItem : MonoBehaviour {
         capacity.text = string.Format("{0} / {1}", session.PlayerCount, roomInfo.MaxPlayer);
     }
 
-    public void OnClickRoomItem() {
-        GameLauncher.Instance.JoinRoom(roomInfo);
+    public async void OnClickRoomItem() {
+        await GameLauncher.Instance.JoinRoom(roomInfo);
     }
 }

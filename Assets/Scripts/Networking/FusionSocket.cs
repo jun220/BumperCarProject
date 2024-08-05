@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 public class FusionSocket : MonoBehaviour, INetworkRunnerCallbacks {
-    public enum NetworkState { OPEN, LOBBY, RANDOM, ROOM, CLOSED };
+    public enum NetworkState { OPEN, LOBBY, RANDOM, HOST, CLIENT, CLOSED };
 
     private static NetworkState _state = NetworkState.CLOSED;
     public static NetworkState State {
@@ -79,7 +79,7 @@ public class FusionSocket : MonoBehaviour, INetworkRunnerCallbacks {
 
         if (result.Ok) {
             OnCreateRoomSuccess();
-            State = NetworkState.ROOM;
+            State = NetworkState.HOST;
             AfterCreateRoom(room);
         } else {
             OnCreateRoomFailure(result);
@@ -109,7 +109,7 @@ public class FusionSocket : MonoBehaviour, INetworkRunnerCallbacks {
 
         if (result.Ok) {
             OnJoinRoomSuccess();
-            State = NetworkState.ROOM;
+            State = NetworkState.CLIENT;
             AfterJoinRoom(room);
         } else {
             OnJoinRoomFailure(result);
@@ -197,12 +197,48 @@ public class FusionSocket : MonoBehaviour, INetworkRunnerCallbacks {
 
     #region NETWORK EVENT 
 
+    /// <summary>
+    /// 네트워크 접속 상태가 바뀔 때 발생되는 이벤트
+    /// </summary>
     private static Action<NetworkState> NetworkStateChangedEvent;
     public static void AddNetworkStateChangedEventListener(Action<NetworkState> method) => NetworkStateChangedEvent += method;
+
+    /// <summary>
+    /// 로비 내 룸 목록들이 업데이트 될 때 발생되는 이벤트
+    /// </summary>
+    private static Action<List<SessionInfo>> SessionListUpdatedEvent;
+    public static void AddSessionListUpdatedEventListener(Action<List<SessionInfo>> method) => SessionListUpdatedEvent += method;
+
+
+    /// <summary>
+    /// 플레이어가 Room에 접속할 시 발생되는 이벤트
+    /// </summary>
+    private static Action<NetworkRunner, PlayerRef> PlayerJoinedEvent;
+    public static void AddPlayerJoinedEventListener(Action<NetworkRunner, PlayerRef> method) => PlayerJoinedEvent += method;
+    public static void RemovePlayerJoinedEventListener(Action<NetworkRunner, PlayerRef> method) => PlayerJoinedEvent -= method;
+
+    /// <summary>
+    /// 플레이어가 Room에서 퇴장할 시 발생되는 이벤트
+    /// </summary>
+    private static Action<NetworkRunner, PlayerRef> PlayerLeftEvent;
+    public static void AddPlayerLeftEventListener(Action<NetworkRunner, PlayerRef> method) => PlayerLeftEvent += method;
+    public static void RemovePlayerLeftEventListener(Action<NetworkRunner, PlayerRef> method) => PlayerLeftEvent -= method;
 
     #endregion
 
     #region NETWORK CALLBACK
+
+    public virtual void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {
+        SessionListUpdatedEvent?.Invoke(sessionList);
+    }
+
+    public virtual void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { 
+        PlayerJoinedEvent?.Invoke(runner, player);
+    }
+
+    public virtual void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { 
+        PlayerLeftEvent?.Invoke(runner, player);
+    }
 
     public virtual void OnConnectedToServer(NetworkRunner runner) { }
 
@@ -224,10 +260,6 @@ public class FusionSocket : MonoBehaviour, INetworkRunnerCallbacks {
 
     public virtual void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
 
-    public virtual void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
-
-    public virtual void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
-
     public virtual void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) { }
 
     public virtual void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data) { }
@@ -235,8 +267,6 @@ public class FusionSocket : MonoBehaviour, INetworkRunnerCallbacks {
     public virtual void OnSceneLoadDone(NetworkRunner runner) { }
 
     public virtual void OnSceneLoadStart(NetworkRunner runner) { }
-
-    public virtual void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
 
     public virtual void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
 

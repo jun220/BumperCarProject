@@ -10,8 +10,9 @@ public class RoomCreationPopupUI : MonoBehaviour
     [SerializeField] private TMP_InputField RoomName;
     [SerializeField] private TMP_Text MaxPlayerText;
     [SerializeField] private Slider MaxPlayer;
+    [SerializeField] private Button CreationButton;
 
-    public void OnCreateRoom() {
+    public async void OnCreateRoom() {
         RoomInfo room = new RoomInfo(
             string.Empty,
             RoomName.text,
@@ -19,10 +20,14 @@ public class RoomCreationPopupUI : MonoBehaviour
             ClientInfo.Nickname
         );
 
-        GameLauncher.Instance.CreateRoom(room);
+        await GameLauncher.Instance.CreateRoom(room);
     }
 
     public void OnChangedMaxPlayer() {
         MaxPlayerText.text = string.Format("{0}", MaxPlayer.value);
+    }
+
+    public void OnRoomNameEndEdit() {
+        CreationButton.interactable = RoomName.text != string.Empty;
     }
 }

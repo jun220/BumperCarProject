@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.CoreUtils;
 
 public class LobbyPanelUI : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class LobbyPanelUI : MonoBehaviour
         Nickname.text = ClientInfo.Nickname;
 
         // -- [ Initialize Mode Section ]
+        buttons = ModeSection.GetComponentsInChildren<Button>(true);
         SetActiveModeButton(false);
 
         // -- [ Initialize RoomList Section ]
@@ -21,14 +23,8 @@ public class LobbyPanelUI : MonoBehaviour
 
         // -- [ Add EventListener Method ]
         FusionSocket.AddNetworkStateChangedEventListener(OnNetworkStateChanged);
-        GameLauncher.AddSessionListUpdatedEventListener(OnSessionListUpdated);
+        FusionSocket.AddSessionListUpdatedEventListener(OnSessionListUpdated);
     }
-
-    #endregion
-
-    #region LOBBY SCREEN METHOD
-
-    
 
     #endregion
 
@@ -46,18 +42,17 @@ public class LobbyPanelUI : MonoBehaviour
     [Header("Mode Section")]
     [SerializeField] private GameObject ModeSection;
 
-    public void OnQuickMathcing() {
-        GameLauncher.Instance.MatchRandom();
+    private Button[] buttons;
+
+    public async void OnQuickMathcing() {
+        await GameLauncher.Instance.MatchRandom();
     }
 
-    public async void OnBackToIntro() {
+    public async void OnCloseNetwork() {
         await GameLauncher.Instance.OnClose();
-        IsRefresh = true;
     }
 
     private void SetActiveModeButton(bool active) {
-        Button[] buttons = ModeSection.GetComponentsInChildren<Button>(true);
-
         foreach (Button button in buttons) {
             button.interactable = active;
         }
@@ -79,30 +74,26 @@ public class LobbyPanelUI : MonoBehaviour
     [SerializeField] private RoomItem RoomItem;
 
     private GameObject ActiveScreen = null;
-    private bool IsRefresh = true;
+    private List<SessionInfo> Sessions = new List<SessionInfo>();
 
-    public void OnClickRefresh() => IsRefresh = true;
+    public void OnClickRefresh() {
+        RoomSearching.text = string.Empty;
+        ShowRoomList(Sessions);
+    }
 
     public void OnClickSearch() {
         if (RoomSearching.text == string.Empty) return;
         string query = RoomSearching.text;
 
-        ClearRoomList();
-
         List<SessionInfo> result = new List<SessionInfo>();
-        foreach(SessionInfo session in GameLauncher.SessionList) {
+        foreach(SessionInfo session in Sessions) {
             string name = session.Properties["RoomName"];
 
             if (name.Contains(query))
                 result.Add(session);
         }
 
-        if (result.Count == 0) {
-            FocusScreen(EmptyScreen);
-        } else {
-            CreateRoomList(result);
-            FocusScreen(RoomScreen);
-        }
+        ShowRoomList(result);
     }
 
     private void FocusScreen(GameObject screen) {
@@ -110,6 +101,17 @@ public class LobbyPanelUI : MonoBehaviour
 
         screen.SetActive(true);
         ActiveScreen = screen;
+    }
+
+    private void ShowRoomList(List<SessionInfo> sessions) {
+        ClearRoomList();
+
+        if (sessions.Count == 0) {
+            FocusScreen(EmptyScreen);
+        } else {
+            CreateRoomList(sessions);
+            FocusScreen(RoomScreen);
+        }
     }
 
     private void ClearRoomList() {
@@ -144,18 +146,11 @@ public class LobbyPanelUI : MonoBehaviour
         }
     }
 
-    public void OnSessionListUpdated() {
-        if (!IsRefresh) return;
-        IsRefresh = false;
+    public void OnSessionListUpdated(List<SessionInfo> sessions) {
+        Sessions = sessions;
 
-        ClearRoomList();
-
-        if (GameLauncher.SessionList.Count == 0) {
-            FocusScreen(EmptyScreen);
-        } else {
-            CreateRoomList(GameLauncher.SessionList);
-            FocusScreen(RoomScreen);
-        }
+        if (ActiveScreen == LoadingScreen)
+            ShowRoomList(sessions);
     }
 
     private void OnJoinLobby() {

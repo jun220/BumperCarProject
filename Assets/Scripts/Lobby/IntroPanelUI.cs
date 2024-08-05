@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class IntroPanelUI : MonoBehaviour
 {
-    public void OnEntranced() => GameLauncher.Instance.Entrance();
+    public async void OnEntranced() => await GameLauncher.Instance.Entrance();
 }

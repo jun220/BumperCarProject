@@ -45,7 +45,8 @@ public class PanelUI : MonoBehaviour
 
     private void OnNetworkStateChanged(FusionSocket.NetworkState state) {
         switch (state) {
-            case FusionSocket.NetworkState.ROOM:
+            case FusionSocket.NetworkState.HOST:
+            case FusionSocket.NetworkState.CLIENT:
                 FocusPanel(Panel.ROOM);
                 break;
         }

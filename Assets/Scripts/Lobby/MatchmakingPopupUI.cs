@@ -9,10 +9,14 @@ public class MatchmakingPopupUI : MonoBehaviour
     [SerializeField] private TMP_Text PlayerText;
 
     private void Start() {
-        GameLauncher.AddPlayerJoinedEventListener(OnPlayerJoined);
+        FusionSocket.AddPlayerJoinedEventListener(OnPlayerJoined);
     }
 
-    private void OnPlayerJoined(PlayerRef player) {
-        PlayerText.text = string.Format("{0} / {1}", FusionSocket.Runner.SessionInfo.PlayerCount, FusionSocket.Runner.SessionInfo.MaxPlayers);
+    private void OnPlayerJoined(NetworkRunner runner, PlayerRef player) {
+        PlayerText.text = string.Format("{0} / {1}", runner.SessionInfo.PlayerCount, runner.SessionInfo.MaxPlayers);
+    }
+
+    public async void OnClickCancle() {
+        await GameLauncher.Instance.Reconnect();
     }
 }

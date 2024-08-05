@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameLauncher : FusionSocket
 {
@@ -18,6 +19,10 @@ public class GameLauncher : FusionSocket
 
         if(Instance == null)
             Instance = this;
+
+        DontDestroyOnLoad(Instance);
+
+        SceneManager.LoadScene("Lobby");
     }
 
     #endregion
@@ -64,14 +69,6 @@ public class GameLauncher : FusionSocket
 
     #region FUSION CALLBACK METHOD
 
-    public static List<SessionInfo> SessionList { get; private set; } = new List<SessionInfo>();
-
-    /// <summary>
-    /// 현재 접속한 로비 내 세션 목록이 업데이트 될 때 이벤트가 발생한다.
-    /// </summary>
-    private static Action SessionListUpdatedEvent;
-    public static void AddSessionListUpdatedEventListener(Action method) => SessionListUpdatedEvent += method;
-
     /// <summary>
     /// 현재 접속한 로비 내 세션 목력이 업데이트될 때 갱신된 목록을 불러온다.
     /// <para>
@@ -83,25 +80,28 @@ public class GameLauncher : FusionSocket
     public override void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {
         Debug.Log(string.Format("[ * Debug * ] SessionList Updated (Size : {0})", sessionList.Count));
 
-        // 랜덤방이 아닌 목록들만 복사한다
-        SessionList = new List<SessionInfo>();
-
-        foreach(SessionInfo session in sessionList) {
-            if (session.Properties["IsRandom"]) continue;
-            SessionList.Add(session);
-        }
-
-        SessionListUpdatedEvent?.Invoke();
+        base.OnSessionListUpdated(runner, sessionList);
     }
 
-    private static Action<PlayerRef> PlayerJoinedEvent;
-    public static void AddPlayerJoinedEventListener(Action<PlayerRef> method) => PlayerJoinedEvent += method;
+
+    [SerializeField] private GameObject RoomPlayerPrefab;
 
     public override void OnPlayerJoined(NetworkRunner runner, PlayerRef player) {
-        Debug.Log(string.Format("[ * Debug * ] Room : {0} / Player : {1}", runner.SessionInfo.Name, player.PlayerId));
+        Debug.Log(string.Format("[ * Debug * ] Joined Room : {0} / Player : {1}", runner.SessionInfo.Name, player.PlayerId));
 
-        PlayerJoinedEvent?.Invoke(player);
+        if(runner.IsServer) {
+            runner.Spawn(RoomPlayerPrefab, Vector3.zero, Quaternion.identity, player);
+        }
+
+        base.OnPlayerJoined(runner, player);
     }
-    
+
+    public override void OnPlayerLeft(NetworkRunner runner, PlayerRef player) {
+        Debug.Log(string.Format("[ * Debug * ] Left Room : {0} / Player : {1}", runner.SessionInfo.Name, player.PlayerId));
+        base.OnPlayerLeft(runner, player);
+
+        RoomPlayer.RemovePlayer(runner, player);
+    }
+
     #endregion
 }
