@@ -80,11 +80,10 @@ public class RoomPanelUI : MonoBehaviour
         Debug.Log(string.Format("[ * Debug * ] Player [ {0} ] Information Updated!", (string) player.Nickname));
         
         PlayerList[player].SetPlayerInfo(player);
+        UpdateKartTypeUI(player);
+        UpdateKartColorUI(player);
 
-        if(CanStartGame())
-            GameStartButton.interactable = true;
-
-        // 카트 번호 업데이트
+        UpdateReadyButton();
     }
 
     #endregion
@@ -93,6 +92,54 @@ public class RoomPanelUI : MonoBehaviour
     #endregion
 
     #region Selection Section
+
+    [Header("Selection Section")]
+    [SerializeField] private List<KartTypeUI> KartTypeUIs;
+    [SerializeField] private List<KartColorUI> KartColorUIs;
+
+    private static readonly Dictionary<RoomPlayer, KartTypeUI> TypeList = new Dictionary<RoomPlayer, KartTypeUI>();
+    private static readonly Dictionary<RoomPlayer, KartColorUI> ColorList = new Dictionary<RoomPlayer, KartColorUI>();
+
+    private void UpdateKartTypeUI(RoomPlayer player) {
+        if (TypeList.ContainsKey(player)) {
+            Debug.Log(string.Format("[ * Debug * ] Player [ {0} ] Before Type : {1}", (string) player.Nickname, KartTypeUIs.IndexOf(TypeList[player])));
+
+            TypeList[player].SetSelectable(true);
+            TypeList.Remove(player);
+        }
+
+        if (player.KartType != KartTypeUI.KART_TYPE_EMPTY) {
+            Debug.Log(string.Format("[ * Debug * ] Player [ {0} ] After Type : {1}", (string) player.Nickname, player.KartType));
+
+            KartTypeUI typeUI = KartTypeUIs[player.KartType];
+
+            typeUI.SetSelectable(false);
+            TypeList.Add(player, typeUI);
+        }
+
+        int PlayerUID = PlayerUIs.IndexOf(PlayerList[player]);
+        if (PlayerUID != -1)
+            PlayerKartUI.OnKartPicked(PlayerUID, player.KartType);
+    }
+
+    private void UpdateKartColorUI(RoomPlayer player) {
+        if (ColorList.ContainsKey(player)) {
+            Debug.Log(string.Format("[ * Debug * ] Player [ {0} ] Before Color : {1}", (string) player.Nickname, KartColorUIs.IndexOf(ColorList[player])));
+
+            ColorList[player].SetSelectable(true);
+            ColorList.Remove(player);
+        }
+
+        if (player.KartColor != KartColorUI.KART_COLOR_EMPTY) {
+            Debug.Log(string.Format("[ * Debug * ] Player [ {0} ] After Color : {1}", (string) player.Nickname, player.KartColor));
+
+            KartColorUI colorUI = KartColorUIs[player.KartColor];
+
+            colorUI.SetSelectable(false);
+            ColorList.Add(player, colorUI);
+        }
+    }
+
     #endregion
 
     #region Ready Section
@@ -113,9 +160,14 @@ public class RoomPanelUI : MonoBehaviour
         Debug.Log("[ * Debug * ] GameStart!");
     }
 
+    private void UpdateReadyButton() {
+        GameStartButton.interactable = CanStartGame();
+        ReadyButton.interactable = CanReady();
+    }
+
     private bool CanReady() {
-        if (RoomPlayer.Local.KartType == 0) return false;
-        if (RoomPlayer.Local.KartColor == 0) return false;
+        if (RoomPlayer.Local.KartType == KartTypeUI.KART_TYPE_EMPTY) return false;
+        if (RoomPlayer.Local.KartColor == KartColorUI.KART_COLOR_EMPTY) return false;
         return true;
     }
 
@@ -123,6 +175,7 @@ public class RoomPanelUI : MonoBehaviour
         if (RoomPlayer.Players.Count < 2) return false;
         if (!RoomPlayer.Local.IsHost) return false;
         if (!IsEveryoneReady()) return false;
+        if (!CanReady()) return false;
         return true;
     }
 

@@ -31,12 +31,12 @@ TagManager:
   - 
   - 
   - 
-  - KartSelection01
-  - KartSelection02
-  - KartSelection03
-  - KartSelection04
-  - KartSelection05
-  - KartSelection06
+  - 
+  - 
+  - 
+  - 
+  - 
+  - KartSelection
   m_SortingLayers:
   - name: Default
     uniqueID: 0

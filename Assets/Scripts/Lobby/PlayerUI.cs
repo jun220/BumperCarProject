@@ -36,6 +36,7 @@ public class PlayerUI : MonoBehaviour
 
 
         Ready.gameObject.SetActive(player.IsReady);
+        KartRender.SetActive(player.KartType != KartTypeUI.KART_TYPE_EMPTY);
         Blocked.gameObject.SetActive(false);
     }
 

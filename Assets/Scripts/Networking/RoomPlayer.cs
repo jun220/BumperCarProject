@@ -19,8 +19,8 @@ public class RoomPlayer : NetworkBehaviour
     [Networked] public NetworkString<_32> Nickname { get; private set; }
     [Networked] public NetworkBool IsHost { get; private set; }
     [Networked] public NetworkBool IsReady { get; private set; }
-    [Networked] public int KartType { get; private set; } = 0;
-    [Networked] public int KartColor { get; private set; } = 0;
+    [Networked] public int KartType { get; private set; }
+    [Networked] public int KartColor { get; private set; }
 
     private ChangeDetector changeDetector;
 
@@ -84,17 +84,30 @@ public class RoomPlayer : NetworkBehaviour
     [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
     private void RPC_SetPlayer(NetworkString<_32> nickname, NetworkBool isHost) {
         Nickname = nickname;
-        IsReady = IsHost = isHost;
+        IsReady = isHost;
+        IsHost = isHost;
+        KartType = KartTypeUI.KART_TYPE_EMPTY;
+        KartColor = KartColorUI.KART_COLOR_EMPTY;
     } 
 
     [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
     public void RPC_ChangeReadyState(NetworkBool state) => IsReady = state;
 
     [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
-    public void RPC_SetKartType(int type) => KartType = type;
+    public void RPC_SetKartType(int type) {
+        if (!IsHost && type == KartTypeUI.KART_TYPE_EMPTY)
+            IsReady = false;
+
+        KartType = type;
+    }
 
     [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
-    public void RPC_SetKartColor(int color) => KartColor = color;
+    public void RPC_SetKartColor(int color) {
+        if(!IsHost && color == KartColorUI.KART_COLOR_EMPTY)
+            IsReady = false;
+
+        KartColor = color;
+    }
 
     #endregion
 }

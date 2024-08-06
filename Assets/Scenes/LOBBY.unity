@@ -131,7 +131,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 231088747}
-  m_Layer: 27
+  m_Layer: 31
   m_Name: KartSelection02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -147,7 +147,7 @@ Transform:
   m_GameObject: {fileID: 231088746}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -2, z: -1.4899998}
+  m_LocalPosition: {x: 5, y: -2, z: -1.4899998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -164,7 +164,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 348317234}
-  m_Layer: 28
+  m_Layer: 31
   m_Name: KartSelection03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,7 +180,7 @@ Transform:
   m_GameObject: {fileID: 348317233}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -2, z: -1.4899998}
+  m_LocalPosition: {x: 10, y: -2, z: -1.4899998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -197,7 +197,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 361858715}
-  m_Layer: 30
+  m_Layer: 31
   m_Name: KartSelection05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -213,7 +213,7 @@ Transform:
   m_GameObject: {fileID: 361858714}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -2, z: -1.4899998}
+  m_LocalPosition: {x: 20, y: -2, z: -1.4899998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -232,7 +232,7 @@ GameObject:
   - component: {fileID: 454436324}
   - component: {fileID: 454436326}
   - component: {fileID: 454436325}
-  m_Layer: 28
+  m_Layer: 31
   m_Name: KartCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -337,7 +337,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 268435456
+    m_Bits: 2415919104
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 1ad1a66c026c74c4d9a550d30ae12968, type: 2}
   m_TargetDisplay: 0
@@ -358,7 +358,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 465496969}
-  m_Layer: 26
+  m_Layer: 31
   m_Name: KartSelection01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -390,6 +390,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361858715}
     m_Modifications:
+    - target: {fileID: 262769392539917209, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 404218528767990510, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 5424306333513175712, guid: cc0d3f0f24dc126428df9b9ec551d01d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -440,6 +450,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6474279604354509366, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 6831588211149673367, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 7480338736310460967, guid: cc0d3f0f24dc126428df9b9ec551d01d,
         type: 3}
       propertyPath: m_Name
@@ -448,7 +468,7 @@ PrefabInstance:
     - target: {fileID: 7480338736310460967, guid: cc0d3f0f24dc126428df9b9ec551d01d,
         type: 3}
       propertyPath: m_Layer
-      value: 30
+      value: 31
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -461,6 +481,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 470411830}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &470411832 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1743762741136053962, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+    type: 3}
+  m_PrefabInstance: {fileID: 470411830}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c39dae4e012919489161a6d80870f1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &606981641
 GameObject:
   m_ObjectHideFlags: 0
@@ -597,6 +629,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1216661487}
     m_Modifications:
+    - target: {fileID: 262769392539917209, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 404218528767990510, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 5424306333513175712, guid: cc0d3f0f24dc126428df9b9ec551d01d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -647,6 +689,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6474279604354509366, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 6831588211149673367, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 7480338736310460967, guid: cc0d3f0f24dc126428df9b9ec551d01d,
         type: 3}
       propertyPath: m_Name
@@ -668,6 +720,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 644822786}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &644822788 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1743762741136053962, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+    type: 3}
+  m_PrefabInstance: {fileID: 644822786}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c39dae4e012919489161a6d80870f1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &735718106
 GameObject:
   m_ObjectHideFlags: 0
@@ -679,7 +743,7 @@ GameObject:
   - component: {fileID: 735718107}
   - component: {fileID: 735718110}
   - component: {fileID: 735718108}
-  m_Layer: 26
+  m_Layer: 31
   m_Name: KartCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -784,7 +848,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 67108864
+    m_Bits: 2214592512
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 3c050426de57f204fb17b387b20000e5, type: 2}
   m_TargetDisplay: 0
@@ -804,6 +868,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 348317234}
     m_Modifications:
+    - target: {fileID: 262769392539917209, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 404218528767990510, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 5424306333513175712, guid: cc0d3f0f24dc126428df9b9ec551d01d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -854,6 +928,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6474279604354509366, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 6831588211149673367, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 7480338736310460967, guid: cc0d3f0f24dc126428df9b9ec551d01d,
         type: 3}
       propertyPath: m_Name
@@ -862,7 +946,7 @@ PrefabInstance:
     - target: {fileID: 7480338736310460967, guid: cc0d3f0f24dc126428df9b9ec551d01d,
         type: 3}
       propertyPath: m_Layer
-      value: 28
+      value: 31
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -875,6 +959,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 737751995}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &737751997 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1743762741136053962, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+    type: 3}
+  m_PrefabInstance: {fileID: 737751995}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c39dae4e012919489161a6d80870f1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &973991961
 GameObject:
   m_ObjectHideFlags: 0
@@ -886,7 +982,7 @@ GameObject:
   - component: {fileID: 973991962}
   - component: {fileID: 973991964}
   - component: {fileID: 973991963}
-  m_Layer: 30
+  m_Layer: 31
   m_Name: KartCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -991,7 +1087,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1073741824
+    m_Bits: 3221225472
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 2ab37403629225049811a5baaa13c18d, type: 2}
   m_TargetDisplay: 0
@@ -1011,6 +1107,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1134302135}
     m_Modifications:
+    - target: {fileID: 262769392539917209, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 404218528767990510, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 5424306333513175712, guid: cc0d3f0f24dc126428df9b9ec551d01d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1061,6 +1167,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6474279604354509366, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 6831588211149673367, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 7480338736310460967, guid: cc0d3f0f24dc126428df9b9ec551d01d,
         type: 3}
       propertyPath: m_Name
@@ -1069,7 +1185,7 @@ PrefabInstance:
     - target: {fileID: 7480338736310460967, guid: cc0d3f0f24dc126428df9b9ec551d01d,
         type: 3}
       propertyPath: m_Layer
-      value: 29
+      value: 31
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1082,6 +1198,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1003252829}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1003252831 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1743762741136053962, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1003252829}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c39dae4e012919489161a6d80870f1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1134302134
 GameObject:
   m_ObjectHideFlags: 0
@@ -1091,7 +1219,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1134302135}
-  m_Layer: 29
+  m_Layer: 31
   m_Name: KartSelection04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1107,7 +1235,7 @@ Transform:
   m_GameObject: {fileID: 1134302134}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -2, z: -1.4899998}
+  m_LocalPosition: {x: 15, y: -2, z: -1.4899998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1140,7 +1268,7 @@ Transform:
   m_GameObject: {fileID: 1216661486}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -2, z: -1.4899998}
+  m_LocalPosition: {x: 25, y: -2, z: -1.4899998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1294,7 +1422,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1418091248}
-  m_Layer: 0
+  - component: {fileID: 1418091249}
+  m_Layer: 31
   m_Name: KartSelect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1322,6 +1451,25 @@ Transform:
   - {fileID: 1216661487}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1418091249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1418091247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ccfe8c4b4d01434590a37aca7b66ccd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  KartSelections:
+  - {fileID: 6401093039252833205}
+  - {fileID: 1962006243}
+  - {fileID: 737751997}
+  - {fileID: 1003252831}
+  - {fileID: 470411832}
+  - {fileID: 644822788}
 --- !u!1 &1457085300
 GameObject:
   m_ObjectHideFlags: 0
@@ -1333,7 +1481,7 @@ GameObject:
   - component: {fileID: 1457085301}
   - component: {fileID: 1457085303}
   - component: {fileID: 1457085302}
-  m_Layer: 27
+  m_Layer: 31
   m_Name: KartCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1438,7 +1586,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 134217728
+    m_Bits: 2281701376
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 53eb290c4964db142bc338720306dda6, type: 2}
   m_TargetDisplay: 0
@@ -1579,7 +1727,7 @@ GameObject:
   - component: {fileID: 1818036988}
   - component: {fileID: 1818036990}
   - component: {fileID: 1818036989}
-  m_Layer: 29
+  m_Layer: 31
   m_Name: KartCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1684,7 +1832,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 536870912
+    m_Bits: 2684354560
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 58f821f5da2fb174a871929763cd32ce, type: 2}
   m_TargetDisplay: 0
@@ -1710,6 +1858,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 231088747}
     m_Modifications:
+    - target: {fileID: 262769392539917209, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 404218528767990510, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 5424306333513175712, guid: cc0d3f0f24dc126428df9b9ec551d01d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1760,6 +1918,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6474279604354509366, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 6831588211149673367, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 7480338736310460967, guid: cc0d3f0f24dc126428df9b9ec551d01d,
         type: 3}
       propertyPath: m_Name
@@ -1768,7 +1936,7 @@ PrefabInstance:
     - target: {fileID: 7480338736310460967, guid: cc0d3f0f24dc126428df9b9ec551d01d,
         type: 3}
       propertyPath: m_Layer
-      value: 27
+      value: 31
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1781,6 +1949,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1962006241}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1962006243 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1743762741136053962, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1962006241}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c39dae4e012919489161a6d80870f1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6401093039252833204
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1849,6 +2029,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cc0d3f0f24dc126428df9b9ec551d01d, type: 3}
+--- !u!114 &6401093039252833205 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1743762741136053962, guid: cc0d3f0f24dc126428df9b9ec551d01d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6401093039252833204}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c39dae4e012919489161a6d80870f1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
