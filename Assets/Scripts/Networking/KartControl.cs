@@ -1,9 +1,8 @@
 using Fusion;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public abstract class KartControll : NetworkBehaviour {
+public abstract class KartControl : NetworkBehaviour {
 
     #region UNITY LIFECYCLE METHOD
 
