@@ -4,36 +4,47 @@ using UnityEngine;
 
 public class TempKartController : KartControl {
 
-    public int MoveSpeed;
+    public float MAX_MOVE_SPEED;
+    public float ROT_SPEED;
+    public float MOVE_ACCELERATION;
+    public float MOVE_DECELERATION;
 
-    protected override void Move(KartInput.NetworkInputData input) {
-        //Debug.Log(string.Format("[ * Debug * ] Input - Vertical : {0} / Horizontal : {1}", input.Steer, input.Acceleration));
-        Vector3 moveDir = new Vector3(input.Steer, 0, input.Acceleration);
+    public Rigidbody Rigidbody;
 
-        transform.Translate(moveDir.normalized * MoveSpeed * DeltaTime, Space.Self);
+    private float moveSpeed;
+
+    protected override void Move(KartInput.NetworkInputData input) { }
+
+    protected override void Accelate(KartInput.NetworkInputData input) {
+        if(input.GetButton(KartInput.NetworkInputData.ButtonType.ACCELERATION)) {
+            moveSpeed = Mathf.Lerp(moveSpeed, MAX_MOVE_SPEED, MOVE_ACCELERATION * DeltaTime);
+        } else if(input.GetButton(KartInput.NetworkInputData.ButtonType.REVERSE)) {
+            moveSpeed = Mathf.Lerp(moveSpeed, -MAX_MOVE_SPEED, MOVE_ACCELERATION * DeltaTime);
+        } else {
+            moveSpeed = Mathf.Lerp(moveSpeed, 0, MOVE_DECELERATION * DeltaTime);
+        }
+
+        Vector3 velocity = Rigidbody.rotation * Vector3.forward * moveSpeed + Vector3.up * Rigidbody.velocity.y;
+        Rigidbody.velocity = velocity;
     }
 
-    protected override void Accelate(float vertical) {
-        //Debug.Log(string.Format("[ * Debug * ] Controller - Accel : {0}", vertical));
+    protected override void Steer(KartInput.NetworkInputData input) {
+        Quaternion rotation = Quaternion.Euler(
+            Vector3.Lerp(
+                Rigidbody.rotation.eulerAngles,
+                Rigidbody.rotation.eulerAngles + Vector3.up * ROT_SPEED * input.Steer,
+                Runner.DeltaTime
+            )
+        );
+
+        Rigidbody.MoveRotation(rotation);
     }
 
-    protected override void Steer(float horizon) {
-        //Debug.Log(string.Format("[ * Debug * ] Controller - Steer : {0}", horizon));
-    }
+    protected override void Dash() { }
 
-    protected override void Dash() {
-        //Debug.Log(string.Format("[ * Debug * ] Controller - Dash!"));
-    }
+    protected override void CollisionEnter(GameObject other) { }
 
-    protected override void CollisionEnter(GameObject other) {
-        Debug.Log(string.Format("[ * Debug * ] Object < {0} > Collision Enter to < {1} >", gameObject.name, other.name));
-    }
+    protected override void CollisionExit(GameObject other) { }
 
-    protected override void CollisionExit(GameObject other) {
-        Debug.Log(string.Format("[ * Debug * ] Object < {0} > Collision Exit to < {1} >", gameObject.name, other.name));
-    }
-
-    protected override void CollisionStay(GameObject other) {
-        Debug.Log(string.Format("[ * Debug * ] Object < {0} > Collision Stay to < {1} >", gameObject.name, other.name));
-    }
+    protected override void CollisionStay(GameObject other) { }
 }

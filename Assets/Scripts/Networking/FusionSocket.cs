@@ -1,4 +1,5 @@
 using Fusion;
+using Fusion.Addons.Physics;
 using Fusion.Sockets;
 using System;
 using System.Collections.Generic;
@@ -33,10 +34,13 @@ public class FusionSocket : MonoBehaviour, INetworkRunnerCallbacks {
         DontDestroyOnLoad(runnerObject);
 
         // Add NetworkRunner Component
+        RunnerSimulatePhysics3D sim3D = runnerObject.AddComponent<RunnerSimulatePhysics3D>();
+        sim3D.ClientPhysicsSimulation = ClientPhysicsSimulation.SimulateAlways;
+
         Runner = runnerObject.AddComponent<NetworkRunner>();
         Runner.ProvideInput = true;
         Runner.AddCallbacks(this);
-
+        
         State = NetworkState.OPEN;
 
         AfterOpen();

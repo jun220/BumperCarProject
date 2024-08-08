@@ -117,6 +117,8 @@ public class KartInput : NetworkBehaviour, INetworkRunnerCallbacks
 
         input.Set(current);
         before = current.Buttons;
+
+        Debug.Log(string.Format("[ * Debug * ] << OnInput >> Player {0} Input : {1}", Runner.UserId, current.Buttons));
     }
 
     private void DisposeInputs() {
