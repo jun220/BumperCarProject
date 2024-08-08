@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4402705022409326126}
   - component: {fileID: 6495503261492921596}
   - component: {fileID: 5450078895392730869}
+  - component: {fileID: 8705969897096635067}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -137,6 +138,24 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &8705969897096635067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2263768347604473806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d67340d022954a4e93a2d064a406afd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  car: {fileID: 4237739136760508455}
+  carRigidbody: {fileID: 4744352178700721582}
+  mainCamera: {fileID: 4402705022409326126}
+  minFOV: 60
+  maxFOV: 90
+  maxSpeed: 20
 --- !u!1 &3505618242252232165
 GameObject:
   m_ObjectHideFlags: 0
@@ -686,7 +705,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _CanMove: 0
-  acceleration: 10
+  acceleration: 20
   steering: 100
   maxSpeed: 20
   boosterMaxSpeed: 30

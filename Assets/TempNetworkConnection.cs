@@ -18,7 +18,8 @@ public class TempNetworkConnection : FusionSocket
     private async void JoinRoom()
     {
         Open();
-        await CreateRoom(new RoomInfo(RoomName, "Test", 1, "TestNick"));
+        await JoinRandomRoom();
+        //await CreateRoom(new RoomInfo(RoomName, "Test", 2, "TestNick"));
     }
 
     public override void OnPlayerJoined(NetworkRunner runner, PlayerRef player)

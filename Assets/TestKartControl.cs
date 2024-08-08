@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity;
 using UnityEngine.Windows;
+using BumperCarProject.UI.View;
 
 public class TestKartControl : KartControl
 {
@@ -12,19 +13,38 @@ public class TestKartControl : KartControl
     public float boosterMaxSpeed = 30f; // 부스터를 사용했을 때 최대 속도
 
     public float deceleration = 5f; // 손을 뗐을 때 감속하는 힘
-    private Rigidbody rb;
+    private Rigidbody _rb;
 
     public bool isMine;
 
-    [SerializeField] private float speed;
-    [SerializeField] private float damage;
+    [SerializeField] private float _speed;
+    public float Speed
+    {
+        get => _speed;
+        set
+        {
+            _speed = value;
+            DashboardView.presenter.UpdateCurSpeed(value);
+        }
+    }
+    [SerializeField]
+    private float _damage;
+    public float Damage
+    {
+        get => _damage;
+        set
+        {
+            _damage = value;
+            DashboardView.presenter.UpdateCurDamage(value);
+        }
+    }
 
     private void Start()
     {
         CheckControl();
 
-        rb = GetComponent<Rigidbody>();
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous; // 충돌 탐지 모드를 continuous로 설정
+        _rb = GetComponent<Rigidbody>();
+        _rb.collisionDetectionMode = CollisionDetectionMode.Continuous; // 충돌 탐지 모드를 continuous로 설정
         // rb.interpolation = RigidbodyInterpolation.Interpolate; // 보간을 interpolate로 설정
     }
 
@@ -48,7 +68,9 @@ public class TestKartControl : KartControl
         float move = input.Acceleration; //  input에서 가속도 값 가져오기
 
         Vector3 force = transform.forward * move * acceleration;
-        rb.AddForce(force);
+        _rb.AddForce(force);
+
+        Speed = _rb.velocity.magnitude;
 
         //Vector3 forward = transform.forward * move * acceleration * Time.fixedDeltaTime;
         //Vector3 moveDirection = transform.forward * move * acceleration;
