@@ -1,6 +1,6 @@
 using BumperCarProject.Car.SO;
 using BumperCarProject.UI.View;
-using Cysharp.Threading.Tasks;
+//using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
 using TMPro;
@@ -40,7 +40,7 @@ namespace BumperCarProject.Car
                     _maxSpeed = bumperCar.boosterMaxSpeed;
                     _acceleration *= 1.2f;
                     _canBoost = false;
-                    StopBoostingAsync().Forget();
+                    //StopBoostingAsync().Forget();
                 }
                 else {
                     _maxSpeed = bumperCar.maxSpeed;
@@ -116,7 +116,7 @@ namespace BumperCarProject.Car
             if (Input.GetKeyDown(KeyCode.Q) && _canBoost)
             {
                 IsBoosting = true;
-                CoolDownBoostTimeAsync(bumperCar.boostCoolTime).Forget();
+                //CoolDownBoostTimeAsync(bumperCar.boostCoolTime).Forget();
             }
         }
 
@@ -152,28 +152,28 @@ namespace BumperCarProject.Car
         //    }
         //}
 
-        private async UniTaskVoid CoolDownBoostTimeAsync(float coolTime) {
-            float elapsed = 0f;
-            float oneTenthTime = 0f;
+        //private async UniTaskVoid CoolDownBoostTimeAsync(float coolTime) {
+        //    float elapsed = 0f;
+        //    float oneTenthTime = 0f;
 
-            while(elapsed < coolTime) {
-                elapsed += Time.deltaTime;
-                if(oneTenthTime + 0.1f < elapsed) {
-                    oneTenthTime += 0.1f;
-                    DashboardView.presenter.UpdateBoostCoolTimeText(coolTime - oneTenthTime);
-                }
-                DashboardView.presenter.UpdateBoostCoolTimeImage(1 - (elapsed / coolTime));
-                await UniTask.Yield();
-            }
+        //    while(elapsed < coolTime) {
+        //        elapsed += Time.deltaTime;
+        //        if(oneTenthTime + 0.1f < elapsed) {
+        //            oneTenthTime += 0.1f;
+        //            DashboardView.presenter.UpdateBoostCoolTimeText(coolTime - oneTenthTime);
+        //        }
+        //        DashboardView.presenter.UpdateBoostCoolTimeImage(1 - (elapsed / coolTime));
+        //        await UniTask.Yield();
+        //    }
 
-            DashboardView.presenter.UpdateBoostCoolTimeText(0f);
-            DashboardView.presenter.UpdateBoostCoolTimeImage(0f);
-        }
+        //    DashboardView.presenter.UpdateBoostCoolTimeText(0f);
+        //    DashboardView.presenter.UpdateBoostCoolTimeImage(0f);
+        //}
 
-        private async UniTaskVoid StopBoostingAsync() {
-            await UniTask.WaitForSeconds(_boostingTime);
-            IsBoosting = false;
-        }
+        //private async UniTaskVoid StopBoostingAsync() {
+        //    await UniTask.WaitForSeconds(_boostingTime);
+        //    IsBoosting = false;
+        //}
 
         //private void OnCollisionEnter(Collision collision) {
         //    if (collision.transform.CompareTag("Bounceable")) {
