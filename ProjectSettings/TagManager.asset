@@ -37,7 +37,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Collisable
   - KartSelection
   m_SortingLayers:
   - name: Default
