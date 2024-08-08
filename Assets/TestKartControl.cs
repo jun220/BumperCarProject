@@ -39,12 +39,17 @@ public class TestKartControl : KartControl
         }
     }
 
+    public Camera mainCamera;
+
     private void Start()
     {
         CheckControl();
 
         _rb = GetComponent<Rigidbody>();
         _rb.collisionDetectionMode = CollisionDetectionMode.Continuous; // 충돌 탐지 모드를 continuous로 설정
+
+        SetCamera();
+        
         // rb.interpolation = RigidbodyInterpolation.Interpolate; // 보간을 interpolate로 설정
     }
 
@@ -55,6 +60,8 @@ public class TestKartControl : KartControl
             CanMove = true;
         }
     }
+
+
     
 
     protected override void Move(KartInput.NetworkInputData input)
@@ -122,5 +129,28 @@ public class TestKartControl : KartControl
     protected override void CollisionExit(Collision collision)
     {
 
+    }
+
+    public void SetCamera()
+    {
+        mainCamera = Camera.main;
+
+        if (mainCamera != null)
+        {
+            Debug.Log("Main Camera found and assigned.");
+
+            // 카메라를 이 오브젝트의 자식으로 설정
+            mainCamera.transform.SetParent(transform);
+
+            // 카메라 위치와 회전을 설정
+            mainCamera.transform.localPosition = new Vector3(0, 1, -3); // position (0, 1, -3)
+            mainCamera.transform.localRotation = Quaternion.Euler(10, 0, 0); // rotation (10, 0, 0)
+
+            Debug.Log("Main Camera has been set as a child of the player with the specified position and rotation.");
+        }
+        else
+        {
+            Debug.LogWarning("Main Camera not found!");
+        }
     }
 }
