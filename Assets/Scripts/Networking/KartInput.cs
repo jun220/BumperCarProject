@@ -5,11 +5,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using UnityEngine.UI;
 
 
 public class KartInput : NetworkBehaviour, INetworkRunnerCallbacks
 {
+    #region DEBUGGING
+
+    public Text inputText;
+    #endregion
     #region NETWORK INPUT DATA STRUCTURE
 
     public struct NetworkInputData : INetworkInput {
@@ -118,6 +122,11 @@ public class KartInput : NetworkBehaviour, INetworkRunnerCallbacks
         input.Set(current);
         before = current.Buttons;
 
+        if(inputText == null)
+        {
+            inputText = GameObject.Find("InputText").GetComponent<Text>();    
+        }
+        inputText.text = $"input: {current.Buttons}";
         Debug.Log(string.Format("[ * Debug * ] Player [ {0} ] Controlled! (Key : {1})", runner, current.Buttons));
     }
 
