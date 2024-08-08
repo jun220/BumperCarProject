@@ -122,10 +122,7 @@ public abstract class KartControl : NetworkBehaviour {
         if (!CanMove) return;
 
         if (GetInput(out KartInput.NetworkInputData input))
-        {
             Inputs = input;
-        }
-            
 
         Move(Inputs);
         Accelate(Inputs.Acceleration);
