@@ -68,10 +68,20 @@ public class RoomPanelUI : MonoBehaviour
     }
 
     private void RemovePlayer(RoomPlayer player) {
-        if (!PlayerList.ContainsKey(player)) return;
+        if (PlayerList.ContainsKey(player)) {
+            PlayerList[player].SetEmpty();
+            PlayerList.Remove(player);
+        }
 
-        PlayerList[player].SetEmpty();
-        PlayerList.Remove(player);
+        if (TypeList.ContainsKey(player)) {
+            TypeList[player].SetSelectable(true);
+            TypeList.Remove(player);
+        }
+
+        if (PlayerList.ContainsKey(player)) {
+            ColorList[player].SetSelectable(true);
+            ColorList.Remove(player);
+        }
     }
 
     private void UpdatePlayer(RoomPlayer player) {
