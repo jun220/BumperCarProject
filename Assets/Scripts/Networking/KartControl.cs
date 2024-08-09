@@ -40,6 +40,8 @@ public abstract class KartControl : NetworkBehaviour
         }
     }
 
+
+
     #endregion
 
     #region KART COLLISION METHOD

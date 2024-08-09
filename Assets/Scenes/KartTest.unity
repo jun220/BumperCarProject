@@ -349,7 +349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c68b840c2e20e45b3dc5d11e32fa63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  KartPrefab: {fileID: 7408047654233126508, guid: 5cd9cea61996d6a4e9c766b6aa15e286,
+  KartPrefab: {fileID: 8003532830336626226, guid: a124129aebcca234fb9c12253bdd8234,
     type: 3}
 --- !u!1 &299550582
 GameObject:
@@ -733,7 +733,7 @@ Transform:
   m_GameObject: {fileID: 767711769}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1863,7 +1863,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1687500650
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1976,7 +1976,7 @@ Transform:
   m_GameObject: {fileID: 1766459509}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

@@ -142,23 +142,23 @@ public class KartInput : NetworkBehaviour, INetworkRunnerCallbacks
 
         input.Set(current);
         before = current.Buttons;
-        if(inputText == null)
-        {
-            inputText = GameObject.Find("InputText").GetComponent<Text>();
-        }
-        else
-        {
-            inputText.text = $"Input status: {current.Buttons}";
-        }
+        //if(inputText == null)
+        //{
+        //    inputText = GameObject.Find("InputText").GetComponent<Text>();
+        //}
+        //else
+        //{
+        //    inputText.text = $"Input status: {current.Buttons}";
+        //}
 
-        if (valueText == null)
-        {
-            valueText = GameObject.Find("ValueText").GetComponent<Text>();
-        }
-        else
-        {
-            valueText.text = $"acceleation: {current.Acceleration}\nsteer: {current.Steer}";
-        }
+        //if (valueText == null)
+        //{
+        //    valueText = GameObject.Find("ValueText").GetComponent<Text>();
+        //}
+        //else
+        //{
+        //    valueText.text = $"acceleation: {current.Acceleration}\nsteer: {current.Steer}";
+        //}
 
         //Debug.Log(string.Format("[ * Debug * ] Player [ {0} ] Controlled! (Key : {1})", runner, current.Buttons));
     }

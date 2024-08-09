@@ -13,6 +13,13 @@ public class TempKartController : KartControl {
 
     private float moveSpeed;
 
+    public Camera mainCamera;
+
+    private void Start()
+    {
+        SetCamera();
+    }
+
     protected override void Move(KartInput.NetworkInputData input) { }
 
     protected override void Accelate(KartInput.NetworkInputData input) {
@@ -47,4 +54,28 @@ public class TempKartController : KartControl {
     protected override void CollisionExit(GameObject other) { }
 
     protected override void CollisionStay(GameObject other) { }
+
+    public void SetCamera()
+    {
+        if (!IsMine) return;
+        mainCamera = Camera.main;
+
+        if (mainCamera != null)
+        {
+            Debug.Log("Main Camera found and assigned.");
+
+            // 카메라를 이 오브젝트의 자식으로 설정
+            mainCamera.transform.SetParent(transform);
+
+            // 카메라 위치와 회전을 설정
+            mainCamera.transform.localPosition = new Vector3(0, 1, -3); // position (0, 1, -3)
+            mainCamera.transform.localRotation = Quaternion.Euler(10, 0, 0); // rotation (10, 0, 0)
+
+            Debug.Log("Main Camera has been set as a child of the player with the specified position and rotation.");
+        }
+        else
+        {
+            Debug.LogWarning("Main Camera not found!");
+        }
+    }
 }
