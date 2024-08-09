@@ -351,7 +351,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   KartPrefab: {fileID: 7408047654233126508, guid: 5cd9cea61996d6a4e9c766b6aa15e286,
     type: 3}
-  RoomName: Rikka
 --- !u!1 &299550582
 GameObject:
   m_ObjectHideFlags: 0

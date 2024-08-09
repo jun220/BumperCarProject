@@ -75,6 +75,11 @@ public class TestKartControl : KartControl
         float move = input.Acceleration; //  input에서 가속도 값 가져오기
 
         Vector3 force = transform.forward * move * acceleration;
+        if(_rb == null)
+        {
+            _rb = GetComponent<Rigidbody>();
+            return;
+        }
         _rb.AddForce(force);
 
         Speed = _rb.velocity.magnitude;
@@ -101,15 +106,6 @@ public class TestKartControl : KartControl
         //}
     }
 
-    protected override void Accelate(float vertical)
-    {
-        //Debug.Log("Accelate!");
-    }
-
-    protected override void Steer(float horizon)
-    {
-        //Debug.Log("Steer!");
-    }
 
     protected override void Dash()
     {
@@ -143,16 +139,26 @@ public class TestKartControl : KartControl
 
     protected override void CollisionStay(GameObject other)
     {
-        throw new System.NotImplementedException();
+
     }
 
     protected override void CollisionEnter(GameObject other)
     {
-        throw new System.NotImplementedException();
+
     }
 
     protected override void CollisionExit(GameObject other)
     {
-        throw new System.NotImplementedException();
+
+    }
+
+    protected override void Accelate(KartInput.NetworkInputData input)
+    {
+
+    }
+
+    protected override void Steer(KartInput.NetworkInputData input)
+    {
+
     }
 }

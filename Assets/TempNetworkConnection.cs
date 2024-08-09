@@ -4,7 +4,7 @@ using UnityEngine;
 public class TempNetworkConnection : FusionSocket
 {
     public GameObject KartPrefab;
-    public string RoomName;
+    //public string RoomName;
 
     // Start is called before the first frame update
     void Start()
