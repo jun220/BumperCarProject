@@ -1,30 +1,42 @@
 using Fusion;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-public abstract class KartControl : NetworkBehaviour {
+public abstract class KartControl : NetworkBehaviour
+{
 
     #region UNITY LIFECYCLE METHOD
 
+    public bool IsMine { get => Object.HasInputAuthority; }
+
+    public float DeltaTime { get => Runner.DeltaTime; }
+
     private ChangeDetector _changeDetector;
 
-    public override void Spawned() {
+    public override void Spawned()
+    {
         base.Spawned();
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
     }
 
-    public override void FixedUpdateNetwork() {
+    public override void FixedUpdateNetwork()
+    {
         base.FixedUpdateNetwork();
-        
+
         FixedUpdateCollision();
         FixedUpdateInput();
     }
 
-    public override void Render() {
+    public override void Render()
+    {
         base.Render();
 
-        foreach (string change in _changeDetector.DetectChanges(this)) {
-            switch (change) {
+        foreach (string change in _changeDetector.DetectChanges(this))
+        {
+            switch (change)
+            {
                 // TODO : 시각적 효과 필요시 추가
             }
         }
@@ -34,74 +46,72 @@ public abstract class KartControl : NetworkBehaviour {
 
     #region KART COLLISION METHOD
 
-    private struct CollisionHistory {
+    private const int LAYER_COLLISABLE = 30;
+
+    private class CollisionHistory
+    {
         public enum CollisionState { ENTER, STAY, EXIT, NONE }
 
-        public bool current { get; private set; }
-        public bool before { get; private set; }
+        public bool Current { get; private set; }
+        public bool Before { get; private set; }
 
-        public CollisionHistory(bool current, bool before) {
-            this.current = current; 
-            this.before = before;
+        public CollisionHistory(bool current, bool before)
+        {
+            Current = current;
+            Before = before;
         }
 
-        public void SetCollision() => current = true;
-        public void SetBefore() {
-            before = current;
-            current = false;
+        public void SetCollision() => Current = true;
+        public void SetBefore()
+        {
+            Before = Current;
+            Current = false;
         }
 
-        public CollisionState GetState() {
-            if (current) return before ? CollisionState.STAY : CollisionState.ENTER;
-            else return before ? CollisionState.EXIT : CollisionState.NONE;
+        public CollisionState GetState()
+        {
+            if (Current) return Before ? CollisionState.STAY : CollisionState.ENTER;
+            else return Before ? CollisionState.EXIT : CollisionState.NONE;
         }
     }
 
-    
+    private Dictionary<GameObject, CollisionHistory> CollisionList = new Dictionary<GameObject, CollisionHistory>();
 
-    private readonly Dictionary<Collision, CollisionHistory> CollisionList = new Dictionary<Collision, CollisionHistory>();
+    private void FixedUpdateCollision()
+    {
+        if (!Runner.IsForward) return;
 
-    private bool IsCollisionMethodRun = false;
+        foreach (GameObject obj in CollisionList.Keys)
+        {
 
-    private void FixedUpdateCollision() {
-        if (!IsCollisionMethodRun) return;
 
-        List<Collision> removeItems = new List<Collision>();
-        foreach (KeyValuePair<Collision, CollisionHistory> obj in CollisionList) {
-            switch(obj.Value.GetState()) {
+            switch (CollisionList[obj].GetState())
+            {
                 case CollisionHistory.CollisionState.ENTER:
-                    CollisionEnter(obj.Key); 
+                    CollisionEnter(obj);
                     break;
 
                 case CollisionHistory.CollisionState.STAY:
-                    CollisionStay(obj.Key);
+                    CollisionStay(obj);
                     break;
 
                 case CollisionHistory.CollisionState.EXIT:
-                    CollisionExit(obj.Key);
-                    break;
-
-                case CollisionHistory.CollisionState.NONE:
-                    removeItems.Add(obj.Key);
+                    CollisionExit(obj);
                     break;
             }
 
-            obj.Value.SetBefore();
+            CollisionList[obj].SetBefore();
         }
-
-        foreach(Collision remove in removeItems)
-            CollisionList.Remove(remove);
-
-        IsCollisionMethodRun = false;
     }
 
-    private void OnCollisionStay(Collision collision) {
-        if(!CollisionList.ContainsKey(collision))
-            CollisionList.Add(collision, new CollisionHistory(true, false));
-        else
-            CollisionList[collision].SetCollision();
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.layer != LAYER_COLLISABLE) return;
 
-        IsCollisionMethodRun = true;
+        if (!CollisionList.ContainsKey(collision.gameObject))
+            CollisionList.Add(collision.gameObject, new CollisionHistory(true, false));
+        else
+            CollisionList[collision.gameObject].SetCollision();
     }
 
     #endregion
@@ -116,9 +126,10 @@ public abstract class KartControl : NetworkBehaviour {
     /// <summary>
     /// 현재 움직일 수 있는 상태인가
     /// </summary>
-    [Networked] public bool CanMove { get; set; }
+    [Networked] protected bool CanMove { get; set; } = true;
 
-    private void FixedUpdateInput() {
+    private void FixedUpdateInput()
+    {
         if (!CanMove) return;
 
         if (GetInput(out KartInput.NetworkInputData input))
@@ -154,12 +165,12 @@ public abstract class KartControl : NetworkBehaviour {
     /// 대쉬키를 누른 해당 프레임에 호출되는 메서드
     /// </summary>
     protected abstract void Dash();
-    
-    protected abstract void CollisionStay(Collision collision);
 
-    protected abstract void CollisionEnter(Collision collision);
+    protected abstract void CollisionStay(GameObject other);
 
-    protected abstract void CollisionExit(Collision collision);
+    protected abstract void CollisionEnter(GameObject other);
+
+    protected abstract void CollisionExit(GameObject other);
 
     #endregion
 }

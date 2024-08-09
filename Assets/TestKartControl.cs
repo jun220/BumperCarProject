@@ -116,20 +116,7 @@ public class TestKartControl : KartControl
         //Debug.Log("Dash!");
     }
 
-    protected override void CollisionStay(Collision collision)
-    {
 
-    }
-
-    protected override void CollisionEnter(Collision collision)
-    {
-
-    }
-
-    protected override void CollisionExit(Collision collision)
-    {
-
-    }
 
     public void SetCamera()
     {
@@ -152,5 +139,20 @@ public class TestKartControl : KartControl
         {
             Debug.LogWarning("Main Camera not found!");
         }
+    }
+
+    protected override void CollisionStay(GameObject other)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    protected override void CollisionEnter(GameObject other)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    protected override void CollisionExit(GameObject other)
+    {
+        throw new System.NotImplementedException();
     }
 }
