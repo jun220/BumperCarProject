@@ -5,10 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
+    path: Assets/Scenes/TEST_NETWORK_COLLISION.unity
+    guid: d75f0afb9cc0cf041b63e0203b4182bb
+  - enabled: 1
     path: Assets/Scenes/Launch.unity
     guid: 89d114fa30ea18f46aab700fdc008bf3
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/LOBBY.unity
     guid: e6d715a43de51604e97f2741af72c4a1
   - enabled: 1

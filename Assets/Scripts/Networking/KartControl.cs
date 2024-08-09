@@ -1,4 +1,5 @@
 using Fusion;
+using Fusion.Addons.Physics;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEditor.Experimental.GraphView;
@@ -47,46 +48,37 @@ public abstract class KartControl : NetworkBehaviour
     #region KART COLLISION METHOD
 
     private const int LAYER_COLLISABLE = 30;
-
-    private class CollisionHistory
-    {
+    
+    private class CollisionHistory {
         public enum CollisionState { ENTER, STAY, EXIT, NONE }
 
         public bool Current { get; private set; }
         public bool Before { get; private set; }
 
-        public CollisionHistory(bool current, bool before)
-        {
-            Current = current;
+        public CollisionHistory(bool current, bool before) {
+            Current = current; 
             Before = before;
         }
 
         public void SetCollision() => Current = true;
-        public void SetBefore()
-        {
+        public void SetBefore() {
             Before = Current;
             Current = false;
         }
 
-        public CollisionState GetState()
-        {
+        public CollisionState GetState() {
             if (Current) return Before ? CollisionState.STAY : CollisionState.ENTER;
             else return Before ? CollisionState.EXIT : CollisionState.NONE;
         }
     }
-
+    
     private Dictionary<GameObject, CollisionHistory> CollisionList = new Dictionary<GameObject, CollisionHistory>();
 
-    private void FixedUpdateCollision()
-    {
+    private void FixedUpdateCollision() {
         if (!Runner.IsForward) return;
 
-        foreach (GameObject obj in CollisionList.Keys)
-        {
-
-
-            switch (CollisionList[obj].GetState())
-            {
+        foreach (GameObject obj in CollisionList.Keys) {
+            switch(CollisionList[obj].GetState()) {
                 case CollisionHistory.CollisionState.ENTER:
                     CollisionEnter(obj);
                     break;
@@ -104,8 +96,7 @@ public abstract class KartControl : NetworkBehaviour
         }
     }
 
-    private void OnCollisionStay(Collision collision)
-    {
+    private void OnCollisionStay(Collision collision) {
         if (collision.gameObject.layer != LAYER_COLLISABLE) return;
 
         if (!CollisionList.ContainsKey(collision.gameObject))
@@ -117,6 +108,7 @@ public abstract class KartControl : NetworkBehaviour
     #endregion
 
     #region KART CONTROL METHOD
+
 
     /// <summary>
     /// 현재 입력된 조작
@@ -136,8 +128,8 @@ public abstract class KartControl : NetworkBehaviour
             Inputs = input;
 
         Move(Inputs);
-        Accelate(Inputs.Acceleration);
-        Steer(Inputs.Steer);
+        Accelate(Inputs);
+        Steer(Inputs);
 
         if (Inputs.GetButtonDown(KartInput.NetworkInputData.ButtonType.DASH))
             Dash();
@@ -150,22 +142,32 @@ public abstract class KartControl : NetworkBehaviour
     protected abstract void Move(KartInput.NetworkInputData input);
 
     /// <summary>
-    /// 앞/뒤로 움직이도록 하는 메서드
+    /// 앞뒤 이동 구현 메서드
     /// </summary>
+    /// <remarks>
+    /// transfrom을 사용하는 것은 권장되지 않는다. <br></br>
+    /// 대신 Rigidbody.velocity = Rigidbody.rotation * Vector3(이동 방향) 으로 사용을 권장한다. <br></br>
+    /// 회전의 경우 Rigidbody.MoveRotation() 함수 사용을 권장한다.
+    /// </remarks>
     /// <param name="vertical"></param>
-    protected abstract void Accelate(float vertical);
+    protected abstract void Accelate(KartInput.NetworkInputData input);
 
     /// <summary>
-    /// 좌우로 움직이도록 하는 메서드
+    /// 좌우 회전 구현 메서드
     /// </summary>
+    /// <remarks>
+    /// transform을 사용하는 것은 권장되지 않는다. <br></br>
+    /// 대신 Rigidbody.velocity = Rigidbody.rotation * Vector3(이동 방향) 으로 사용을 권장한다. <br></br>
+    /// 회전의 경우 Rigidbody.MoveRotation() 함수 사용을 권장한다.
+    /// </remarks>
     /// <param name="horizon"></param>
-    protected abstract void Steer(float horizon);
+    protected abstract void Steer(KartInput.NetworkInputData input);
 
     /// <summary>
     /// 대쉬키를 누른 해당 프레임에 호출되는 메서드
     /// </summary>
     protected abstract void Dash();
-
+    
     protected abstract void CollisionStay(GameObject other);
 
     protected abstract void CollisionEnter(GameObject other);
