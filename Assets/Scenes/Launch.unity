@@ -2581,6 +2581,8 @@ MonoBehaviour:
   - {fileID: 1349827896}
   - {fileID: 224676871}
   - {fileID: 814317486}
+  ChatInput: {fileID: 90884432}
+  ChatText: {fileID: 1297285847}
   KartTypeUIs:
   - {fileID: 661945388}
   - {fileID: 1032678993}
@@ -2821,7 +2823,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.0005493164}
-  m_SizeDelta: {x: -40.590027, y: -502.79}
+  m_SizeDelta: {x: -750, y: -535}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &342415629
 MonoBehaviour:
@@ -3728,7 +3730,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &415543912
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9680,8 +9682,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 354.705, y: -36.104996}
-  m_SizeDelta: {x: 709.41, y: 32.20999}
+  m_AnchoredPosition: {x: 0, y: -20}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1297285847
 MonoBehaviour:
@@ -9703,8 +9705,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "<color=yellow>[ \uC2DC\uC2A4\uD15C : \uBC29\uC5D0 \uC785\uC7A5\uD558\uC600\uC2B5\uB2C8\uB2E4.
-    \uC0C1\uB300\uBC29\uC5D0\uAC8C \uC778\uC0AC\uD574\uBCF4\uC138\uC694! ]</color>"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bb3bd3adb7711ad478f1a165a60272f1, type: 2}
   m_sharedMaterial: {fileID: 519808788809460774, guid: bb3bd3adb7711ad478f1a165a60272f1,

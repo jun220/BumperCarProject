@@ -15,8 +15,6 @@ public class ChatClientNetwork : MonoBehaviour, IChatClientListener
     #region UNITY LIFECYCLE METHOD
 
     private void Start() {
-        DontDestroyOnLoad(this.gameObject);
-
         Open();
     }
 
@@ -120,7 +118,7 @@ public class ChatClientNetwork : MonoBehaviour, IChatClientListener
     }
 
     public void OnSubscribed(string[] channels, bool[] results) {
-        SendChatMessage(string.Format("{0} 님이 참가했습니다!", ClientInfo.Nickname), ChatType.SYSTEM);
+        SendChatMessage(string.Format("{0} 님이 입장했습니다!", ClientInfo.Nickname), ChatType.SYSTEM);
     }
 
     public void OnUserUnsubscribed(string channel, string user) {
