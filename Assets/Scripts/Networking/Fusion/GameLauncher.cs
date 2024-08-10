@@ -60,7 +60,7 @@ public class GameLauncher : FusionSocket
     #endregion
 
     #region FUSION POSTPROCESS METHOD
-
+    
     protected override void AfterCreateRoom(RoomInfo room) {
         base.AfterCreateRoom(room);
 
