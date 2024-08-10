@@ -58,6 +58,24 @@ public class GameLauncher : FusionSocket
 
     #endregion
 
+    #region FUSION POSTPROCESS METHOD
+
+    protected override void AfterCreateRoom(RoomInfo room) {
+        base.AfterCreateRoom(room);
+
+        ChatClientNetwork chat = Runner.gameObject.GetComponent<ChatClientNetwork>();
+        chat.Open();
+    }
+
+    protected override void AfterJoinRoom(RoomInfo room)  {
+        base.AfterJoinRoom(room);
+
+        ChatClientNetwork chat = Runner.gameObject.GetComponent<ChatClientNetwork>();
+        chat.Open();
+    }
+
+    #endregion
+
     #region FUSION CALLBACK METHOD
 
     /// <summary>
@@ -69,8 +87,6 @@ public class GameLauncher : FusionSocket
     /// <param name="runner"></param>
     /// <param name="sessionList">접속한 로비 내 세션 목록</param>
     public override void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {
-        Debug.Log(string.Format("[ * Debug * ] SessionList Updated (Size : {0})", sessionList.Count));
-
         base.OnSessionListUpdated(runner, sessionList);
     }
 

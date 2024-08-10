@@ -118,6 +118,7 @@ public class RoomPanelUI : MonoBehaviour
 
         ChatClientNetwork.SendChatMessage(ChatInput.text, ChatClientNetwork.ChatType.GENERAL);
         ChatInput.text = string.Empty;
+        ChatInput.ActivateInputField();
     }
 
     private string GetTextColor(ChatClientNetwork.ChatType type) {

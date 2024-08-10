@@ -6,17 +6,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Realtime;
-using Fusion;
 using System;
 
 public class ChatClientNetwork : MonoBehaviour, IChatClientListener 
 {
 
     #region UNITY LIFECYCLE METHOD
-
-    private void Start() {
-        Open();
-    }
 
     private void Update() {
         UpdateChat();        
@@ -56,7 +51,7 @@ public class ChatClientNetwork : MonoBehaviour, IChatClientListener
         return ChatAppSettings;
     }
 
-    private void Open() {
+    public void Open() {
         chatClient = new ChatClient(this);
         chatClient.UseBackgroundWorkerForSending = true;
         chatClient.AuthValues = new AuthenticationValues(ClientInfo.Nickname);
@@ -118,6 +113,7 @@ public class ChatClientNetwork : MonoBehaviour, IChatClientListener
     }
 
     public void OnSubscribed(string[] channels, bool[] results) {
+        Debug.Log(string.Format("[ * Debug * ] Photon Chat - OnSubscribed(channel : {0}) Called!", channels[0]));
         SendChatMessage(string.Format("{0} 님이 입장했습니다!", ClientInfo.Nickname), ChatType.SYSTEM);
     }
 

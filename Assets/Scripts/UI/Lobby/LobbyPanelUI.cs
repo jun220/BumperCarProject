@@ -15,6 +15,7 @@ public class LobbyPanelUI : MonoBehaviour
         Nickname.text = ClientInfo.Nickname;
 
         // -- [ Initialize Mode Section ]
+        Nickname.onSubmit.AddListener(OnSubmitNickname);
         buttons = ModeSection.GetComponentsInChildren<Button>(true);
         SetActiveModeButton();
 
@@ -37,6 +38,8 @@ public class LobbyPanelUI : MonoBehaviour
         ClientInfo.Nickname = Nickname.text;
         SetActiveModeButton();
     }
+
+    private void OnSubmitNickname(string nickname) => OnModifyNickname();
 
     #endregion
 
@@ -153,8 +156,8 @@ public class LobbyPanelUI : MonoBehaviour
     }
 
     private bool IsValidSession(SessionInfo session) {
-        if (session.Properties.ContainsKey("RoomName"))     return false;
-        if (session.Properties.ContainsKey("HostNickname")) return false;
+        if (!session.Properties.ContainsKey("RoomName"))     return false;
+        if (!session.Properties.ContainsKey("HostNickname")) return false;
         return true;
     }
 
@@ -176,6 +179,8 @@ public class LobbyPanelUI : MonoBehaviour
 
     public void OnSessionListUpdated(List<SessionInfo> sessions) {
         Sessions = GetValidSessionInfo(sessions);
+
+        Debug.Log(string.Format("[ * Debug * ] SessionList Updated (Size : {0})", Sessions.Count));
 
         if (ActiveScreen == LoadingScreen)
             ShowRoomList(sessions);
