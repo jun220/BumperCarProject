@@ -282,6 +282,8 @@ public class TempKartController : KartControl {
 
     protected override void CollisionEnter(GameObject other)
     {
+        Debug.Log($"나: {this.gameObject.name}, 상대: {other.name}");
+        return;
         bool isAttacker;
 
         if (Time.time - lastCollisionTime < collisionCooldown)
