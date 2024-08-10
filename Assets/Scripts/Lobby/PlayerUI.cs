@@ -16,7 +16,7 @@ public class PlayerUI : MonoBehaviour
     public void SetEmpty() {
         Nickname.text = string.Empty;
 
-        NameImage.SetActive(true);
+        NameImage.SetActive(false);
         Ready.gameObject.SetActive(false);
         KartRender.gameObject.SetActive(false);
         Blocked.gameObject.SetActive(false);

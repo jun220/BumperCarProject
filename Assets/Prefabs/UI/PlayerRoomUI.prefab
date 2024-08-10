@@ -337,7 +337,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Nickname: {fileID: 8993114978223917639}
-  NameImage: {fileID: 0}
+  NameImage: {fileID: 3964474649738714560}
   Ready: {fileID: 8251981105498416109}
   KartRender: {fileID: 690442551626753812}
   Blocked: {fileID: 8538718488579790240}

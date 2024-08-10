@@ -1,7 +1,5 @@
-using Fusion;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -157,6 +155,9 @@ public class RoomPanelUI : MonoBehaviour
     [Header("Ready Section")]
     [SerializeField] private Button ReadyButton;
     [SerializeField] private Button GameStartButton;
+    [SerializeField] private Sprite readySprite;
+    [SerializeField] private Sprite waitingSprite;
+    [SerializeField] private Sprite readyXSprite;
     
     public async void OnClickLeave() {
         await GameLauncher.Instance.Reconnect();
@@ -164,6 +165,7 @@ public class RoomPanelUI : MonoBehaviour
 
     public void OnClickReady() {
         RoomPlayer.Local.RPC_ChangeReadyState(!RoomPlayer.Local.IsReady);
+        ReadyButton.GetComponent<Image>().sprite = RoomPlayer.Local.IsReady ? waitingSprite : readySprite;
     }
 
     public void OnClickGameStart() {
@@ -186,6 +188,9 @@ public class RoomPanelUI : MonoBehaviour
         if (!RoomPlayer.Local.IsHost) return false;
         if (!IsEveryoneReady()) return false;
         if (!CanReady()) return false;
+
+        GameStartButton.GetComponent<Image>().sprite = readyXSprite;
+        GameStartButton.transform.GetChild(0).gameObject.SetActive(true);
         return true;
     }
 

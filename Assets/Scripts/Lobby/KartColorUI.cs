@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class KartColorUI : MonoBehaviour
 {
@@ -9,11 +10,21 @@ public class KartColorUI : MonoBehaviour
     [SerializeField] private int KART_COLOR;
     [SerializeField] private GameObject SelectedIcon;
 
+    private Image image;
+    private Color color;
+
     private bool CanSelect = true;
+
+    private void Start() {
+        image = GetComponent<Image>();
+        color = image.color;
+    }
 
     public void SetSelectable(bool canSelect) {
         CanSelect = canSelect;
-        SelectedIcon.SetActive(!canSelect);
+        
+        SelectedIcon.SetActive(RoomPlayer.Local.IsMine && !canSelect);
+        image.color = color * (canSelect || RoomPlayer.Local.IsMine ? 1f : 0.2f);
     }
 
     public void OnClickKartColor() {

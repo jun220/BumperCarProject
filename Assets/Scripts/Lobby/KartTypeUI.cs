@@ -20,9 +20,11 @@ public class KartTypeUI : MonoBehaviour
         if(CanSelect) {
             // 1. 해당 카트 타입을 아무도 고르지 않아 선택하는 경우
             RoomPlayer.Local.RPC_SetKartType(KART_TYPE);
+            print("선택했습니다");
         } else if(RoomPlayer.Local.KartType == KART_TYPE) {
             // 2. 해당 카트 타입을 본인이 고르고 있다가 선택 해제하는 경우
             RoomPlayer.Local.RPC_SetKartType(KART_TYPE_EMPTY);
+            print("해제했습니다");
         }
 
         // 3. 그 외의 경우는 무시한다
