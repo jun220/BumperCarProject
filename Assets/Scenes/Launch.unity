@@ -3783,6 +3783,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef683bfd37b81a24588c79491d826fbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Session: {fileID: 5997363277847810095, guid: f32638e625af37145b34c6088b770e1d, type: 3}
   RoomPlayerPrefab: {fileID: 766708327054806299, guid: e148342a9a7414748ab2f1cbb0e484c9,
     type: 3}
 --- !u!114 &412986793
@@ -8567,7 +8568,7 @@ MonoBehaviour:
   - {fileID: 2125617016}
   - {fileID: 1704209513}
   - {fileID: 218869453}
-  typeText: {fileID: 660513173}
+  curIndex: 0
 --- !u!1 &1082495910
 GameObject:
   m_ObjectHideFlags: 0
