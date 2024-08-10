@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -8,7 +6,8 @@ public enum PlayerRoomState { STANBY, READY, MASTER }
 public class PlayerUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text Nickname;
-    [SerializeField] private TMP_Text Ready;
+    [SerializeField] private GameObject NameImage;
+    [SerializeField] private GameObject Ready;
     [SerializeField] private GameObject KartRender;
     [SerializeField] private GameObject Blocked;
 
@@ -17,6 +16,7 @@ public class PlayerUI : MonoBehaviour
     public void SetEmpty() {
         Nickname.text = string.Empty;
 
+        NameImage.SetActive(true);
         Ready.gameObject.SetActive(false);
         KartRender.gameObject.SetActive(false);
         Blocked.gameObject.SetActive(false);
@@ -25,6 +25,7 @@ public class PlayerUI : MonoBehaviour
     public void SetBlocked() {
         Nickname.text = string.Empty;
 
+        NameImage.SetActive(false);
         Ready.gameObject.SetActive(false);
         KartRender.gameObject.SetActive(false);
         Blocked.gameObject.SetActive(true);
@@ -32,9 +33,9 @@ public class PlayerUI : MonoBehaviour
 
     public void SetPlayerInfo(RoomPlayer player) {
         Nickname.text = (string) player.Nickname;
-        Ready.text = player.IsHost ? "Host" : "Ready";
+        // Ready.text = player.IsHost ? "Host" : "Ready";
 
-
+        NameImage.SetActive(true);
         Ready.gameObject.SetActive(player.IsReady);
         KartRender.SetActive(player.KartType != KartTypeUI.KART_TYPE_EMPTY);
         Blocked.gameObject.SetActive(false);
