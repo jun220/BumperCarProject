@@ -12,11 +12,26 @@ public class DynamicCamera : MonoBehaviour
 
     public bool isActive;
 
+    public Color fieldCameraFilter;
+
     public void ActivateDynamicCamera(Camera camera)
     {
         mainCamera = camera;
         isActive = true;
     }
+
+    public void ToggleFieldEffect(bool isActive)
+    {
+        if(isActive)
+        {
+            Debug.Log("자기장 상태");
+        }
+        else
+        {
+            Debug.Log("자기장 탈출 상태");
+        }
+    }
+
 
     void Update()
     {
@@ -31,9 +46,10 @@ public class DynamicCamera : MonoBehaviour
             return;
         }
 
-        // 최소 속도를 초과했을 때 FOV를 조절함
-        float t = Mathf.Clamp01((speed - minSpeed) / (maxSpeed - minSpeed));
+        // 최소 속도를 초과했을 때 FOV를 부드럽게 조절함
+        float t = Mathf.InverseLerp(minSpeed, maxSpeed, speed);
         float targetFOV = Mathf.Lerp(minFOV, maxFOV, t);
         mainCamera.fieldOfView = targetFOV;
     }
+
 }

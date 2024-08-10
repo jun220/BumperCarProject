@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    // 인게임 씬에서만 동작
     public int targetFrameRate = 60;
 
     void Start()

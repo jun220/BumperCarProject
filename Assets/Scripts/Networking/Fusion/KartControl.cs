@@ -182,5 +182,11 @@ public abstract class KartControl : NetworkBehaviour
 
     protected abstract void CollisionExit(GameObject other);
 
+    protected abstract void OnTriggerEnter(Collider other);
+
+    protected abstract void OnTriggerStay(Collider other);
+
+    protected abstract void OnTriggerExit(Collider other);
+
     #endregion
 }

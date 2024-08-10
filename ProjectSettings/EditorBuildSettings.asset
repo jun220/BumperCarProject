@@ -5,22 +5,19 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
-    path: Assets/Scenes/Launch.unity
-    guid: 89d114fa30ea18f46aab700fdc008bf3
-  - enabled: 1
-    path: Assets/Scenes/LOBBY.unity
-    guid: e6d715a43de51604e97f2741af72c4a1
-  - enabled: 0
-    path: Assets/Scenes/WallAndFloor/WallAndFloor.unity
-    guid: d90a3b70f94fa984c83a186ffa2dd300
-  - enabled: 0
-    path: Assets/Scenes/KartTest.unity
-    guid: 36675cb6d0095a644859adc9ac2c96f0
   - enabled: 0
     path: Assets/Scenes/TEST_NETWORK_COLLISION.unity
     guid: d75f0afb9cc0cf041b63e0203b4182bb
   - enabled: 0
-    path: Assets/Scenes/TEST_VOICE.unity
-    guid: da6aad04ff27dde4ab0d2a5a9d75465b
+    path: Assets/Scenes/Launch.unity
+    guid: 89d114fa30ea18f46aab700fdc008bf3
+  - enabled: 0
+    path: Assets/Scenes/LOBBY.unity
+    guid: e6d715a43de51604e97f2741af72c4a1
+  - enabled: 0
+    path: Assets/Scenes/KartTest.unity
+    guid: 36675cb6d0095a644859adc9ac2c96f0
+  - enabled: 1
+    path: Assets/Scenes/WallAndFloor/WallAndFloor.unity
+    guid: d90a3b70f94fa984c83a186ffa2dd300
   m_configObjects: {}
