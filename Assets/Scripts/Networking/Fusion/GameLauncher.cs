@@ -12,6 +12,7 @@ public class GameLauncher : FusionSocket
     #region UNITY BASIC METHOD
 
     public static GameLauncher Instance { get; private set; } = null;
+    public static GameManager Manager { get; private set; } = null;
 
     private void Start() {
         Application.runInBackground = true;
@@ -90,13 +91,15 @@ public class GameLauncher : FusionSocket
         base.OnSessionListUpdated(runner, sessionList);
     }
 
-
+    [SerializeField] private GameObject GameManager;
     [SerializeField] private GameObject RoomPlayerPrefab;
 
     public override void OnPlayerJoined(NetworkRunner runner, PlayerRef player) {
         Debug.Log(string.Format("[ * Debug * ] Joined Room : {0} / Player : {1}", runner.SessionInfo.Name, player.PlayerId));
 
         if(runner.IsServer) {
+            if (State == NetworkState.HOST)
+                Manager = runner.Spawn(GameManager, Vector3.zero, Quaternion.identity).GetComponent<GameManager>();
             runner.Spawn(RoomPlayerPrefab, Vector3.zero, Quaternion.identity, player);
         }
 

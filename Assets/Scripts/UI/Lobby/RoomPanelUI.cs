@@ -201,7 +201,7 @@ public class RoomPanelUI : MonoBehaviour
     }
 
     public void OnClickGameStart() {
-        Debug.Log("[ * Debug * ] GameStart!");
+        LevelManager.LoadScene(LevelManager.GAME_SCENE);
     }
 
     private void UpdateReadyButton() {

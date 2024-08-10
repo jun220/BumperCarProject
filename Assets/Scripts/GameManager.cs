@@ -15,4 +15,9 @@ public class GameManager : MonoBehaviour
         float currentFrameRate = 1f / Time.deltaTime;
         //Debug.Log("현재 프레임 레이트: " + currentFrameRate.ToString("F1")); // 소수점 첫째 자리까지 출력
     }
+
+    public void SpwanPlayer()
+    {
+
+    }
 }

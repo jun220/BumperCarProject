@@ -8,9 +8,13 @@ public class PanelUI : MonoBehaviour
 {
     #region UNITY BASIC METHOD
 
+    public static PanelUI Instance;
+
     private void Awake() {
         // -- [ Initialize Panel ]
         FocusPanel(Panel.INTRO);
+
+        Instance = this;
 
         // -- [ Add EventListener Method ]
         FusionSocket.AddNetworkStateChangedEventListener(OnNetworkStateChanged);
@@ -33,6 +37,10 @@ public class PanelUI : MonoBehaviour
         GameObject panel = MatchPanel(type);
         panel.SetActive(true);
         ActivePanel = panel;
+    }
+
+    public void DeFocus(){
+        if (ActivePanel != null) ActivePanel.SetActive(false);
     }
 
     public void FocusIntro() => FocusPanel(Panel.INTRO);
