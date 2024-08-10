@@ -1,8 +1,5 @@
-using Fusion;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,10 +11,6 @@ public class RoomPanelUI : MonoBehaviour
         RoomPlayer.PlayerJoined += AddPlayer;
         RoomPlayer.PlayerLeft += RemovePlayer;
         RoomPlayer.PlayerChanged += UpdatePlayer;
-
-        ChatClientNetwork.GetMessage += OnGetMessage;
-
-        ChatInput.onSubmit.AddListener(OnSendMessage);
     }
 
     private void OnEnable() {
@@ -104,35 +97,6 @@ public class RoomPanelUI : MonoBehaviour
     #endregion
 
     #region Chatbox Section
-
-    [Header("Chat Session")]
-    [SerializeField] private TMP_InputField ChatInput;
-    [SerializeField] private TMP_Text ChatText;
-
-    private void OnGetMessage(string message, ChatClientNetwork.ChatType type) {
-        ChatText.text += string.Format("<color={0}>{1}</color>\n", GetTextColor(type), message);
-    }
-
-    public void OnSendMessage(string message) {
-        if (message == string.Empty) return;
-
-        ChatClientNetwork.SendChatMessage(ChatInput.text, ChatClientNetwork.ChatType.GENERAL);
-        ChatInput.text = string.Empty;
-        ChatInput.ActivateInputField();
-    }
-
-    private string GetTextColor(ChatClientNetwork.ChatType type) {
-        switch(type) {
-            case ChatClientNetwork.ChatType.SYSTEM:
-                return "yellow";
-
-            case ChatClientNetwork.ChatType.GENERAL:
-                return "white";
-        }
-
-        return "black";
-    }
-
     #endregion
 
     #region Selection Section
@@ -191,6 +155,9 @@ public class RoomPanelUI : MonoBehaviour
     [Header("Ready Section")]
     [SerializeField] private Button ReadyButton;
     [SerializeField] private Button GameStartButton;
+    [SerializeField] private Sprite readySprite;
+    [SerializeField] private Sprite waitingSprite;
+    [SerializeField] private Sprite readyXSprite;
     
     public async void OnClickLeave() {
         await GameLauncher.Instance.Reconnect();
@@ -198,6 +165,7 @@ public class RoomPanelUI : MonoBehaviour
 
     public void OnClickReady() {
         RoomPlayer.Local.RPC_ChangeReadyState(!RoomPlayer.Local.IsReady);
+        ReadyButton.GetComponent<Image>().sprite = RoomPlayer.Local.IsReady ? waitingSprite : readySprite;
     }
 
     public void OnClickGameStart() {
@@ -220,6 +188,9 @@ public class RoomPanelUI : MonoBehaviour
         if (!RoomPlayer.Local.IsHost) return false;
         if (!IsEveryoneReady()) return false;
         if (!CanReady()) return false;
+
+        GameStartButton.GetComponent<Image>().sprite = readyXSprite;
+        GameStartButton.transform.GetChild(0).gameObject.SetActive(true);
         return true;
     }
 
