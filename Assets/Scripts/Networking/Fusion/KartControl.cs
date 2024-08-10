@@ -1,9 +1,9 @@
 using Fusion;
-using Fusion.Addons.Physics;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class KartControl : NetworkBehaviour {
+public abstract class KartControl : NetworkBehaviour
+{
 
     #region UNITY LIFECYCLE METHOD
 
@@ -13,27 +13,34 @@ public abstract class KartControl : NetworkBehaviour {
 
     private ChangeDetector _changeDetector;
 
-    public override void Spawned() {
+    public override void Spawned()
+    {
         base.Spawned();
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
     }
 
-    public override void FixedUpdateNetwork() {
+    public override void FixedUpdateNetwork()
+    {
         base.FixedUpdateNetwork();
-        
+
         FixedUpdateCollision();
         FixedUpdateInput();
     }
 
-    public override void Render() {
+    public override void Render()
+    {
         base.Render();
 
-        foreach (string change in _changeDetector.DetectChanges(this)) {
-            switch (change) {
+        foreach (string change in _changeDetector.DetectChanges(this))
+        {
+            switch (change)
+            {
                 // TODO : 시각적 효과 필요시 추가
             }
         }
     }
+
+
 
     #endregion
 
@@ -112,7 +119,8 @@ public abstract class KartControl : NetworkBehaviour {
     /// </summary>
     [Networked] protected bool CanMove { get; set; } = true;
 
-    private void FixedUpdateInput() {
+    private void FixedUpdateInput()
+    {
         if (!CanMove) return;
 
         if (GetInput(out KartInput.NetworkInputData input))
