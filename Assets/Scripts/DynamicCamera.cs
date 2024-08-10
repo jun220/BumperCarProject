@@ -18,6 +18,25 @@ public class DynamicCamera : MonoBehaviour
         isActive = true;
     }
 
+    //void Update()
+    //{
+    //    if (!isActive) return;
+
+    //    float speed = kart.Speed;
+
+    //    // 최소 속도에 도달하기 전까지는 FOV를 조절하지 않음
+    //    if (speed < minSpeed)
+    //    {
+    //        mainCamera.fieldOfView = minFOV;
+    //        return;
+    //    }
+
+    //    // 최소 속도를 초과했을 때 FOV를 조절함
+    //    float t = Mathf.Clamp01((speed - minSpeed) / (maxSpeed - minSpeed));
+    //    float targetFOV = Mathf.Lerp(minFOV, maxFOV, t);
+    //    mainCamera.fieldOfView = targetFOV;
+    //}
+
     void Update()
     {
         if (!isActive) return;
@@ -31,9 +50,10 @@ public class DynamicCamera : MonoBehaviour
             return;
         }
 
-        // 최소 속도를 초과했을 때 FOV를 조절함
-        float t = Mathf.Clamp01((speed - minSpeed) / (maxSpeed - minSpeed));
+        // 최소 속도를 초과했을 때 FOV를 부드럽게 조절함
+        float t = Mathf.InverseLerp(minSpeed, maxSpeed, speed);
         float targetFOV = Mathf.Lerp(minFOV, maxFOV, t);
         mainCamera.fieldOfView = targetFOV;
     }
+
 }

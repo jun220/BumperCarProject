@@ -31,7 +31,11 @@ public class TempKartController : KartControl {
         }
     }
 
+    public float _currentSpeed;
+
     public Camera mainCamera;
+    [SerializeField]
+    private DynamicCamera _dynamicCamera;
 
     [SerializeField]
     private float _damage;
@@ -87,6 +91,8 @@ public class TempKartController : KartControl {
             mainCamera.transform.localPosition = new Vector3(0, 1, -3); // position (0, 1, -3)
             mainCamera.transform.localRotation = Quaternion.Euler(10, 0, 0); // rotation (10, 0, 0)
 
+            _dynamicCamera.ActivateDynamicCamera(mainCamera);
+
             Debug.Log("Main Camera has been set as a child of the player with the specified position and rotation.");
         }
         else
@@ -121,7 +127,6 @@ public class TempKartController : KartControl {
     protected override void Move(KartInput.NetworkInputData input) { }
 
     protected override void Accelate(KartInput.NetworkInputData input) {
-
         //if(input.GetButton(KartInput.NetworkInputData.ButtonType.ACCELERATION)) {
         //    targetSpeed = Mathf.Lerp(Speed, _maxSpeed, _acceleration * DeltaTime);
         //} else
@@ -135,21 +140,24 @@ public class TempKartController : KartControl {
 
         if (input.GetButton(KartInput.NetworkInputData.ButtonType.ACCELERATION))
         {
-            targetSpeed = Mathf.Lerp(Speed, _maxSpeed, _acceleration * DeltaTime);
+            targetSpeed = Mathf.Lerp(_currentSpeed, _maxSpeed, _acceleration * DeltaTime);
         }
         else if (input.GetButton(KartInput.NetworkInputData.ButtonType.REVERSE))
         {
-            targetSpeed = Mathf.Lerp(Speed, -_maxSpeed, _acceleration * DeltaTime);
+            targetSpeed = Mathf.Lerp(_currentSpeed, -_maxSpeed, _acceleration * DeltaTime);
         }
         else
         {
-            targetSpeed = Mathf.Lerp(Speed, 0, MOVE_DECELERATION * DeltaTime);
+            targetSpeed = Mathf.Lerp(_currentSpeed, 0, MOVE_DECELERATION * DeltaTime);
         }
 
-
-        Vector3 velocity = Rigidbody.rotation * Vector3.forward * targetSpeed + Vector3.up * Rigidbody.velocity.y;
+        Vector3 forward = Rigidbody.rotation * Vector3.forward;
+        Vector3 velocity = forward * targetSpeed + Vector3.up * Rigidbody.velocity.y;
         Rigidbody.velocity = velocity;
+
+        _currentSpeed = Vector3.Dot(velocity, forward) > 0 ? velocity.magnitude : -velocity.magnitude;
         Speed = velocity.magnitude;
+
     }
 
     protected override void Steer(KartInput.NetworkInputData input) {

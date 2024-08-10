@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 1105946600685111746}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -2, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -402,12 +402,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bumperCar: {fileID: 11400000, guid: 8dd27edaeae86814183394aca996bc72, type: 2}
-  MAX_MOVE_SPEED: 40
   ROT_SPEED: 100
   MOVE_ACCELERATION: 10
   MOVE_DECELERATION: 10
   Rigidbody: {fileID: 2918265890934282546}
   mainCamera: {fileID: 0}
+  _dynamicCamera: {fileID: 6592637024496455275}
   _damage: 0
 --- !u!114 &5333920348815991483
 MonoBehaviour:
@@ -443,12 +443,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d67340d022954a4e93a2d064a406afd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  kart: {fileID: 0}
+  kart: {fileID: 926631143387804266}
   mainCamera: {fileID: 0}
   minFOV: 60
-  maxFOV: 90
-  minSpeed: 5
-  maxSpeed: 20
+  maxFOV: 80
+  minSpeed: 10
+  maxSpeed: 40
   isActive: 0
 --- !u!1 &8045654536762942800
 GameObject:
