@@ -2855,6 +2855,8 @@ MonoBehaviour:
   - {fileID: 1349827896}
   - {fileID: 224676871}
   - {fileID: 814317486}
+  ChatInput: {fileID: 90884432}
+  ChatText: {fileID: 1297285847}
   KartTypeUIs:
   - {fileID: 661945388}
   - {fileID: 1032678993}
@@ -3784,7 +3786,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Session: {fileID: 5997363277847810095, guid: f32638e625af37145b34c6088b770e1d, type: 3}
-  GameManager: {fileID: 0}
+  GameManager: {fileID: 4485594251790277053, guid: c14913a10b488e847b4e21f1cb2c30ec,
+    type: 3}
   RoomPlayerPrefab: {fileID: 766708327054806299, guid: e148342a9a7414748ab2f1cbb0e484c9,
     type: 3}
 --- !u!114 &412986793
@@ -3818,7 +3821,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &415543912
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8562,14 +8565,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: debede84dc73d574b89a08947f726dfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  typeUIs:
-  - {fileID: 661945383}
-  - {fileID: 1032678988}
-  - {fileID: 1314164939}
-  - {fileID: 2125617016}
-  - {fileID: 1704209513}
-  - {fileID: 218869453}
-  curIndex: 0
 --- !u!1 &1082495910
 GameObject:
   m_ObjectHideFlags: 0
@@ -9757,8 +9752,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "<color=yellow>[ \uC2DC\uC2A4\uD15C : \uBC29\uC5D0 \uC785\uC7A5\uD558\uC600\uC2B5\uB2C8\uB2E4.
-    \uC0C1\uB300\uBC29\uC5D0\uAC8C \uC778\uC0AC\uD574\uBCF4\uC138\uC694! ]</color>"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 01ee6ec6463092740b2cd5fa2618ba37, type: 2}
   m_sharedMaterial: {fileID: 6327545267823914406, guid: 01ee6ec6463092740b2cd5fa2618ba37,
@@ -11703,7 +11697,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2bc4be30566c6c4a8ddaad953792c35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selector: {fileID: 400250641}
 --- !u!114 &1517014217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12713,6 +12706,51 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   KART_TYPE: 4
   SelectedIcon: {fileID: 341867383}
+--- !u!1 &1709896773
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1709896775}
+  - component: {fileID: 1709896774}
+  m_Layer: 0
+  m_Name: VoiceLogger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1709896774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1709896773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a86f533fd9917dd4da8601e9eb542c96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LogLevel: 2
+--- !u!4 &1709896775
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1709896773}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1732612979
 GameObject:
   m_ObjectHideFlags: 0
@@ -15153,3 +15191,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 736452353}
   - {fileID: 412986790}
+  - {fileID: 1709896775}

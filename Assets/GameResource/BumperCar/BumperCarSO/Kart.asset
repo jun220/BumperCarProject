@@ -15,8 +15,8 @@ MonoBehaviour:
   acceleration: 1
   deceleration: 1
   steering: 100
-  maxSpeed: 5
-  boosterMaxSpeed: 30
+  maxSpeed: 7
+  boosterMaxSpeed: 15
   boostCoolTime: 15
   stunDuration: 1
   physicMaterial: {fileID: 0}
