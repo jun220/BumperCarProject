@@ -307,6 +307,7 @@ public class TempKartController : KartControl {
         else
         {
             isAttacker = false;
+            return;
         }
         
 
