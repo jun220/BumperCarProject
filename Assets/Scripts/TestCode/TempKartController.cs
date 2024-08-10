@@ -32,7 +32,11 @@ public class TempKartController : KartControl {
         set
         {
             _speed = value;
-            DashboardView.presenter.UpdateCurSpeed(value);
+            if (IsMine)
+            {
+                DashboardView.presenter.UpdateCurSpeed(value);
+            }
+            
         }
     }
 
@@ -51,7 +55,11 @@ public class TempKartController : KartControl {
     public void TakeDamage(float damage)
     {
         Damage += damage;
-        DashboardView.presenter.UpdateCurDamage(Damage);
+        if (IsMine)
+        {
+            DashboardView.presenter.UpdateCurDamage(Damage);
+        }
+        
     }
 
     private bool _canBoost;
@@ -126,7 +134,6 @@ public class TempKartController : KartControl {
 
 
     #region Override
-
 
 
     protected override void Move(KartInput.NetworkInputData input) { }
@@ -282,6 +289,8 @@ public class TempKartController : KartControl {
 
     protected override void CollisionEnter(GameObject other)
     {
+        if (!FusionSocket.Runner.IsServer) return;
+
         Debug.Log($"나: {this.gameObject.name}, 상대: {other.name}");
         return;
         bool isAttacker;

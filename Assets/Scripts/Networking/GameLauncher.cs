@@ -60,10 +60,10 @@ public class GameLauncher : FusionSocket
 
     #region FUSION OVERRIDE PROCESSING
 
-    protected override void AfterOpen() {
-        RunnerSimulatePhysics3D sim3D = Runner.gameObject.AddComponent<RunnerSimulatePhysics3D>();
-        sim3D.ClientPhysicsSimulation = ClientPhysicsSimulation.SimulateAlways;
-    }
+    //protected override void AfterOpen() {
+    //    RunnerSimulatePhysics3D sim3D = Runner.gameObject.AddComponent<RunnerSimulatePhysics3D>();
+    //    sim3D.ClientPhysicsSimulation = ClientPhysicsSimulation.SimulateAlways;
+    //}
 
     #endregion
 
