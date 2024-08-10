@@ -4,6 +4,7 @@ using UnityEngine;
 using BumperCarProject.Car.SO;
 using BumperCarProject.UI.View;
 using BumperCarProject.UI.Presenter;
+using BumperCarProject.Car;
 
 public class TempKartController : KartControl {
     [SerializeField]
@@ -19,6 +20,8 @@ public class TempKartController : KartControl {
     private float _deceleration;
 
     public Rigidbody Rigidbody;
+
+    public TempKartController _opponentCar;
 
     private float _speed;
     public float Speed
@@ -174,11 +177,147 @@ public class TempKartController : KartControl {
 
     protected override void Dash() { }
 
-    protected override void CollisionEnter(GameObject other) { }
+    private int CalculateDamage(Vector3 impulse)
+    {
+        return Mathf.RoundToInt(impulse.magnitude);
+    }
 
-    protected override void CollisionExit(GameObject other) { }
+    private void ApplyAdditionalForce(GameObject other, Vector3 bounceDirection)
+    {
+        _opponentCar = other.GetComponent<TempKartController>();
+        if( _opponentCar == null )
+        {
+            Debug.Log("카트를 찾을 수 없음");
+            return;
+        }
+        else
+        {
+            Debug.Log("카트를 찾음");
+        }
 
-    protected override void CollisionStay(GameObject other) { }
+        // 상대 범퍼카의 누적 대미지를 가져옴
+        float opponentDamage = _opponentCar.Damage;
+        float bounceStrength = opponentDamage * 0.5f; // 대미지를 기반으로 반발력 조정
+
+        // 충돌 후 반발력 조정
+        Rigidbody rb = other.GetComponent<Rigidbody>();
+        //Vector3 bounceDirection = -collision.relativeVelocity.normalized;
+        Vector3 additionalForce = bounceDirection * bounceStrength;
+
+        // Z축 반발력 제거
+        additionalForce.z = 0;
+
+        // 반발력 적용
+        Debug.Log($"추가할 힘: {additionalForce.x}, {additionalForce.y}. (누적 대미지: {opponentDamage})");
+        rb.AddForce(additionalForce, ForceMode.Impulse);
+
+        // Z축 회전력 제거
+        rb.angularVelocity = new Vector3(rb.angularVelocity.x, rb.angularVelocity.y, 0);
+
+        // Z축 속도 제거
+        rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, 0);
+
+        // 회전력 최소화
+        rb.angularVelocity = Vector3.zero;
+
+        // 충돌 각도에 따라 뒤로 튕겨나게 조정
+        Vector3 localVelocity = transform.InverseTransformDirection(rb.velocity);
+        localVelocity.x = 0; // 좌우 이동 속도 제거
+        rb.velocity = transform.TransformDirection(localVelocity);
+    }
+
+    public float collisionCooldown = 0.5f;
+    private float lastCollisionTime = 0f;
+    private Vector3 previousVelocity;
+
+    //protected override void CollisionEnter(GameObject other) {
+    //    Debug.Log($"충돌 ({other.name})");
+
+    //    // 충돌 간격 체크
+    //    if (Time.time - lastCollisionTime < collisionCooldown)
+    //    {
+    //        Debug.Log("간격이 너무 좁아요");
+    //        //순간적으로 여러번의 충돌이 벌어지는 경우 차단
+    //        return;
+    //    }
+
+    //    Rigidbody thisRigidbody = GetComponent<Rigidbody>();
+    //    Rigidbody otherRigidbody = other.GetComponent<Rigidbody>();
+
+    //    if (thisRigidbody == null || otherRigidbody == null) return;
+
+    //    Vector3 relativeVelocity = thisRigidbody.velocity - otherRigidbody.velocity;
+
+    //    float impactForce = relativeVelocity.magnitude;
+
+    //    Debug.Log($"충돌한 객체: {other.name}, 충격량: {impactForce}");
+
+    //    // 대미지 계산 및 누적
+    //    float damage = impactForce;
+    //    Damage += damage;
+    //    Debug.Log($"현재 누적 대미지: {Damage}");
+
+    //    lastCollisionTime = Time.time;
+
+    //    ApplyAdditionalForce(other);
+    //}
+
+
+    protected override void CollisionEnter(GameObject other)
+    {
+        if (Time.time - lastCollisionTime < collisionCooldown)
+        {
+            return;
+        }
+
+        lastCollisionTime = Time.time;
+
+        Rigidbody thisRigidbody = GetComponent<Rigidbody>();
+
+        // 현재 속도와 이전 속도의 차이를 계산
+        Vector3 currentVelocity = thisRigidbody.velocity;
+        Vector3 velocityChange = previousVelocity - currentVelocity;
+
+        // 반발 방향을 계산
+        Vector3 bounceDirection = velocityChange.normalized;
+
+        Debug.Log($"충돌한 객체: {other.name}, 반발 방향: {bounceDirection}");
+
+        // 대미지 계산 및 누적
+        float impactForce = velocityChange.magnitude;
+        Damage += impactForce;
+        Debug.Log($"현재 누적 대미지: {Damage}");
+
+        // 추가적인 반발력 적용
+        ApplyAdditionalForce(other, bounceDirection);
+
+        previousVelocity = currentVelocity;
+    }
+
+    protected override void CollisionExit(GameObject other)
+    {
+        Debug.Log("충돌끝");
+    }
+
+    protected override void CollisionStay(GameObject other)
+    {
+        Debug.Log("충돌중");
+    }
+
+    protected override void OnTriggerEnter(Collider other)
+    {
+        _dynamicCamera.ToggleFieldEffect(true);
+    }
+
+    protected override void OnTriggerStay(Collider other)
+    {
+        Damage += 0.5f;
+    }
+
+    protected override void OnTriggerExit(Collider other)
+    {
+        _dynamicCamera.ToggleFieldEffect(false);
+    }
 
 
 

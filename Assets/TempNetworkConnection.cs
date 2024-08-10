@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class TempNetworkConnection : FusionSocket
 {
+    public Vector3 spawnPoint;
     public GameObject KartPrefab;
     //public string RoomName;
 
@@ -28,7 +29,7 @@ public class TempNetworkConnection : FusionSocket
 
         if (Runner.IsServer)
         {
-            runner.Spawn(KartPrefab, Vector3.zero, Quaternion.identity, player);
+            runner.Spawn(KartPrefab, spawnPoint, Quaternion.identity, player);
         }
     }
 }
