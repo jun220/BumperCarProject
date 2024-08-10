@@ -99,7 +99,7 @@ public class GameLauncher : FusionSocket
 
         if(runner.IsServer) {
             if (State == NetworkState.HOST)
-                Manager = runner.Spawn(GameManager, Vector3.zero, Quaternion.identity).GetComponent<GameManager>();
+                // Manager = runner.Spawn(GameManager, Vector3.zero, Quaternion.identity).GetComponent<GameManager>();
             runner.Spawn(RoomPlayerPrefab, Vector3.zero, Quaternion.identity, player);
         }
 
