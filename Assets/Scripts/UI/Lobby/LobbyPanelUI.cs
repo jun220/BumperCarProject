@@ -16,7 +16,7 @@ public class LobbyPanelUI : MonoBehaviour
 
         // -- [ Initialize Mode Section ]
         buttons = ModeSection.GetComponentsInChildren<Button>(true);
-        SetActiveModeButton(false);
+        SetActiveModeButton();
 
         // -- [ Initialize RoomList Section ]
         FocusScreen(LoadingScreen);
@@ -33,7 +33,10 @@ public class LobbyPanelUI : MonoBehaviour
     [Header("Nickname Section")]
     [SerializeField] private TMP_InputField Nickname;
 
-    public void OnModifyNickname() => ClientInfo.Nickname = Nickname.text;
+    public void OnModifyNickname() {
+        ClientInfo.Nickname = Nickname.text;
+        SetActiveModeButton();
+    }
 
     #endregion
 
@@ -52,7 +55,15 @@ public class LobbyPanelUI : MonoBehaviour
         await GameLauncher.Instance.OnClose();
     }
 
-    private void SetActiveModeButton(bool active) {
+    private bool CanActiveMode() {
+        if (FusionSocket.State != FusionSocket.NetworkState.LOBBY) return false;
+        if (ClientInfo.Nickname == string.Empty) return false;
+        return true;
+    }
+
+    private void SetActiveModeButton() {
+        bool active = CanActiveMode();
+
         foreach (Button button in buttons) {
             button.interactable = active;
         }
@@ -122,12 +133,29 @@ public class LobbyPanelUI : MonoBehaviour
         }
     }
 
+    private List<SessionInfo> GetValidSessionInfo(List<SessionInfo> sessions) {
+        List<SessionInfo> result = new List<SessionInfo> ();
+
+        foreach(SessionInfo session in sessions) {
+            if(IsValidSession(session)) 
+                result.Add(session);
+        }
+
+        return result;
+    }
+
     private void CreateRoomList(List<SessionInfo> sessionList) {
         foreach (SessionInfo session in sessionList) {
             RoomItem room = Instantiate(RoomItem);
             room.SetRoom(session);
             room.gameObject.transform.SetParent(RoomContainer.transform);
         }
+    }
+
+    private bool IsValidSession(SessionInfo session) {
+        if (session.Properties.ContainsKey("RoomName"))     return false;
+        if (session.Properties.ContainsKey("HostNickname")) return false;
+        return true;
     }
 
     #endregion
@@ -147,18 +175,18 @@ public class LobbyPanelUI : MonoBehaviour
     }
 
     public void OnSessionListUpdated(List<SessionInfo> sessions) {
-        Sessions = sessions;
+        Sessions = GetValidSessionInfo(sessions);
 
         if (ActiveScreen == LoadingScreen)
             ShowRoomList(sessions);
     }
 
     private void OnJoinLobby() {
-        SetActiveModeButton(true);
+        SetActiveModeButton();
     }
 
     private void OnCloseInLobby() {
-        SetActiveModeButton(false);
+        SetActiveModeButton();
         FocusScreen(LoadingScreen);
     }
 

@@ -26,7 +26,7 @@ public class FusionConnection : MonoBehaviour, INetworkRunnerCallbacks
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) {
         if (!Runner.IsServer) return;
 
-        //runner.Spawn(PlayerPrefab, Vector3.zero, Quaternion.identity, player);
+        runner.Spawn(PlayerPrefab, Vector3.zero, Quaternion.identity, player);
     }
 
     public void OnConnectedToServer(NetworkRunner runner) { }

@@ -1,6 +1,8 @@
 using Fusion;
 using Fusion.Addons.Physics;
 using Fusion.Sockets;
+using Photon.Voice.Fusion;
+using Photon.Voice.Unity;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,22 +24,21 @@ public class FusionSocket : MonoBehaviour, INetworkRunnerCallbacks {
 
     public static NetworkRunner Runner { get; private set; } = null;
 
+    [SerializeField] private GameObject Session;
+
     #region FUSION NETWORK METHOD
 
     protected void Open() {
         Assert.Check(Runner == null);
 
         BeforeOpen();
-        
-        // Create NetworkRunner DontDestroy Object
-        GameObject runnerObject = new GameObject("Session");
+
+        // Create Session DontDestroy Object
+        GameObject runnerObject = Instantiate(Session);
         DontDestroyOnLoad(runnerObject);
 
-        // Add NetworkRunner Component
-        RunnerSimulatePhysics3D sim3D = runnerObject.AddComponent<RunnerSimulatePhysics3D>();
-        sim3D.ClientPhysicsSimulation = ClientPhysicsSimulation.SimulateAlways;
-
-        Runner = runnerObject.AddComponent<NetworkRunner>();
+        // Set NetworkRunner Component
+        Runner = runnerObject.GetComponent<NetworkRunner>();
         Runner.ProvideInput = true;
         Runner.AddCallbacks(this);
         

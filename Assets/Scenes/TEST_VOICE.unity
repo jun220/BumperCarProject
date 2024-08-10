@@ -131,9 +131,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 400337}
-  - component: {fileID: 400336}
-  - component: {fileID: 400335}
   - component: {fileID: 400334}
+  - component: {fileID: 400339}
+  - component: {fileID: 400338}
   m_Layer: 0
   m_Name: '[ Fusion Manager ]'
   m_TagString: Untagged
@@ -153,11 +153,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff8cb7b8b33e30f45bf19228c158fb28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Runner: {fileID: 400336}
-  PlayerPrefab: {fileID: 0}
+  Runner: {fileID: 400339}
+  PlayerPrefab: {fileID: 3024440502264965479, guid: c0fea8d973b732a4d9493f4bb694ec4d,
+    type: 3}
   RoomName: TEST_VOICE
-  Nickname: 
---- !u!114 &400335
+  Nickname: qewr
+--- !u!4 &400337
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400333}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &400338
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -199,7 +215,7 @@ MonoBehaviour:
   AutoConnectAndJoin: 1
   UseFusionAppSettings: 1
   UseFusionAuthValues: 1
---- !u!114 &400336
+--- !u!114 &400339
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -211,21 +227,6 @@ MonoBehaviour:
   m_Script: {fileID: -1199893898, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &400337
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 400333}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &276865052
 GameObject:
   m_ObjectHideFlags: 0
@@ -266,7 +267,7 @@ MonoBehaviour:
   encrypt: 0
   transmitEnabled: 1
   samplingRate: 24000
-  frameDuration: 20000
+  frameDuration: 40000
   bitrate: 30000
   sourceType: 0
   microphoneType: 0
@@ -475,6 +476,7 @@ GameObject:
   - component: {fileID: 2145616493}
   - component: {fileID: 2145616492}
   - component: {fileID: 2145616491}
+  - component: {fileID: 2145616494}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -556,6 +558,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2145616494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2145616490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
