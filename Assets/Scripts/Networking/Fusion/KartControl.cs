@@ -1,4 +1,5 @@
 using Fusion;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,12 +36,12 @@ public abstract class KartControl : NetworkBehaviour
         {
             switch (change)
             {
-                // TODO : 시각적 효과 필요시 추가
+                case nameof(Damage):
+                    DamageChanged?.Invoke(RoomPlayer.Local.KartType, Damage);
+                    break;
             }
         }
     }
-
-
 
     #endregion
 
@@ -103,6 +104,14 @@ public abstract class KartControl : NetworkBehaviour
         else
             CollisionList[collision.gameObject].SetCollision();
     }
+
+    #endregion
+
+    #region KART DAMAGE METHOD
+
+    [Networked] protected float Damage { get; set; }
+
+    public static Action<int, float> DamageChanged;
 
     #endregion
 

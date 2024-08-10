@@ -112,9 +112,9 @@ MonoBehaviour:
   reliableMode: 0
   encrypt: 0
   transmitEnabled: 1
-  samplingRate: 24000
-  frameDuration: 20000
-  bitrate: 30000
+  samplingRate: 16000
+  frameDuration: 40000
+  bitrate: 16000
   sourceType: 0
   microphoneType: 0
   audioClip: {fileID: 0}
