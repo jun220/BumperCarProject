@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4047201057825216642
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2614761982859375528}
+  m_Layer: 30
+  m_Name: Interpolation Target
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2614761982859375528
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4047201057825216642}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3508136636511305024}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7044526775073863732
 GameObject:
   m_ObjectHideFlags: 0
@@ -16,6 +47,7 @@ GameObject:
   - component: {fileID: 1301312552514686764}
   - component: {fileID: 6556109500465834551}
   - component: {fileID: 3474017328523400479}
+  - component: {fileID: 1842363324905774494}
   m_Layer: 30
   m_Name: TempKart
   m_TagString: Untagged
@@ -32,10 +64,11 @@ Transform:
   m_GameObject: {fileID: 7044526775073863732}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.3179207, y: 2.755293, z: -0.47687522}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2614761982859375528}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7066029932157304932
@@ -318,6 +351,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 1301312552514686764}
   - {fileID: 3474017328523400479}
+  - {fileID: 1842363324905774494}
 --- !u!114 &3474017328523400479
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -330,4 +364,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0634cb38d5604914485bf5c4d8af8591, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 10
+  MAX_MOVE_SPEED: 20
+  ROT_SPEED: 100
+  MOVE_ACCELERATION: 0.5
+  MOVE_DECELERATION: 0.75
+  Rigidbody: {fileID: 3971046495683218823}
+--- !u!114 &1842363324905774494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7044526775073863732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57286e488835f2344a13b5312cf779c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 1
+  _interpolationTarget: {fileID: 2614761982859375528}
+  UsePreciseRotation: 0
+  UseRenderSleepThresholds: 0
+  RenderThresholds:
+    UseEnergy: 1
+    Position: 0.01
+    Rotation: 0.01
+    Scale: 0.01
