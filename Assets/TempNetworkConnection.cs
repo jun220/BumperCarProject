@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class TempNetworkConnection : FusionSocket
 {
+    public Vector3[] spawnPoints;
     public Vector3 spawnPoint;
     public GameObject KartPrefab;
     //public string RoomName;

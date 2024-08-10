@@ -5,6 +5,8 @@ using BumperCarProject.Car.SO;
 using BumperCarProject.UI.View;
 using BumperCarProject.UI.Presenter;
 using BumperCarProject.Car;
+using static UnityEngine.Rendering.DebugUI;
+using System.Runtime.CompilerServices;
 
 public class TempKartController : KartControl {
     [SerializeField]
@@ -41,15 +43,15 @@ public class TempKartController : KartControl {
     private DynamicCamera _dynamicCamera;
 
     [SerializeField]
-    private float _damage;
-    public float Damage
+    public float Damage;
+    public float GetDamage()
     {
-        get => _damage;
-        set
-        {
-            _damage = value;
-            DashboardView.presenter.UpdateCurDamage(value);
-        }
+        return Damage;
+    }
+    public void TakeDamage(float damage)
+    {
+        Damage += damage;
+        DashboardView.presenter.UpdateCurDamage(Damage);
     }
 
     private bool _canBoost;
@@ -160,7 +162,7 @@ public class TempKartController : KartControl {
 
         _currentSpeed = Vector3.Dot(velocity, forward) > 0 ? velocity.magnitude : -velocity.magnitude;
         Speed = velocity.magnitude;
-
+        previousVelocity = velocity;
     }
 
     protected override void Steer(KartInput.NetworkInputData input) {
@@ -182,7 +184,7 @@ public class TempKartController : KartControl {
         return Mathf.RoundToInt(impulse.magnitude);
     }
 
-    private void ApplyAdditionalForce(GameObject other, Vector3 bounceDirection)
+    private void ApplyForce(GameObject other, Vector3 bounceDirection, float impactForce, bool isAttacker)
     {
         _opponentCar = other.GetComponent<TempKartController>();
         if( _opponentCar == null )
@@ -194,6 +196,19 @@ public class TempKartController : KartControl {
         {
             Debug.Log("카트를 찾음");
         }
+
+        if (isAttacker)
+        {
+            _opponentCar.TakeDamage(impactForce);
+        }
+        else
+        {
+            _opponentCar.TakeDamage(impactForce * 0.2f);
+        }
+        // 전달된 힘만큼 충격받음
+        
+
+        return;
 
         // 상대 범퍼카의 누적 대미지를 가져옴
         float opponentDamage = _opponentCar.Damage;
@@ -210,6 +225,8 @@ public class TempKartController : KartControl {
         // 반발력 적용
         Debug.Log($"추가할 힘: {additionalForce.x}, {additionalForce.y}. (누적 대미지: {opponentDamage})");
         rb.AddForce(additionalForce, ForceMode.Impulse);
+
+
 
         // Z축 회전력 제거
         rb.angularVelocity = new Vector3(rb.angularVelocity.x, rb.angularVelocity.y, 0);
@@ -228,7 +245,7 @@ public class TempKartController : KartControl {
 
     public float collisionCooldown = 0.5f;
     private float lastCollisionTime = 0f;
-    private Vector3 previousVelocity;
+    public Vector3 previousVelocity;
 
     //protected override void CollisionEnter(GameObject other) {
     //    Debug.Log($"충돌 ({other.name})");
@@ -265,6 +282,8 @@ public class TempKartController : KartControl {
 
     protected override void CollisionEnter(GameObject other)
     {
+        bool isAttacker;
+
         if (Time.time - lastCollisionTime < collisionCooldown)
         {
             return;
@@ -278,6 +297,19 @@ public class TempKartController : KartControl {
         Vector3 currentVelocity = thisRigidbody.velocity;
         Vector3 velocityChange = previousVelocity - currentVelocity;
 
+        Vector3 opponentVelocity = other.GetComponent<Rigidbody>().velocity;
+
+        if(previousVelocity.magnitude > opponentVelocity.magnitude)
+        {
+            Debug.Log($"{this.gameObject.name}이 공격자입니다");
+            isAttacker = true;
+        }
+        else
+        {
+            isAttacker = false;
+        }
+        
+
         // 반발 방향을 계산
         Vector3 bounceDirection = velocityChange.normalized;
 
@@ -285,11 +317,17 @@ public class TempKartController : KartControl {
 
         // 대미지 계산 및 누적
         float impactForce = velocityChange.magnitude;
-        Damage += impactForce;
-        Debug.Log($"현재 누적 대미지: {Damage}");
+        Debug.Log($"impactForce: {impactForce}");
+        //Damage += impactForce;
 
+        if (isAttacker)
+        {
+            ApplyForce(other, bounceDirection, impactForce, isAttacker);
+        }
+        // 자기도 기본 대미지 받게 테스트
+        //TakeDamage(1.0f);
         // 추가적인 반발력 적용
-        ApplyAdditionalForce(other, bounceDirection);
+        
 
         previousVelocity = currentVelocity;
     }

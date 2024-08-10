@@ -380,8 +380,9 @@ MonoBehaviour:
   _currentSpeed: 0
   mainCamera: {fileID: 0}
   _dynamicCamera: {fileID: 6692677283713365080}
-  _damage: 0
+  Damage: 0
   collisionCooldown: 0.5
+  previousVelocity: {x: 0, y: 0, z: 0}
 --- !u!114 &8206401396824933567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -421,7 +422,7 @@ MonoBehaviour:
   minFOV: 60
   maxFOV: 80
   minSpeed: 10
-  maxSpeed: 40
+  maxSpeed: 20
   isActive: 0
   fieldCameraFilter: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &7591243879755894801
