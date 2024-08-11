@@ -47,17 +47,17 @@ public class TempKartController : KartControl {
     private DynamicCamera _dynamicCamera;
 
     [SerializeField]
-    public float Damage;
+    public float CurrentDamage;
     public float GetDamage()
     {
-        return Damage;
+        return CurrentDamage;
     }
     public void TakeDamage(float damage)
     {
-        Damage += damage;
+        CurrentDamage += damage;
         if (IsMine)
         {
-            DashboardView.presenter.UpdateCurDamage(Damage);
+            DashboardView.presenter.UpdateCurDamage(CurrentDamage);
         }
         
     }
@@ -218,7 +218,7 @@ public class TempKartController : KartControl {
         return;
 
         // 상대 범퍼카의 누적 대미지를 가져옴
-        float opponentDamage = _opponentCar.Damage;
+        float opponentDamage = _opponentCar.CurrentDamage;
         float bounceStrength = opponentDamage * 0.5f; // 대미지를 기반으로 반발력 조정
 
         // 충돌 후 반발력 조정
@@ -361,7 +361,7 @@ public class TempKartController : KartControl {
 
     protected override void OnTriggerStay(Collider other)
     {
-        Damage += 0.5f;
+        TakeDamage(0.2f);
     }
 
     protected override void OnTriggerExit(Collider other)

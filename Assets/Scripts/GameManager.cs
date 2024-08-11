@@ -8,6 +8,11 @@ public class GameManager : MonoBehaviour
     // 인게임 씬에서만 동작
     public int targetFrameRate = 60;
 
+    public GameObject otherPlayerPanel;
+    public GameObject otherPlayerPrefab;
+
+    public TempNetworkConnection networkConnector;
+
     void Awake()
     {
         // 싱글톤
@@ -36,6 +41,20 @@ public class GameManager : MonoBehaviour
 
     public void SpawnPlayers()
     {
+        if (RoomPlayer.Local.IsHost)
+        {
+            // 현재는 비어있는 함수 호출
+            networkConnector.SpawnPlayers();
+        }
+    }
 
+    [ContextMenu("상대 플레이어 패널 생성")]
+    public void InstantiateOtherPlayers()
+    {
+        // 상대 플레이어 패널 생성
+        GameObject newObject = Instantiate(otherPlayerPrefab);
+
+        // 생성된 오브젝트를 패널 자식으로
+        newObject.transform.SetParent(otherPlayerPanel.transform);
     }
 }

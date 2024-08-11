@@ -33,4 +33,9 @@ public class TempNetworkConnection : FusionSocket
             runner.Spawn(KartPrefab, spawnPoint, Quaternion.identity, player);
         }
     }
+
+    public void SpawnPlayers()
+    {
+        // 모든 플레이어 생성하는 부분
+    }
 }

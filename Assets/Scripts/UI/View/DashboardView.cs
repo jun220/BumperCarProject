@@ -9,9 +9,9 @@ namespace BumperCarProject.UI.View
     public class DashboardView : MonoBehaviour
     {
         [SerializeField]
-        private Text _speedText;
+        private TMP_Text _speedText;
         [SerializeField]
-        private Text _damageText;
+        private TMP_Text _damageText;
         [SerializeField]
         private Text _boostCoolTime;
         [SerializeField]
@@ -27,9 +27,11 @@ namespace BumperCarProject.UI.View
             _speedText.text = curSpeed.ToString("N2");
         }
 
-        public void UpdateDamageText(float curDamage) {
-            _damageText.text = curDamage.ToString("N1");
+        public void UpdateDamageText(float curDamage)
+        {
+            _damageText.text = curDamage.ToString("F1") + "%";
         }
+
 
         public void UpdateBoostCoolTimeText(float coolTime) {
             _boostCoolTime.text = coolTime.ToString("N1");
