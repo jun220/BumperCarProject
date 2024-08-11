@@ -152,6 +152,7 @@ public class LobbyPanelUI : MonoBehaviour
             RoomItem room = Instantiate(RoomItem);
             room.SetRoom(session);
             room.gameObject.transform.SetParent(RoomContainer.transform);
+            room.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
         }
     }
 

@@ -21,12 +21,6 @@ public class RoomPanelUI : MonoBehaviour
         InitializePlayerUI();
           
         // [ Initialize Ready Section ]
-        GameStartButton.interactable = false;
-
-        if (FusionSocket.State == FusionSocket.NetworkState.HOST)
-            GameStartButton.gameObject.SetActive(true);
-        else
-            ReadyButton.gameObject.SetActive(true);
     }
 
     private void OnDisable() {
@@ -205,24 +199,30 @@ public class RoomPanelUI : MonoBehaviour
     }
 
     private void UpdateReadyButton() {
-        GameStartButton.interactable = CanStartGame();
-        ReadyButton.interactable = CanReady();
+        if(FusionSocket.State == FusionSocket.NetworkState.HOST) {
+            GameStartButton.GetComponent<Image>().sprite = CanStartGame() ? readyXSprite : waitingSprite;
+            GameStartButton.transform.GetChild(0).gameObject.SetActive(CanStartGame());
+            GameStartButton.interactable = CanStartGame();
+
+            ReadyButton.gameObject.SetActive(false);
+        } else {
+            ReadyButton.GetComponent<Image>().sprite = CanReady() ? readySprite : waitingSprite;
+            ReadyButton.interactable = CanReady();
+
+            GameStartButton.gameObject.SetActive(false);
+        }
     }
 
     private bool CanReady() {
-        if (RoomPlayer.Local.KartType == KartTypeUI.KART_TYPE_EMPTY) return false;
+        // if (RoomPlayer.Local.KartType == KartTypeUI.KART_TYPE_EMPTY) return false;
         if (RoomPlayer.Local.KartColor == KartColorUI.KART_COLOR_EMPTY) return false;
         return true;
     }
 
     private bool CanStartGame() {
-        if (RoomPlayer.Players.Count < 2) return false;
-        if (!RoomPlayer.Local.IsHost) return false;
+        // if (RoomPlayer.Players.Count < 2) return false;
         if (!IsEveryoneReady()) return false;
         if (!CanReady()) return false;
-
-        GameStartButton.GetComponent<Image>().sprite = readyXSprite;
-        GameStartButton.transform.GetChild(0).gameObject.SetActive(true);
         return true;
     }
 

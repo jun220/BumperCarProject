@@ -8,7 +8,7 @@ public class LevelManager : NetworkSceneManagerDefault
     public const int LOBBY_SCENE = 1;
     public const int GAME_SCENE = 2;
 
-    private static LevelManager Instance;
+    public static LevelManager Instance;
 
     private void Start()
     {
