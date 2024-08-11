@@ -170,6 +170,10 @@ public class RoomPanelUI : MonoBehaviour
 
     public void OnClickGameStart() {
         Debug.Log("[ * Debug * ] GameStart!");
+
+        // 여기 스크립트 추가 필요
+        // WallAndFloor 씬으로 이동
+        // GameManager의 SpawnPlayers를 호출하는 식으로
     }
 
     private void UpdateReadyButton() {
@@ -178,16 +182,33 @@ public class RoomPanelUI : MonoBehaviour
     }
 
     private bool CanReady() {
-        if (RoomPlayer.Local.KartType == KartTypeUI.KART_TYPE_EMPTY) return false;
+        // 현재 카트 타입 선택하는 부분이 작업되지 않은 것 같아 우선 주석처리
+        // if (RoomPlayer.Local.KartType == KartTypeUI.KART_TYPE_EMPTY) return false;
         if (RoomPlayer.Local.KartColor == KartColorUI.KART_COLOR_EMPTY) return false;
         return true;
     }
 
     private bool CanStartGame() {
-        if (RoomPlayer.Players.Count < 2) return false;
-        if (!RoomPlayer.Local.IsHost) return false;
-        if (!IsEveryoneReady()) return false;
-        if (!CanReady()) return false;
+        if (RoomPlayer.Players.Count < 2)
+        {
+            Debug.Log("플레이어가 부족합니다");
+            return false;
+        }
+        if (!RoomPlayer.Local.IsHost)
+        {
+            Debug.Log("호스트가 아닙니다");
+            return false;
+        }
+        if (!IsEveryoneReady())
+        {
+            Debug.Log("아직 모두가 준비되지 않았습니다");
+            return false;
+        }
+        if (!CanReady())
+        {
+            Debug.Log("본인이 준비되지 않았습니다");
+            return false;
+        }
 
         GameStartButton.GetComponent<Image>().sprite = readyXSprite;
         GameStartButton.transform.GetChild(0).gameObject.SetActive(true);
