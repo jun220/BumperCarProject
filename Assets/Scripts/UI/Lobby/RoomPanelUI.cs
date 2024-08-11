@@ -117,10 +117,10 @@ public class RoomPanelUI : MonoBehaviour
                 return "red";
 
             case ChatClientNetwork.ChatType.GENERAL:
-                return "white";
+                return "black";
         }
 
-        return "black";
+        return "white";
     }
 
     #endregion
@@ -205,22 +205,26 @@ public class RoomPanelUI : MonoBehaviour
             GameStartButton.interactable = CanStartGame();
 
             ReadyButton.gameObject.SetActive(false);
+            GameStartButton.gameObject.SetActive(true);
         } else {
-            ReadyButton.GetComponent<Image>().sprite = CanReady() ? readySprite : waitingSprite;
-            ReadyButton.interactable = CanReady();
+            bool isReady = CanReady() ^ RoomPlayer.Local.IsReady;
+
+            ReadyButton.GetComponent<Image>().sprite = isReady ? readySprite : waitingSprite;
+            ReadyButton.interactable = isReady;
 
             GameStartButton.gameObject.SetActive(false);
+            ReadyButton.gameObject.SetActive(true);
         }
     }
 
     private bool CanReady() {
-        // if (RoomPlayer.Local.KartType == KartTypeUI.KART_TYPE_EMPTY) return false;
+        if (RoomPlayer.Local.KartType == KartTypeUI.KART_TYPE_EMPTY) return false;
         if (RoomPlayer.Local.KartColor == KartColorUI.KART_COLOR_EMPTY) return false;
         return true;
     }
 
     private bool CanStartGame() {
-        // if (RoomPlayer.Players.Count < 2) return false;
+         if (RoomPlayer.Players.Count < 2) return false;
         if (!IsEveryoneReady()) return false;
         if (!CanReady()) return false;
         return true;
