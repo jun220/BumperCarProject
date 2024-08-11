@@ -70,6 +70,10 @@ public class LobbyPanelUI : MonoBehaviour
         foreach (Button button in buttons) {
             button.interactable = active;
         }
+
+        foreach (Button room in RoomContainer.GetComponentsInChildren<Button>()) {
+            room.interactable = active;
+        }
     }
 
     #endregion
@@ -184,7 +188,7 @@ public class LobbyPanelUI : MonoBehaviour
         Debug.Log(string.Format("[ * Debug * ] SessionList Updated (Size : {0})", Sessions.Count));
 
         if (ActiveScreen == LoadingScreen)
-            ShowRoomList(sessions);
+            ShowRoomList(Sessions);
     }
 
     private void OnJoinLobby() {

@@ -17,17 +17,8 @@ public class RoomPanelUI : MonoBehaviour
     }
 
     private void OnEnable() {
-        // [ Initialize Player Section ]
         InitializePlayerUI();
-          
-        // [ Initialize Ready Section ]
-    }
-
-    private void OnDisable() {
-        GameStartButton.interactable = false;
-
-        GameStartButton.gameObject.SetActive(false);
-        ReadyButton.gameObject.SetActive(false);
+        InitializeSelectionUI();
     }
 
     #endregion
@@ -35,14 +26,12 @@ public class RoomPanelUI : MonoBehaviour
     #region Player Section
 
     [Header("Player Section")]
-    [SerializeField] private List<PlayerUI> PlayerUIs;
-
-    private static readonly Dictionary<RoomPlayer, PlayerUI> PlayerList = new Dictionary<RoomPlayer, PlayerUI>();
+    [SerializeField] private PlayerUI[] PlayerUIs;
 
     private void InitializePlayerUI() {
         Debug.Log(string.Format("[ * Debug * ] Max Player : {0}", FusionSocket.Runner.SessionInfo.MaxPlayers));
 
-        for(int i=0; i < PlayerUIs.Count; i++) {
+        for(int i=0; i < PlayerUIs.Length; i++) {
             if (i < FusionSocket.Runner.SessionInfo.MaxPlayers)
                 PlayerUIs[i].SetEmpty();
             else
@@ -51,40 +40,23 @@ public class RoomPanelUI : MonoBehaviour
     }
 
     private void AddPlayer(RoomPlayer player) {
-        foreach(PlayerUI playerUI in PlayerUIs) {
-            if (PlayerList.ContainsValue(playerUI)) continue;
-
-            Debug.Log(string.Format("[ * Debug * ] Player [ {0} ] Joined Room!", (string) player.Nickname));
-
-            PlayerList.Add(player, playerUI);
-            playerUI.SetPlayerInfo(player);
-            return;
-        }
+        PlayerUIs[player.PlayerID].SetPlayerInfo(player);
+        UpdateKartTypeUI(player);
+        UpdateKartColorUI(player);
     }
 
-    private void RemovePlayer(RoomPlayer player) {
-        if (PlayerList.ContainsKey(player)) {
-            PlayerList[player].SetEmpty();
-            PlayerList.Remove(player);
-        }
-
-        if (TypeList.ContainsKey(player)) {
-            TypeList[player].SetSelectable(true);
-            TypeList.Remove(player);
-        }
-
-        if (PlayerList.ContainsKey(player)) {
-            ColorList[player].SetSelectable(true);
-            ColorList.Remove(player);
-        }
+    private void RemovePlayer(int playerID) {
+        PlayerUIs[playerID].SetEmpty();
+        CartTypeUIs[playerID].SetSelectable(true);
+        CartColorUIs[playerID].SetSelectable(true);
     }
 
     private void UpdatePlayer(RoomPlayer player) {
-        if (!PlayerList.ContainsKey(player)) return;
+        if (player.PlayerID >= PlayerUIs.Length || player.PlayerID == -1) return;
 
         Debug.Log(string.Format("[ * Debug * ] Player [ {0} ] Information Updated!", (string) player.Nickname));
         
-        PlayerList[player].SetPlayerInfo(player);
+        PlayerUIs[player.PlayerID].SetPlayerInfo(player);
         UpdateKartTypeUI(player);
         UpdateKartColorUI(player);
 
@@ -128,50 +100,44 @@ public class RoomPanelUI : MonoBehaviour
     #region Selection Section
 
     [Header("Selection Section")]
-    [SerializeField] private List<KartTypeUI> KartTypeUIs;
-    [SerializeField] private List<KartColorUI> KartColorUIs;
+    [SerializeField] private KartTypeUI[] CartTypeUIs;
+    [SerializeField] private KartColorUI[] CartColorUIs;
 
-    private static readonly Dictionary<RoomPlayer, KartTypeUI> TypeList = new Dictionary<RoomPlayer, KartTypeUI>();
-    private static readonly Dictionary<RoomPlayer, KartColorUI> ColorList = new Dictionary<RoomPlayer, KartColorUI>();
+    private int[] PlayerCartTypes;
+    private int[] PlayerCartColors;
+
+    private void InitializeSelectionUI() {
+        PlayerCartTypes = new int[RoomPlayer.MAX_PLAYER];
+        for(int i=0; i < RoomPlayer.MAX_PLAYER; i++) {
+            PlayerCartTypes[i] = KartTypeUI.KART_TYPE_EMPTY;
+        }
+
+        PlayerCartColors = new int[RoomPlayer.MAX_PLAYER];
+        for(int i=0; i < RoomPlayer.MAX_PLAYER; i++) {
+            PlayerCartColors[i] = KartColorUI.KART_COLOR_EMPTY;
+        }
+    }
 
     private void UpdateKartTypeUI(RoomPlayer player) {
-        if (TypeList.ContainsKey(player)) {
-            Debug.Log(string.Format("[ * Debug * ] Player [ {0} ] Before Type : {1}", (string) player.Nickname, KartTypeUIs.IndexOf(TypeList[player])));
+        if (PlayerCartTypes[player.PlayerID] != KartTypeUI.KART_TYPE_EMPTY)
+            CartTypeUIs[PlayerCartTypes[player.PlayerID]].SetSelectable(true);
 
-            TypeList[player].SetSelectable(true);
-            TypeList.Remove(player);
-        }
+        if(player.KartType != KartTypeUI.KART_TYPE_EMPTY)
+            CartTypeUIs[player.KartType].SetSelectable(false);
 
-        if (player.KartType != KartTypeUI.KART_TYPE_EMPTY) {
-            Debug.Log(string.Format("[ * Debug * ] Player [ {0} ] After Type : {1}", (string) player.Nickname, player.KartType));
+        PlayerCartTypes[player.PlayerID] = player.KartType;
 
-            KartTypeUI typeUI = KartTypeUIs[player.KartType];
-
-            typeUI.SetSelectable(false);
-            TypeList.Add(player, typeUI);
-        }
-
-        int PlayerUID = PlayerUIs.IndexOf(PlayerList[player]);
-        if (PlayerUID != -1)
-            PlayerKartUI.OnKartPicked(PlayerUID, player.KartType);
+        PlayerKartUI.OnKartPicked(player.PlayerID, player.KartType);
     }
 
     private void UpdateKartColorUI(RoomPlayer player) {
-        if (ColorList.ContainsKey(player)) {
-            Debug.Log(string.Format("[ * Debug * ] Player [ {0} ] Before Color : {1}", (string) player.Nickname, KartColorUIs.IndexOf(ColorList[player])));
+        if (PlayerCartColors[player.PlayerID] != KartColorUI.KART_COLOR_EMPTY)
+            CartColorUIs[PlayerCartColors[player.PlayerID]].SetSelectable(true);
 
-            ColorList[player].SetSelectable(true);
-            ColorList.Remove(player);
-        }
+        if (player.KartColor != KartColorUI.KART_COLOR_EMPTY)
+            CartColorUIs[player.KartColor].SetSelectable(false);
 
-        if (player.KartColor != KartColorUI.KART_COLOR_EMPTY) {
-            Debug.Log(string.Format("[ * Debug * ] Player [ {0} ] After Color : {1}", (string) player.Nickname, player.KartColor));
-
-            KartColorUI colorUI = KartColorUIs[player.KartColor];
-
-            colorUI.SetSelectable(false);
-            ColorList.Add(player, colorUI);
-        }
+        PlayerCartColors[player.PlayerID] = player.KartColor;
     }
 
     #endregion
@@ -224,7 +190,7 @@ public class RoomPanelUI : MonoBehaviour
     }
 
     private bool CanStartGame() {
-         if (RoomPlayer.Players.Count < 2) return false;
+        //if (FusionSocket.Runner.SessionInfo.PlayerCount < 2) return false;
         if (!IsEveryoneReady()) return false;
         if (!CanReady()) return false;
         return true;
@@ -232,6 +198,7 @@ public class RoomPanelUI : MonoBehaviour
 
     private bool IsEveryoneReady() {
         foreach (RoomPlayer player in RoomPlayer.Players) {
+            if (player == null) continue;
             if (!player.IsReady)
                 return false;
         }

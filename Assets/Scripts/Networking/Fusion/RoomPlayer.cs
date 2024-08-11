@@ -1,4 +1,5 @@
 using Fusion;
+using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,15 +8,17 @@ using UnityEngine;
 
 public class RoomPlayer : NetworkBehaviour
 {
-    public static readonly List<RoomPlayer> Players = new List<RoomPlayer>();
+    public const int MAX_PLAYER = 6;
+
+    public static readonly RoomPlayer[] Players = new RoomPlayer[MAX_PLAYER];
 
     public static Action<RoomPlayer> PlayerJoined;
-    public static Action<RoomPlayer> PlayerLeft;
+    public static Action<int> PlayerLeft;
     public static Action<RoomPlayer> PlayerChanged;
 
     public static RoomPlayer Local { get; private set; }
-
     public bool IsMine { get { return Local == this; } }
+    [Networked] public int PlayerID { get; private set; }
     [Networked] public NetworkString<_32> Nickname { get; private set; }
     [Networked] public NetworkBool IsHost { get; private set; }
     [Networked] public NetworkBool IsReady { get; private set; }
@@ -28,18 +31,30 @@ public class RoomPlayer : NetworkBehaviour
 
     public override void Spawned() {
         base.Spawned();
+
+        Debug.Log(string.Format("Player ID : {0} / Nickname : {1}", PlayerID, Nickname));
         
         changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
+
+        if(FusionSocket.State == FusionSocket.NetworkState.HOST) {
+            int id = 0;
+            while (Players[id] != null) {
+                if (id == FusionSocket.Runner.SessionInfo.MaxPlayers - 1) break;
+                id++;
+            }
+            
+            RPC_SetPlayerID(id);
+        }
 
         if(Object.HasInputAuthority) {
             Local = this;
 
             PlayerChanged?.Invoke(this);
             RPC_SetPlayer(ClientInfo.Nickname, FusionSocket.State == FusionSocket.NetworkState.HOST);
+        } else if(FusionSocket.State == FusionSocket.NetworkState.CLIENT) {
+            Players[PlayerID] = this;
+            PlayerJoined?.Invoke(this);
         }
-
-        Players.Add(this);
-        PlayerJoined?.Invoke(this);
 
         DontDestroyOnLoad(gameObject);
     }
@@ -48,7 +63,6 @@ public class RoomPlayer : NetworkBehaviour
         foreach(string change in changeDetector.DetectChanges(this)) {
             switch(change) {
                 case nameof(Nickname):
-                case nameof(IsHost):
                 case nameof(IsReady):
                 case nameof(KartType):
                 case nameof(KartColor):
@@ -59,8 +73,11 @@ public class RoomPlayer : NetworkBehaviour
     }
 
     private void OnDisable() {
-        PlayerLeft?.Invoke(this);
-        Players.Remove(this);
+        int playerID = Array.IndexOf(Players, this);
+        if (playerID == -1) return;
+
+        Players[playerID] = null;
+        PlayerLeft?.Invoke(playerID);
     }
 
     #endregion
@@ -70,10 +87,11 @@ public class RoomPlayer : NetworkBehaviour
     private static void OnStateChanged(RoomPlayer changed) => PlayerChanged?.Invoke(changed);
 
     public static void RemovePlayer(NetworkRunner runner, PlayerRef player) {
-        RoomPlayer roomPlayer = Players.FirstOrDefault(x => x.Object.InputAuthority == player);
-        if (roomPlayer == null) return;
+        int playerID = Array.IndexOf(Players, player);
+        if (playerID == -1) return;
 
-        Players.Remove(roomPlayer);
+        RoomPlayer roomPlayer = Players[playerID];
+        Players[playerID] = null;
         runner.Despawn(roomPlayer.Object);
     }
 
@@ -81,8 +99,16 @@ public class RoomPlayer : NetworkBehaviour
 
     #region RPC METHOD
 
+    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
+    private void RPC_SetPlayerID(int id) {
+        PlayerID = id;
+        Players[id] = this;
+
+        PlayerJoined?.Invoke(this);
+    }
+
     [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
-    private void RPC_SetPlayer(NetworkString<_32> nickname, NetworkBool isHost) {
+    private void RPC_SetPlayer( NetworkString<_32> nickname, NetworkBool isHost) {
         Nickname = nickname;
         IsReady = isHost;
         IsHost = isHost;

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class DynamicCamera : MonoBehaviour
 {
-    public TempKartController kart;
+    public CartControl Cart;
 
     public Camera mainCamera; // 메인 카메라
     public float minFOV = 60f; // 최소 FOV
@@ -37,7 +37,7 @@ public class DynamicCamera : MonoBehaviour
     {
         if (!isActive) return;
 
-        float speed = kart.Speed;
+        float speed = Cart.Speed;
 
         // 최소 속도에 도달하기 전까지는 FOV를 조절하지 않음
         if (speed < minSpeed)

@@ -45,7 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31fc5972ad845c44bb34c50817900a69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetFrameRate: 60
+  CartPrefab: {fileID: 6307649920354300385, guid: 6466a9aa0bdbc7849ba77e95877d7d1d,
+    type: 3}
 --- !u!114 &4589383908961514452
 MonoBehaviour:
   m_ObjectHideFlags: 0

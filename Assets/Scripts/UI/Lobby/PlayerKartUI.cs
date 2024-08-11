@@ -13,6 +13,10 @@ public class PlayerKartUI : MonoBehaviour
         KartPicked += OnPlayerPickedKart;
     }
 
+    private void OnDestroy() {
+        KartPicked -= OnPlayerPickedKart;
+    }
+
     private void OnPlayerPickedKart(int PlayerID, int KartType) {
         KartSelections[PlayerID].SelectKartModel(KartType);
     }

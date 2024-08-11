@@ -15,7 +15,7 @@ namespace BumperCarProject.Car
         public bool canControl;
 
         [SerializeField]
-        private BumperCar bumperCar;
+        private CartPhysicsSetting bumperCar;
 
         private Rigidbody _rb;
         private PhysicMaterial _physicMaterial;
@@ -37,14 +37,14 @@ namespace BumperCarProject.Car
             set {
                 _isBoosting = value;
                 if (value) {
-                    _maxSpeed = bumperCar.boosterMaxSpeed;
+                    _maxSpeed = bumperCar.DashMaxSpeed;
                     _acceleration *= 1.2f;
                     _canBoost = false;
                     //StopBoostingAsync().Forget();
                 }
                 else {
-                    _maxSpeed = bumperCar.maxSpeed;
-                    _acceleration = bumperCar.acceleration;
+                    _maxSpeed = bumperCar.MaxSpeed;
+                    _acceleration = bumperCar.Acceleration;
                 }
             }
         }
@@ -68,7 +68,7 @@ namespace BumperCarProject.Car
         private void Start() {
 
 
-            _physicMaterial = Instantiate(bumperCar.physicMaterial);
+            _physicMaterial = Instantiate(bumperCar.PhysicMaterial);
             Span<Collider> colliders = GetComponentsInChildren<Collider>();
             for(int i = 0; i < colliders.Length; ++i) {
                 colliders[i].material = _physicMaterial;
@@ -77,8 +77,8 @@ namespace BumperCarProject.Car
             _canBoost = true;
             _isBoosting = false;
 
-            _maxSpeed = bumperCar.maxSpeed;
-            _acceleration = bumperCar.acceleration;
+            _maxSpeed = bumperCar.MaxSpeed;
+            _acceleration = bumperCar.Acceleration;
         }
 
         private void FixedUpdate()
@@ -92,7 +92,7 @@ namespace BumperCarProject.Car
 
             // 이동 및 회전 처리
             float steer = Input.GetAxis("Horizontal");
-            transform.Rotate(0, steer * bumperCar.steering * Time.fixedDeltaTime, 0);
+            transform.Rotate(0, steer * bumperCar.Steering * Time.fixedDeltaTime, 0);
 
             float move = Input.GetAxis("Vertical");
             Vector3 forward = _acceleration * move * Time.fixedDeltaTime * transform.forward;
@@ -106,7 +106,7 @@ namespace BumperCarProject.Car
             }
             else
             {
-                _rb.velocity = Vector3.Lerp(_rb.velocity, Vector3.zero, bumperCar.deceleration * Time.fixedDeltaTime);
+                _rb.velocity = Vector3.Lerp(_rb.velocity, Vector3.zero, bumperCar.Deceleration * Time.fixedDeltaTime);
             }
 
             float currentSpeed = _rb.velocity.magnitude;
@@ -355,7 +355,7 @@ namespace BumperCarProject.Car
             Debug.Log("canControl: false");
 
             // 5초 동안 대기합니다.
-            yield return new WaitForSeconds(bumperCar.stunDuration);
+            yield return new WaitForSeconds(bumperCar.StunDuration);
 
             // canControl을 true로 설정합니다.
             canControl = true;

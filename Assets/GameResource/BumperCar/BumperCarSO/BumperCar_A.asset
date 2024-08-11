@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5acf1fc7a857b9348b70396ff25d5aa8, type: 3}
   m_Name: BumperCar_A
   m_EditorClassIdentifier: 
-  acceleration: 10
-  deceleration: 5
-  steering: 100
-  maxSpeed: 40
-  boosterMaxSpeed: 30
-  boostCoolTime: 2
-  stunDuration: 1
-  physicMaterial: {fileID: 13400000, guid: c7716159f717851449ae5078bb4f60e8, type: 2}
+  Acceleration: 1
+  Deceleration: 1
+  Steering: 100
+  MaxSpeed: 7
+  DashMaxSpeed: 15
+  DashDuration: 1
+  DashCoolTime: 15
+  StunDuration: 1
+  PhysicMaterial: {fileID: 13400000, guid: c7716159f717851449ae5078bb4f60e8, type: 2}

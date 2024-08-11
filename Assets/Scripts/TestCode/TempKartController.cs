@@ -8,7 +8,8 @@ using BumperCarProject.Car;
 using static UnityEngine.Rendering.DebugUI;
 using System.Runtime.CompilerServices;
 
-public class TempKartController : KartControl {
+/*
+public class TempKartController : CartControl {
     [SerializeField]
     private BumperCar _bumperCar;
 
@@ -373,3 +374,4 @@ public class TempKartController : KartControl {
 
     #endregion
 }
+*/

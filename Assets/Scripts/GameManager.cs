@@ -1,23 +1,32 @@
+using Fusion;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public int targetFrameRate = 60;
+    [SerializeField] private GameObject CartPrefab;
+    public static List<CartControl> Carts = new List<CartControl>();
 
-    void Start()
-    {
-        // 게임 시작 시 타겟 프레임 레이트 설정
-        Application.targetFrameRate = targetFrameRate;
+    private int RevivalCarts = 0;
+
+    private void Awake() {
+        CartControl.KnockedOut += CheckGameEnd;
     }
 
-    void Update()
-    {
-        float currentFrameRate = 1f / Time.deltaTime;
-        //Debug.Log("현재 프레임 레이트: " + currentFrameRate.ToString("F1")); // 소수점 첫째 자리까지 출력
+    public void SpwanPlayer(NetworkRunner runner, RoomPlayer player) {
+        Vector3 spawnpoint = MapManager.Current.GetSpawnPoint(player.PlayerID);
+        CartControl cart = runner.Spawn(CartPrefab, spawnpoint, Quaternion.identity, player.Object.InputAuthority).GetComponent<CartControl>();
+        cart.transform.name = string.Format("Cart {0}", player.Nickname);
+        cart.PlayerID = player.PlayerID;
+        Carts.Add(cart);
+        RevivalCarts++;
     }
 
-    public void SpwanPlayer()
-    {
+    private void CheckGameEnd(int PlayerID) {
+        RevivalCarts--;
 
+        if(RevivalCarts == 1) {
+            LevelManager.LoadScene(LevelManager.LOBBY_SCENE);
+        }
     }
 }

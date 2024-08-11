@@ -38,12 +38,11 @@ public class LevelManager : NetworkSceneManagerDefault
         yield return base.LoadSceneCoroutine(sceneRef, sceneParams);
 
         yield return null;
-        
-        if (sceneRef.AsIndex > LOBBY_SCENE)
-        {
-            if (Runner.GameMode == GameMode.Host)
-            {
-                GameLauncher.Manager.SpwanPlayer();
+
+        if (sceneRef.AsIndex > LOBBY_SCENE && Runner.GameMode == GameMode.Host) {
+            foreach (RoomPlayer player in RoomPlayer.Players) {
+                if (player != null)
+                    GameLauncher.Manager.SpwanPlayer(Runner, player);
             }
         }
 
