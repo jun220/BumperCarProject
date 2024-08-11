@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Fusion/Photon/PhotonVoice-Documentation.chm.meta
+guid: 302dd5885238b0542a8b0b7f631d7154
+========
 guid: c6e464c12f2b64b41b78b60f4241b5ea
+>>>>>>>> jbj2:Assets/Scenes/Test.unity.meta
 DefaultImporter:
   externalObjects: {}
   userData: 
