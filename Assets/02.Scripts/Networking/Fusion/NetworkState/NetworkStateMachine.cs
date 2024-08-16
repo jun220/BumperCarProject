@@ -14,7 +14,6 @@ namespace UltimateCartFights.Network {
         };
 
         private INetworkState current = States[DEFAULT_STATE];
-
         public INetworkState.STATE State { get; private set; } = DEFAULT_STATE;
 
         /// <summary>
