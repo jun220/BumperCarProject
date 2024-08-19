@@ -339,8 +339,15 @@ MonoBehaviour:
   Nickname: {fileID: 8993114978223917639}
   NameImage: {fileID: 3964474649738714560}
   Ready: {fileID: 8251981105498416109}
-  KartRender: {fileID: 690442551626753812}
+  Character: {fileID: 244230924183071409}
   Blocked: {fileID: 8538718488579790240}
+  CharacterImages:
+  - {fileID: 706497982, guid: 5eabf395c7a4e9147862c72fa0dd047b, type: 3}
+  - {fileID: -2023508310, guid: 5eabf395c7a4e9147862c72fa0dd047b, type: 3}
+  - {fileID: -514969112, guid: 5eabf395c7a4e9147862c72fa0dd047b, type: 3}
+  - {fileID: 1249533830, guid: 5eabf395c7a4e9147862c72fa0dd047b, type: 3}
+  - {fileID: -1410835633, guid: 5eabf395c7a4e9147862c72fa0dd047b, type: 3}
+  - {fileID: 2079167495, guid: 5eabf395c7a4e9147862c72fa0dd047b, type: 3}
 --- !u!1 &8251981105498416109
 GameObject:
   m_ObjectHideFlags: 0

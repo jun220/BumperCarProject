@@ -76,6 +76,18 @@ namespace UltimateCartFights.UI {
         #endregion
 
         #region Room Panel UI Method
+
+        [Header("Room Panel UI")]
+        [SerializeField] private RoomPanelUI RoomUI;
+
+        public void InitializeRoom() {
+            RoomUI.Initialized();
+        }
+
+        public void LeaveRoom() {
+            RoomUI.RemoveClientEvent();
+        }
+
         #endregion
     }
 }

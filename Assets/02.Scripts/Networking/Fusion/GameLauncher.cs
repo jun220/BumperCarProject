@@ -1,4 +1,5 @@
 using Fusion;
+using Fusion.Sockets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,6 +35,16 @@ namespace UltimateCartFights.Network {
             base.OnSessionListUpdated(runner, sessionList);
 
             Sessions = sessionList;
+        }
+
+        #endregion
+
+        #region DISCONNECTED EVENT METHOD
+
+        public override void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) {
+            base.OnDisconnectedFromServer(runner, reason);
+
+            Abort();
         }
 
         #endregion

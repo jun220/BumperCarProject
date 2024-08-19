@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace UltimateCartFights.Network {
     public class NetworkStateMachine {
         private const INetworkState.STATE DEFAULT_STATE = INetworkState.STATE.CLOSED;
+
         private static Dictionary<INetworkState.STATE, INetworkState> States = new Dictionary<INetworkState.STATE, INetworkState>{
+            { INetworkState.STATE.NONE, new NoneState() },
             { INetworkState.STATE.CLOSED, new CloseState() },
             { INetworkState.STATE.LOADING, new LoadingState() },
             { INetworkState.STATE.LOBBY, new LobbyState() },
@@ -16,33 +19,56 @@ namespace UltimateCartFights.Network {
         private INetworkState current = States[DEFAULT_STATE];
         public INetworkState.STATE State { get; private set; } = DEFAULT_STATE;
 
-        /// <summary>
-        /// 현 상태의 Update()를 수행한다
-        /// </summary>
-        public void Update() => current.Update();
-
-        /// <summary>
-        /// 현 상태에서 Terminate()를 수행한 후, 상태를 state로 변경한다
-        /// </summary>
-        /// <param name="state"></param>
-        public void ChangeState(INetworkState.STATE state) {
-            current.Terminate();
-
+        private void SetState(INetworkState.STATE state) {
             State = state;
             current = States[state];
-
-            current.Start();
         }
 
-        /// <summary>
-        /// 현 상태에서 Abort()를 수행한 후, 상태를 Default로 변경한다
-        /// </summary>
-        public void Abort() {
+        public void Start() => current.Start();
+        
+        public void Update() => current.Update();
+        
+        public async Task ChangeState(INetworkState.STATE state, Func<Task> method) {
+            current.Terminate();
+            SetState(INetworkState.STATE.NONE);
+
+            await method();
+            
+            SetState(state);
+            current.Start();
+        }
+        
+        public async Task<TResult> ChangeState<TResult>(INetworkState.STATE state, Func<Task<TResult>> method) {
+            current.Terminate();
+            SetState(INetworkState.STATE.NONE);
+
+            TResult result = await method();
+
+            SetState(state);
+            current.Start();
+
+            return result;
+        }
+        
+        public async Task<TResult> ChangeState<T, TResult>(INetworkState.STATE state, Func<T, Task<TResult>> method, T param) {
+            current.Terminate();
+            SetState(INetworkState.STATE.NONE);
+
+            TResult result = await method(param);
+
+            SetState(state);
+            current.Start();
+
+            return result;
+        }
+
+        public async Task Abort(Func<Task> AbortMethod) {
             current.Abort();
+            SetState(INetworkState.STATE.NONE);
 
-            State = DEFAULT_STATE;
-            current = States[DEFAULT_STATE];
-
+            await AbortMethod();
+            
+            SetState(DEFAULT_STATE);
             current.Start();
         }
     }

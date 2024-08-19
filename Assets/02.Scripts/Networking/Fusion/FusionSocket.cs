@@ -2,10 +2,9 @@ using Fusion;
 using Fusion.Sockets;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using UnityEngine;
+using UltimateCartFights.Utility;
 
 namespace UltimateCartFights.Network {
     public class FusionSocket : MonoBehaviour, INetworkRunnerCallbacks {
@@ -19,6 +18,8 @@ namespace UltimateCartFights.Network {
                 Instance = this;
             else
                 Destroy(this.gameObject);
+
+            statemachine.Start();
         }
 
         #endregion
@@ -31,11 +32,15 @@ namespace UltimateCartFights.Network {
 
         protected static void UpdateState() => statemachine.Update();
 
+        protected static void Abort() => statemachine.Abort(close);
+
         #endregion
 
         #region FUSION NETWORK FIELD
 
         public static NetworkRunner Runner { get; private set; } = null;
+
+        public static SessionInfo SessionInfo { get => Runner.SessionInfo; }
 
         public static bool IsNetworked {
             get {
@@ -76,11 +81,21 @@ namespace UltimateCartFights.Network {
         public static async Task Close() => await TryChangeNetworkState(close, INetworkState.STATE.CLOSED);
         public static async Task<StartGameResult> ReconnectLobby() => await TryChangeNetworkState(reconnectLobby, INetworkState.STATE.LOBBY);
 
+        public static NetworkObject Spawn(GameObject prefab, Vector3? position = null, Quaternion? rotation = null, PlayerRef? inputAuthority = null) {
+            if (Runner == null) return null;
+
+            NetworkObject obj = Runner.Spawn(prefab, position, rotation, inputAuthority);
+            return obj;
+        }
+
+        public static void Despawn(NetworkObject networkObject) {
+            if (Runner == null) return;
+            Runner.Despawn(networkObject);
+        }
+
         #endregion
 
         #region FUSION NETWORK - PRIVATE
-
-        [SerializeField] private GameObject Session;
 
         private static async Task open() {
             // 만일 이미 실행중인 객체가 있다면 해당 객체를 제거한다
@@ -88,7 +103,7 @@ namespace UltimateCartFights.Network {
                 await Close();
 
             // 룸 접속을 위한 NetworkRunner 객체를 생성한다
-            GameObject runnerObject = Instantiate(Instance.Session);
+            GameObject runnerObject = Instantiate(ResourceManager.Instance.Session);
             DontDestroyOnLoad(runnerObject);
 
             // NetworkRunner 컴포넌트를 할당한다
@@ -182,24 +197,22 @@ namespace UltimateCartFights.Network {
 
         private static async Task TryChangeNetworkState(Func<Task> method, INetworkState.STATE state) {
             try {
-                await method();
-                statemachine.ChangeState(state);
+                await statemachine.ChangeState(state, method);
             } catch (Exception e) {
                 Debug.LogException(e);
 
-                await close();
+                await statemachine.Abort(close);
             }
         }
 
         private static async Task<TResult> TryChangeNetworkState<TResult>(Func<Task<TResult>> method, INetworkState.STATE state) {
             try {
-                TResult result = await method();
-                statemachine.ChangeState(state);
+                TResult result = await statemachine.ChangeState(state, method);
                 return result;
             } catch (Exception e) {
                 Debug.LogException(e);
 
-                await close();
+                await statemachine.Abort(close);
             }
 
             return default;
@@ -207,13 +220,12 @@ namespace UltimateCartFights.Network {
 
         private static async Task<TResult> TryChangeNetworkState<T, TResult>(Func<T, Task<TResult>> method, T param, INetworkState.STATE state) {
             try {
-                TResult result = await method(param);
-                statemachine.ChangeState(state);
+                TResult result = await statemachine.ChangeState(state, method, param);
                 return result;
             } catch (Exception e) {
                 Debug.LogException(e);
 
-                await close();
+                await statemachine.Abort(close);
             }
 
             return default;
