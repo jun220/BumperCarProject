@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/01.Scenes/LOBBY.unity
     guid: e6d715a43de51604e97f2741af72c4a1
   - enabled: 1
-    path: Assets/01.Scenes/WallAndFloor/WallAndFloor.unity
+    path: Assets/01.Scenes/MAP_Grocery.unity
     guid: d90a3b70f94fa984c83a186ffa2dd300
   - enabled: 0
     path: Assets/01.Scenes/TEST_NETWORK_COLLISION.unity

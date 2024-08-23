@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace UltimateCartFights.Network {
@@ -13,6 +14,7 @@ namespace UltimateCartFights.Network {
             { INetworkState.STATE.LOBBY, new LobbyState() },
             { INetworkState.STATE.ROOM_RANDOM, new RoomRandomState() },
             { INetworkState.STATE.ROOM_GENERAL, new RoomGeneralState() },
+            { INetworkState.STATE.GAME_LOADING, new GameLoadingState() },
             { INetworkState.STATE.GAME, new GameState() }
         };
 
@@ -49,7 +51,7 @@ namespace UltimateCartFights.Network {
 
             return result;
         }
-        
+
         public async Task<TResult> ChangeState<T, TResult>(INetworkState.STATE state, Func<T, Task<TResult>> method, T param) {
             current.Terminate();
             SetState(INetworkState.STATE.NONE);
@@ -60,6 +62,23 @@ namespace UltimateCartFights.Network {
             current.Start();
 
             return result;
+        }
+
+        public void ChangeState(INetworkState.STATE state) {
+            current.Terminate();
+
+            SetState(state);
+            current.Start();
+        }
+
+        public void ChangeState<T>(INetworkState.STATE state, Action<T> method, T param) {
+            current.Terminate();
+            SetState(INetworkState.STATE.NONE);
+
+            method(param);
+
+            SetState(state);
+            current.Start();
         }
 
         public async Task Abort(Func<Task> AbortMethod) {

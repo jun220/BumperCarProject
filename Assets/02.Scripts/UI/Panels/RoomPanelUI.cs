@@ -1,7 +1,6 @@
-using Photon.Realtime;
-using Photon.Voice.PUN.UtilityScripts;
-using System.Collections;
+using Fusion;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UltimateCartFights.Network;
 using UnityEngine;
@@ -15,25 +14,26 @@ namespace UltimateCartFights.UI {
         [Header("Player Section")]
         [SerializeField] private List<PlayerUI> PlayerUIs;
 
-        private void InitializeProfile() {
-            for (int i = 0; i < PlayerUIs.Count; i++)
-                UpdateProfile(i);
+        private void UpdateProfile() {
+            for (int i = 0; i < RoomInfo.MAX_PLAYER; i++)
+                UpdatePlayerProfile(i);
         }
 
-        private void UpdateProfile(int playerID) {
-            if (playerID >= FusionSocket.SessionInfo.MaxPlayers) {
-                PlayerUIs[playerID].SetBlocked();
-            } else if (ClientPlayer.GetPlayer(playerID) == null) {
-                PlayerUIs[playerID].SetEmpty();
+        private void UpdatePlayerProfile(int playerID) {
+            PlayerUI playerUI = PlayerUIs[playerID];
+
+            if(playerID >= FusionSocket.SessionInfo.MaxPlayers) {
+                playerUI.SetBlocked();
             } else {
-                ClientPlayer client = ClientPlayer.GetPlayer(playerID);
-                bool isReady = (client.IsLeader ? false : client.IsReady);
-                PlayerUIs[playerID].SetPlayerInfo(client.Nickname, client.Character, isReady);
+                ClientPlayer client = ClientPlayer.Players.FirstOrDefault(player => player.PlayerID == playerID);
+
+                if (client == null) playerUI.SetEmpty();
+                else playerUI.SetPlayerInfo((string) client.Nickname, client.Character, client.IsReady);
             }
         }
 
         public void OnClickLeaveRoom() {
-            FusionSocket.ReconnectLobby();
+            FusionSocket.Open();
         }
 
         #endregion
@@ -82,9 +82,6 @@ namespace UltimateCartFights.UI {
         [SerializeField] private List<CharacterSelectionUI> CharacterTypes;
         [SerializeField] private List<ColorSelectionUI> ColorTypes;
 
-        private List<int> SelectedCharacter = new List<int>();
-        private List<int> SelectedColor = new List<int>();
-
         private int CurrentCharacterPage = 0;
 
         private void InitializeSelection() {
@@ -92,8 +89,6 @@ namespace UltimateCartFights.UI {
                 CharacterTypes[i].Initialize(i);
                 CharacterTypes[i].SetSelected(false);
                 CharacterTypes[i].gameObject.SetActive(false);
-
-                SelectedCharacter.Add(-1);
             }
 
             CharacterTypes[CurrentCharacterPage].gameObject.SetActive(true);
@@ -101,8 +96,6 @@ namespace UltimateCartFights.UI {
             for (int i = 0; i < ColorTypes.Count; i++) {
                 ColorTypes[i].Initialize(i);
                 ColorTypes[i].SetSelected(false);
-
-                SelectedColor.Add(-1);
             }
         }
 
@@ -118,30 +111,24 @@ namespace UltimateCartFights.UI {
             CharacterTypes[CurrentCharacterPage].gameObject.SetActive(true);
         }
 
-        private void UpdateCharacter(int playerID) {
-            ClientPlayer client = ClientPlayer.GetPlayer(playerID);
-            if (client == null) return;
+        private void UpdateCharacter() {
+            foreach(CharacterSelectionUI characterUI in CharacterTypes)
+                characterUI.SetSelected(false);
 
-            if (SelectedCharacter[playerID] != -1)
-                CharacterTypes[SelectedCharacter[playerID]].SetSelected(false);
-
-            if(client.Character != -1)
-                CharacterTypes[client.Character].SetSelected(true);
-
-            SelectedCharacter[playerID] = client.Character; 
+            foreach (ClientPlayer player in ClientPlayer.Players) {
+                if (player.Character == -1) continue;
+                CharacterTypes[player.Character].SetSelected(true);
+            }
         }
 
-        private void UpdateColor(int playerID) {
-            ClientPlayer client = ClientPlayer.GetPlayer(playerID);
-            if (client == null) return;
+        private void UpdateColor() {
+            foreach (ColorSelectionUI colorUI in ColorTypes)
+                colorUI.SetSelected(false);
 
-            if (SelectedColor[playerID] != -1)
-                ColorTypes[SelectedColor[playerID]].SetSelected(false);
-
-            if (client.CartColor != -1)
-                ColorTypes[client.CartColor].SetSelected(true);
-
-            SelectedColor[playerID] = client.CartColor;
+            foreach (ClientPlayer player in ClientPlayer.Players) {
+                if (player.CartColor == -1) continue;
+                ColorTypes[player.CartColor].SetSelected(true);
+            }
         }
 
 
@@ -163,24 +150,27 @@ namespace UltimateCartFights.UI {
         private void InitializeReady() {
             if(FusionSocket.IsHost) {
                 GameStartButton.GetComponent<Image>().sprite = WaitSprite;
-                GameStartText.gameObject.SetActive(false);
                 GameStartButton.interactable = false;
+                GameStartButton.gameObject.SetActive(true);
 
+                GameStartText.gameObject.SetActive(false);
                 ReadyButton.gameObject.SetActive(false);
             } else {
                 ReadyButton.GetComponent<Image>().sprite = WaitSprite;
                 ReadyButton.interactable = false;
+                ReadyButton.gameObject.SetActive(true);
 
                 GameStartButton.gameObject.SetActive(false);
             }
         }
 
         public void OnClickReady() {
-            ServerAPI.ChangeReady(!ClientPlayer.Local.IsReady);
+            if (ClientPlayer.Local == null) return;
+            ClientPlayer.Local.RPC_SetReadyState(!ClientPlayer.Local.IsReady);
         }
 
         public void OnStartGame() {
-            Debug.Log("Start Game!");
+            FusionSocket.LoadGameScene(SceneManager.SCENE.MAP_GROCERY);
         }
 
         private void UpdateReady() {
@@ -189,45 +179,25 @@ namespace UltimateCartFights.UI {
         }
 
         private void UpdateReadyButton() {
-            if(ClientPlayer.Local.CanReady) {
-                ReadyButton.GetComponent<Image>().sprite = WaitSprite;
-                ReadyButton.interactable = false;
-            } else {
+            if (ClientPlayer.Local != null && ClientPlayer.Local.CanReady) {
                 ReadyButton.GetComponent<Image>().sprite = ReadySprite;
                 ReadyButton.interactable = true;
+            } else {
+                ReadyButton.GetComponent<Image>().sprite = WaitSprite;
+                ReadyButton.interactable = false;
             }
         }
 
         private void UpdateGameStartButton() {
-            if (!CanGameStart()) {
-                GameStartButton.GetComponent<Image>().sprite = WaitSprite;
-                GameStartText.gameObject.SetActive(false);
-                GameStartButton.interactable = false;
-            } else {
+            if (ClientPlayer.CanStartGame) {
                 GameStartButton.GetComponent<Image>().sprite = GameStartSprite;
                 GameStartText.gameObject.SetActive(true);
                 GameStartButton.interactable = true;
+            } else {
+                GameStartButton.GetComponent<Image>().sprite = WaitSprite;
+                GameStartText.gameObject.SetActive(false);
+                GameStartButton.interactable = false;
             }
-        }
-
-        private bool CanReady() {
-            if (ClientPlayer.Local == null) return false;
-            if (ClientPlayer.Local.Character == -1) return false;
-            if (ClientPlayer.Local.CartColor == -1) return false;
-            return true;
-        }
-
-        private bool CanGameStart() {
-            if (FusionSocket.SessionInfo.PlayerCount == 1) return false;
-
-            for (int i = 0; i < FusionSocket.SessionInfo.PlayerCount; i++) {
-                ClientPlayer client = ClientPlayer.GetPlayer(i);
-
-                if (client == null) return false;
-                if (!client.IsReady) return false;
-            }
-
-            return true;
         }
 
         #endregion
@@ -235,41 +205,33 @@ namespace UltimateCartFights.UI {
         #region Others
 
         public void Initialized() {
-            InitializeProfile();
+            UpdateProfile();
             InitializeChat();
             InitializeSelection();
+            InitializeReady();
+
             AddClientEvent();
         }
 
+        public void LeaveRoom() {
+            RemoveClientEvent();
+        }
+
         private void AddClientEvent() {
-            ClientPlayer.PlayerJoined += UpdateProfile;
-            ClientPlayer.PlayerChanged += UpdateProfile;
-            ClientPlayer.PlayerLeft += UpdateProfile;
+            ClientPlayer.PlayerUpdated += UpdateProfile;
+            ClientPlayer.PlayerUpdated += UpdateCharacter;
+            ClientPlayer.PlayerUpdated += UpdateColor;
+            ClientPlayer.PlayerUpdated += UpdateReady;
 
-            ClientPlayer.PlayerJoined += UpdateCharacter;
-            ClientPlayer.PlayerChanged += UpdateCharacter;
-            ClientPlayer.PlayerLeft += UpdateCharacter;
-
-            ClientPlayer.PlayerJoined += UpdateColor;
-            ClientPlayer.PlayerChanged += UpdateColor;
-            ClientPlayer.PlayerLeft += UpdateColor;
-            
             ChatClientNetwork.GetMessage += OnGetMessage;
             ChatInput.onSubmit.AddListener(OnSubmitMessage);
         }
 
         public void RemoveClientEvent() {
-            ClientPlayer.PlayerJoined -= UpdateProfile;
-            ClientPlayer.PlayerChanged -= UpdateProfile;
-            ClientPlayer.PlayerLeft -= UpdateProfile;
-
-            ClientPlayer.PlayerJoined -= UpdateCharacter;
-            ClientPlayer.PlayerChanged -= UpdateCharacter;
-            ClientPlayer.PlayerLeft -= UpdateCharacter;
-
-            ClientPlayer.PlayerJoined -= UpdateColor;
-            ClientPlayer.PlayerChanged -= UpdateColor;
-            ClientPlayer.PlayerLeft -= UpdateColor;
+            ClientPlayer.PlayerUpdated -= UpdateProfile;
+            ClientPlayer.PlayerUpdated -= UpdateCharacter;
+            ClientPlayer.PlayerUpdated -= UpdateColor;
+            ClientPlayer.PlayerUpdated -= UpdateReady;
 
             ChatClientNetwork.GetMessage -= OnGetMessage;
             ChatInput.onSubmit.RemoveListener(OnSubmitMessage);

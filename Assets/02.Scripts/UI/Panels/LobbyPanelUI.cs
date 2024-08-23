@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UltimateCartFights.Network;
+using UltimateCartFights.Utility;
 using UnityEngine;
 using UnityEngine.UI;
 using WebSocketSharp;
@@ -132,7 +133,7 @@ namespace UltimateCartFights.UI {
             if (!session.Properties.ContainsKey("RoomName"))        return false;
             if (!session.Properties.ContainsKey("HostNickname"))    return false;
             if (!session.Properties.ContainsKey("IsRandom"))        return false;
-            if (session.Properties["IsRandom"])                     return false;
+            if ((bool) session.Properties["IsRandom"])              return false;
             return true;
         }
 

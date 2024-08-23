@@ -1,41 +1,53 @@
 using Fusion;
 using Photon.Realtime;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using UltimateCartFights.UI;
+using UltimateCartFights.Utility;
 using UnityEngine;
 using WebSocketSharp;
 
 namespace UltimateCartFights.Network {
     public class ClientPlayer : NetworkBehaviour {
 
-        #region Player State Management
+        #region Player State
 
-        private readonly static ClientPlayer[] Players = new ClientPlayer[RoomInfo.MAX_PLAYER];
+        public readonly static List<ClientPlayer> Players = new List<ClientPlayer>();
 
         public static ClientPlayer Local { get; private set; } = null;
 
-        public static int LocalID { get => Local._playerID; }
+        public static bool CanStartGame {
+            get {
+                //if (Players.Count == 1) return false;
 
-        public static Action<int> PlayerJoined;
-        public static Action<int> PlayerLeft;
-        public static Action<int> PlayerChanged;
+                foreach(ClientPlayer player in Players) {
+                    if (!player.IsReady) return false;
+                }
+                
+                return true;
+            }
+        }
 
-        private ChangeDetector changer;
+        public bool CanReady {
+            get {
+                if (CartColor == -1) return false;
+                if (Character == -1) return false;
+                return true;
+            }
+        }
 
-        public static ClientPlayer GetPlayer(int playerID) => Players[playerID];
-        private static void RemovePlayer(int playerID) => Players[playerID] = null;
+        public bool IsLeader { get => PlayerID == 0; }
 
         #endregion
 
-        #region Player State Field
+        #region Networked Properties
 
-        public bool CanReady { get => (CartColor != -1 && Character != -1); }
-        public bool IsLeader { get => PlayerID == 0; }
-
-        private int _playerID = -1;
+        public static Action PlayerUpdated;
 
         [Networked] public int PlayerID { get; private set; } = -1;
-        [Networked] public string Nickname { get; private set; } = string.Empty;
+        [Networked] public NetworkString<_32> Nickname { get; private set; } = string.Empty;
         [Networked] public int CartColor { get; private set; } = -1;
         [Networked] public int Character { get; private set; } = -1;
         [Networked] public NetworkBool IsReady { get; private set; } = false;
@@ -44,85 +56,169 @@ namespace UltimateCartFights.Network {
 
         #region Player Lifecycle Method
 
+        private ChangeDetector _changeDetector;
+
         public override void Spawned() {
             base.Spawned();
 
-            changer = GetChangeDetector(ChangeDetector.Source.SimulationState);
+            _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
 
-            if(Object.HasInputAuthority) {
+            if (Object.HasInputAuthority) {
                 Local = this;
+                RPC_SetPlayerStats(ClientInfo.Nickname);
             }
 
-            if(IsInitialized()) {
-                _playerID = PlayerID;
-                Players[PlayerID] = this;
-                PlayerJoined?.Invoke(PlayerID);
-            }
+            Players.Add(this);
+            PlayerUpdated?.Invoke();
+
+            DontDestroyOnLoad(gameObject);
+
+            Debug.Log(string.Format("[ * Debug * ] User {0} is Spawned!", Object.InputAuthority.PlayerId));
         }
 
         public override void Render() {
             base.Render();
 
-            foreach (var change in changer.DetectChanges(this)) {
-                switch (change) {
+            foreach(string change in _changeDetector.DetectChanges(this)) {
+                switch(change) {
+                    case nameof(Nickname):
                     case nameof(CartColor):
                     case nameof(Character):
                     case nameof(IsReady):
-                        PlayerChanged?.Invoke(PlayerID);
-                        Debug.Log(string.Format("[ * Debug * ] Player ID : {0} / Nickname : {1} / Cart Color : {2} / Character : {3} / IsReady : {4}", PlayerID, Nickname, CartColor, Character, IsReady));
+                        PlayerUpdated?.Invoke();
                         break;
                 }
             }
         }
 
-        private bool IsInitialized() {
-            if (Nickname.IsNullOrEmpty()) return false;
-            if (PlayerID == -1) return false;
-            return true;
-        }
+        private void OnDisable() {
+            if (Local == this)
+                Local = null;
 
-        public void RemoveClient() {
-            RemovePlayer(_playerID);
-            PlayerLeft?.Invoke(_playerID);
+            Players.Remove(this);
+            PlayerUpdated?.Invoke();
         }
 
         #endregion
 
         #region Client RPC Method
 
-        [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
-        public void RPC_Initialized(string nickcname, int playerID, int cartColor, int character) {
-            Debug.Log(string.Format("[ * Debug * ] Initialize Player - Player ID : {0} / Nickname : {1} / Color : {2} / Character : {3}", playerID, nickcname, cartColor, character));
-
-            PlayerID = playerID;
-            Nickname = nickcname;
-            CartColor = cartColor;
-            Character = character;
-            IsReady = FusionSocket.IsHost;
-
-            _playerID = playerID;
-            Players[playerID] = this;
-            PlayerJoined?.Invoke(PlayerID);
+        [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
+        public void RPC_SetPlayerStats(NetworkString<_32> nickname) {
+            PlayerID = GetEmptyID();
+            Nickname = (string) nickname;
+            CartColor = GetEmptyColor();
+            Character = GetEmptyCharacter();
+            IsReady = IsLeader ? CanReady : false;
         }
 
-        [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.StateAuthority)]
-        public void RPC_SetCartColor(int cartColor) {
-            if (cartColor == -1) IsReady = false;
-            CartColor = cartColor;
+        [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
+        public void RPC_SetCartColor(int color) {
+            if (isUsedColor(color)) return;
+            CartColor = color;
 
-            if (FusionSocket.IsHost) IsReady = CanReady;
+            if (IsLeader) IsReady = CanReady;
+            else IsReady = false;
         }
 
-        [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.StateAuthority)]
+        [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
         public void RPC_SetCharacter(int character) {
-            if (character == -1) IsReady = false;
+            if (isUsedCharacter(character)) return;
             Character = character;
 
-            if (FusionSocket.IsHost) IsReady = CanReady;
+            if (IsLeader) IsReady = CanReady;
+            else IsReady = false;
         }
 
-        [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.StateAuthority)]
-        public void RPC_SetReady(NetworkBool isReady) => IsReady = isReady;
+        [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
+        public void RPC_SetReadyState(NetworkBool state) {
+            if (IsLeader) return;
+            if (!CanReady && state) return;
+
+            IsReady = state;
+        }
+
+        #endregion
+
+        #region Others
+
+        public static void RemovePlayer(NetworkRunner runner, PlayerRef player) {
+            ClientPlayer client = Players.FirstOrDefault(x => x.Object.InputAuthority == player);
+            if (client == null) return;
+
+            Players.Remove(client);
+            runner.Despawn(client.Object);
+        }
+
+        private int GetEmptyID() {
+            bool[] isUsed = new bool[RoomInfo.MAX_PLAYER];
+
+            foreach (ClientPlayer player in Players) {
+                if (player.PlayerID != -1)
+                    isUsed[player.PlayerID] = true;
+            }
+
+            for (int i = 0; i < isUsed.Length; i++) {
+                if (!isUsed[i])
+                    return i;
+            }
+
+            return -1;
+        }
+
+        private int GetEmptyColor() {
+            bool[] isUsed = new bool[RoomInfo.MAX_PLAYER];
+
+            foreach(ClientPlayer player in Players) {
+                if(player.CartColor != -1)
+                    isUsed[player.CartColor] = true;
+            }
+
+            for(int i = 0; i < isUsed.Length; i++) {
+                if (!isUsed[i])
+                    return i;
+            }
+
+            return -1;
+        }
+
+        private int GetEmptyCharacter() {
+            bool[] isUsed = new bool[RoomInfo.MAX_PLAYER];
+
+            foreach (ClientPlayer player in Players) {
+                if (player.Character != -1)
+                    isUsed[player.Character] = true;
+            }
+
+            for (int i = 0; i < isUsed.Length; i++) {
+                if (!isUsed[i])
+                    return i;
+            }
+
+            return -1;
+        }
+
+        private bool isUsedColor(int color) {
+            if (color == -1) return false;
+
+            foreach(ClientPlayer player in Players) {
+                if(color == player.CartColor) 
+                    return true;
+            }
+
+            return false;
+        }
+
+        private bool isUsedCharacter(int character) {
+            if (character == -1) return false;
+
+            foreach (ClientPlayer player in Players) {
+                if (character == player.Character)
+                    return true;
+            }
+
+            return false;
+        }
 
         #endregion
     }

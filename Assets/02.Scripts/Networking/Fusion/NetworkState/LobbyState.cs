@@ -8,11 +8,16 @@ namespace UltimateCartFights.Network {
 
         public void Start() {
             PanelUI.Instance.SetLobby();
+            GameLauncher.OnSessionUpdated += PanelUI.Instance.OnSessionUpdated;
         }
 
-        public void Abort() { }
+        public void Abort() {
+            GameLauncher.OnSessionUpdated -= PanelUI.Instance.OnSessionUpdated;
+        }
         
-        public void Terminate() { }
+        public void Terminate() {
+            GameLauncher.OnSessionUpdated -= PanelUI.Instance.OnSessionUpdated;
+        }
 
         public void Update() { }
     }

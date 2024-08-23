@@ -1,12 +1,9 @@
 using Fusion;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UltimateCartFights.Network;
 using WebSocketSharp;
+using UltimateCartFights.Utility;
 
 namespace UltimateCartFights.UI {
     public class RoomItem : MonoBehaviour {
@@ -35,11 +32,10 @@ namespace UltimateCartFights.UI {
             GetComponent<RectTransform>().localScale = Vector3.one;
         }
 
-        public async void OnClickRoomItem() {
+        public void OnClickRoomItem() {
             if (!FusionSocket.IsNetworked) return;
             if (ClientInfo.Nickname.IsNullOrEmpty()) return;
-
-            await FusionSocket.JoinRoom(roomInfo);
+            FusionSocket.JoinRoom(roomInfo);
         }
     }
 }

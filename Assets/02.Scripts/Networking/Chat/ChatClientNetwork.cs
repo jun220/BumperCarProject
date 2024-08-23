@@ -5,6 +5,10 @@ using AuthenticationValues = Photon.Chat.AuthenticationValues;
 using UnityEngine;
 using Photon.Realtime;
 using System;
+using UltimateCartFights.Utility;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using WebSocketSharp;
 
 namespace UltimateCartFights.Network {
     public class ChatClientNetwork : MonoBehaviour, IChatClientListener {
@@ -29,7 +33,8 @@ namespace UltimateCartFights.Network {
 
         public enum ChatType { SYSTEM, GENERAL, NONE };
 
-        private static ChatClient chatClient = null;
+        private static ChatClient ChatClient = null;
+        private static string ChatChannel = string.Empty;
 
         private ChatAppSettings GetChatSettings() {
             AppSettings PhotonSettings = PhotonNetwork.PhotonServerSettings.AppSettings;
@@ -49,31 +54,36 @@ namespace UltimateCartFights.Network {
             return ChatAppSettings;
         }
 
-        public void Open() {
-            chatClient = new ChatClient(this);
-            chatClient.UseBackgroundWorkerForSending = true;
-            chatClient.AuthValues = new AuthenticationValues(ClientInfo.Nickname);
-            chatClient.ConnectUsingSettings(GetChatSettings());
+        public void Open(string channel) {
+            ChatClient = new ChatClient(this);
+            ChatClient.UseBackgroundWorkerForSending = true;
+            ChatClient.AuthValues = new AuthenticationValues();
+            ChatClient.ConnectUsingSettings(GetChatSettings());
+
+            ChatChannel = channel;
         }
 
         private void UpdateChat() {
-            if (chatClient != null)
-                chatClient.Service();
+            if (ChatClient != null)
+                ChatClient.Service();
         }
 
         private void Close() {
-            if (chatClient != null)
-                chatClient.Disconnect();
+            if (ChatClient != null) {
+                ChatClient.Disconnect();
+            }
 
-            chatClient = null;
+            ChatClient = null;
+            ChatChannel = string.Empty;
         }
 
         public static void SendChatMessage(string message, ChatType type) {
-            if (chatClient == null) return;
+            if (ChatClient == null) return;
+            if (ChatChannel.IsNullOrEmpty()) return;
             if (string.IsNullOrEmpty(message)) return;
 
             string messagePacket = AssembleChat(message, type);
-            bool result = chatClient.PublishMessage(FusionSocket.SessionInfo.Name, messagePacket);
+            bool result = ChatClient.PublishMessage(ChatChannel, messagePacket);
 
             if (!result) GetMessage?.Invoke("[ SYSTEM : 채팅을 이용할 수 없습니다. 잠시 후에 시도해보세요. ]", ChatType.SYSTEM);
         }
@@ -107,19 +117,13 @@ namespace UltimateCartFights.Network {
         public static Action<string, ChatType> GetMessage;
 
         public void OnConnected() {
-            string[] Channels = { FusionSocket.SessionInfo.Name };
-            chatClient.Subscribe(Channels);
+            ChatClient.Subscribe(new string[] { ChatChannel });
         }
 
         public void OnSubscribed(string[] channels, bool[] results) {
-            Debug.Log(string.Format("[ * Debug * ] Photon Chat - OnSubscribed(channel : {0}) Called!", channels[0]));
             SendChatMessage(string.Format("{0} 님이 입장했습니다!", ClientInfo.Nickname), ChatType.SYSTEM);
         }
-
-        public void OnUserUnsubscribed(string channel, string user) {
-            GetMessage?.Invoke(string.Format("[ SYSTEM : {0} 님이 나갔습니다! ]", user), ChatType.SYSTEM);
-        }
-
+        
         public void OnGetMessages(string channelName, string[] senders, object[] messages) {
             foreach (string message in messages) {
                 ChatType type = GetMessageType(message);
@@ -132,6 +136,8 @@ namespace UltimateCartFights.Network {
 
         #region CHAT OVERRIDE METHOD
 
+        public void OnDisconnected() { }
+
         public void DebugReturn(DebugLevel level, string message) { }
 
         public void OnChatStateChange(ChatState state) { }
@@ -140,12 +146,12 @@ namespace UltimateCartFights.Network {
 
         public void OnStatusUpdate(string user, int status, bool gotMessage, object message) { }
 
-        public void OnDisconnected() { }
-
+        public void OnUnsubscribed(string[] channel) { }
+        
         public void OnUserSubscribed(string channel, string user) { }
 
-        public void OnUnsubscribed(string[] channels) { }
-
+        public void OnUserUnsubscribed(string channel, string user) { }
+        
         #endregion
     }
 }

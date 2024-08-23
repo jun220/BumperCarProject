@@ -25,7 +25,7 @@ namespace UltimateCartFights.UI {
 
         #region Panel UI METHOD
 
-        public enum Panel { INTRO, LOBBY, ROOM, GAME }
+        public enum Panel { INTRO, LOBBY, ROOM, LOADING, GAME }
         
         [Header("Panel")]
         [SerializedDictionary("Network State", "Panel GameObject")]
@@ -73,6 +73,10 @@ namespace UltimateCartFights.UI {
             PopupUI.Instance.Open(PopupUI.PopUp.ROOM_CREATION);
         }
 
+        public void OnSessionUpdated() {
+            LobbyUI.OnClickRefresh();
+        }
+
         #endregion
 
         #region Room Panel UI Method
@@ -80,13 +84,22 @@ namespace UltimateCartFights.UI {
         [Header("Room Panel UI")]
         [SerializeField] private RoomPanelUI RoomUI;
 
-        public void InitializeRoom() {
-            RoomUI.Initialized();
-        }
+        public void InitializeRoom() => RoomUI.Initialized();
 
-        public void LeaveRoom() {
-            RoomUI.RemoveClientEvent();
-        }
+        public void LeaveRoom() => RoomUI.LeaveRoom();
+
+        #endregion
+
+        #region Loading Panel UI Method
+
+        [Header("Loading Panel UI")]
+        [SerializeField] LoadingPanelUI LoadingUI;
+
+        public void InitializeLoading() => LoadingUI.Initialize();
+
+        public void SetLoadingProgress(float progress) => LoadingUI.SetLoadingProgress(progress);
+
+        public void ShowRandomTip() => LoadingUI.ShowRandomTip();
 
         #endregion
     }

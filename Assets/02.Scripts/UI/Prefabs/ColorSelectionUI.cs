@@ -22,9 +22,9 @@ namespace UltimateCartFights.UI {
 
         public void OnChangeCartColor() {
             if (ClientPlayer.Local.CartColor == ColorType)
-                ServerAPI.ChangeCartColor(-1);
+                ClientPlayer.Local.RPC_SetCartColor(-1);
             else
-                ServerAPI.ChangeCartColor(ColorType);
+                ClientPlayer.Local.RPC_SetCartColor(ColorType);
         }
 
         public void SetSelected(bool isSelected) {

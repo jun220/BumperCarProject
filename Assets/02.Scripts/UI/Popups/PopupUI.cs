@@ -1,8 +1,7 @@
 using AYellowpaper.SerializedCollections;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UltimateCartFights.Network;
+using UltimateCartFights.Utility;
 using UnityEngine;
 using UnityEngine.UI;
 using WebSocketSharp;
@@ -30,12 +29,24 @@ namespace UltimateCartFights.UI {
         [SerializedDictionary("Network State", "Panel GameObject")]
         [SerializeField] private SerializedDictionary<PopUp, GameObject> Popups;
 
-        public void Open(PopUp type) => Popups[type].SetActive(true);
+        public void Open(PopUp type) {
+            Initialize(type);
+            Popups[type].SetActive(true);
+        }
+
         public void Close(PopUp type) => Popups[type].SetActive(false);
 
         public void CloseAll() {
             foreach(GameObject popup in Popups.Values)
                 popup.SetActive(false);
+        }
+
+        private void Initialize(PopUp type) {
+            switch(type) {
+                case PopUp.ROOM_CREATION:
+                    InitializeRoomCreation();
+                    break;
+            }
         }
 
         #endregion
@@ -48,6 +59,13 @@ namespace UltimateCartFights.UI {
         [SerializeField] private Slider MaxPlayer;
         [SerializeField] private Button Submit;
 
+        private void InitializeRoomCreation() {
+            RoomName.text = string.Empty;
+
+            MaxPlayerText.text = RoomInfo.MAX_PLAYER.ToString();
+            MaxPlayer.value = RoomInfo.MAX_PLAYER;
+        }
+
         public void OnModifyRoomName() {
             if (RoomName.text.IsNullOrEmpty()) return;
             Submit.interactable = true;
@@ -58,9 +76,12 @@ namespace UltimateCartFights.UI {
         }
 
         public void OnClickRoomCancle() => Close(PopUp.ROOM_CREATION);
+
         public void OnClickSubmit() {
             Submit.interactable = false;
             Close(PopUp.ROOM_CREATION);
+
+            Debug.Log("[ * Debug * ] Room Creation Popup - OnClickSubmit");
 
             RoomInfo room = new RoomInfo(RoomName.text, (int) MaxPlayer.value, ClientInfo.Nickname);
             FusionSocket.CreateRoom(room);

@@ -22,9 +22,9 @@ namespace UltimateCartFights.UI {
 
         public void OnChangeCharacter() {
             if (ClientPlayer.Local.Character == CharacterType)
-                ServerAPI.ChangeCharacter(-1);
+                ClientPlayer.Local.RPC_SetCharacter(-1);
             else
-                ServerAPI.ChangeCharacter(CharacterType);
+                ClientPlayer.Local.RPC_SetCharacter(CharacterType);
         }
 
         public void SetSelected(bool isSelected) {

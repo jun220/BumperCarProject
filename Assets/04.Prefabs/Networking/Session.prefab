@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1963901900618656577}
   - component: {fileID: 7197564957750401732}
   - component: {fileID: 5233996534051328683}
-  - component: {fileID: 500712577933080674}
+  - component: {fileID: 500871007720113066}
   m_Layer: 0
   m_Name: Session
   m_TagString: Untagged
@@ -150,7 +150,7 @@ MonoBehaviour:
   ClientPhysicsSimulation: 3
   DeltaTimeMultiplier: 1
   SetUnityFixedTimestep: 0
---- !u!114 &500712577933080674
+--- !u!114 &500871007720113066
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
