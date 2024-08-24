@@ -24,6 +24,12 @@ namespace UltimateCartFights.Network {
                 FusionSocket.Loading();
 
             yield return base.LoadSceneCoroutine(sceneRef, sceneParams);
+
+            yield return null;
+
+            if(FusionSocket.IsServer) {
+                // 카트 생성
+            }
         }
 
         /// <summary>
@@ -44,10 +50,11 @@ namespace UltimateCartFights.Network {
         protected override IEnumerator OnSceneLoaded(SceneRef sceneRef, UnityEngine.SceneManagement.Scene scene, NetworkLoadSceneParameters sceneParams) {
             Debug.Log(string.Format("[ * Debug * ] SceneManager - Scene Loading Complete! ( scene : {0} )", sceneRef.AsIndex));
 
-            PanelUI.Instance.SetLoadingProgress(0.999f);
-            yield return new WaitForSeconds(10f);
+            PanelUI.Instance.SetLoadingProgress(1f);
+            yield return new WaitUntil(() => LoadingPanelUI.IsLoadingComplete);
 
             LoadNetwork(GetSceneType(sceneRef.AsIndex));
+
             yield return base.OnSceneLoaded(sceneRef, scene, sceneParams);
         }
 

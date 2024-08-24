@@ -15,7 +15,6 @@ TagManager:
   - Water
   - UI
   - Environment
-  - BumperCar
   - Field
   - 
   - 
@@ -38,8 +37,9 @@ TagManager:
   - 
   - 
   - 
-  - Collisable
-  - KartSelection
+  - 
+  - 
+  - Cart
   m_SortingLayers:
   - name: Default
     uniqueID: 0

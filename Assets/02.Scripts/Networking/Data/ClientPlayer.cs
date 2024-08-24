@@ -40,6 +40,8 @@ namespace UltimateCartFights.Network {
 
         public bool IsLeader { get => PlayerID == 0; }
 
+        public bool IsLocal { get => Local != null && Local.PlayerID == PlayerID; }
+
         #endregion
 
         #region Networked Properties

@@ -102,5 +102,16 @@ namespace UltimateCartFights.UI {
         public void ShowRandomTip() => LoadingUI.ShowRandomTip();
 
         #endregion
+
+        #region Game Panel UI Method
+
+        [Header("Game Panel UI")]
+        [SerializeField] private GamePanelUI GameUI;
+
+        public void InitializeGame() {
+            GameUI.Initialize(ClientPlayer.Players);
+        }
+
+        #endregion
     }
 }

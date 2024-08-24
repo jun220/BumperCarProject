@@ -24,7 +24,7 @@ namespace UltimateCartFights.UI {
             KnockoutUI.gameObject.SetActive(false);
         }
 
-        private void SetDamage(float damage) {
+        public void SetDamage(float damage) {
             int integerNumber = (int) damage;
             int decimalNumber = ((int) damage * 10) % 10;
 
@@ -32,7 +32,7 @@ namespace UltimateCartFights.UI {
                 INTEGER_FONT_SIZE, integerNumber, DECIMAL_FONT_SIZE, decimalNumber);
         }
 
-        private void Knockout() {
+        public void Knockout() {
             KnockoutUI.gameObject.SetActive(true);
         }
     }

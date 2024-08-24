@@ -8,6 +8,7 @@ namespace UltimateCartFights.Network {
 
         public void Start() {
             PanelUI.Instance.SetPanel(PanelUI.Panel.GAME);
+            PanelUI.Instance.InitializeGame();
         }
 
         public void Update() { }
