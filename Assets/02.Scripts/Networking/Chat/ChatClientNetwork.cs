@@ -68,7 +68,7 @@ namespace UltimateCartFights.Network {
                 ChatClient.Service();
         }
 
-        private void Close() {
+        public void Close() {
             if (ChatClient != null) {
                 ChatClient.Disconnect();
             }

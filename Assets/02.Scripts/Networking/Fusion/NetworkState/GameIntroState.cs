@@ -4,9 +4,9 @@ using UltimateCartFights.UI;
 using UnityEngine;
 
 namespace UltimateCartFights.Network {
-    public class GameLoadingState : INetworkState {
+    public class GameIntroState : INetworkState {
 
-        private const float TIP_CHANGE_COOL = 3.0f;
+        private const float TIP_CHANGE_COOL = 5.0f;
         private float timer = 0.0f;
 
         public void Start() {
@@ -19,7 +19,7 @@ namespace UltimateCartFights.Network {
 
             if(timer >= TIP_CHANGE_COOL) {
                 PanelUI.Instance.ShowRandomTip();
-                timer = 0.0f;
+                timer -= TIP_CHANGE_COOL;
             }
         }
 

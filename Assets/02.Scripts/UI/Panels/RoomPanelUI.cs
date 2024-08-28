@@ -87,15 +87,19 @@ namespace UltimateCartFights.UI {
         private void InitializeSelection() {
             for (int i = 0; i < CharacterTypes.Count; i++) {
                 CharacterTypes[i].Initialize(i);
-                CharacterTypes[i].SetSelected(false);
                 CharacterTypes[i].gameObject.SetActive(false);
+
+                ClientPlayer client = ClientPlayer.Players.FirstOrDefault(x => x.Character == i);
+                CharacterTypes[i].SetSelected(client != null); ;
             }
 
             CharacterTypes[CurrentCharacterPage].gameObject.SetActive(true);
 
             for (int i = 0; i < ColorTypes.Count; i++) {
                 ColorTypes[i].Initialize(i);
-                ColorTypes[i].SetSelected(false);
+
+                ClientPlayer client = ClientPlayer.Players.FirstOrDefault(x => x.CartColor == i);
+                ColorTypes[i].SetSelected(client != null); ;
             }
         }
 
@@ -162,6 +166,8 @@ namespace UltimateCartFights.UI {
 
                 GameStartButton.gameObject.SetActive(false);
             }
+
+            UpdateReady();
         }
 
         public void OnClickReady() {

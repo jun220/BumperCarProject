@@ -50,19 +50,19 @@ namespace UltimateCartFights.UI {
         private static float TargetProgress = 0.0f;
         private static float CurrentProgress = 0.0f;
 
-        public static bool IsLoadingComplete { get => CurrentProgress >= 1.0f; }
+        public static bool IsLoadingComplete { get => IsLoadingStarted && CurrentProgress >= 1.0f; }
+        private static bool IsLoadingStarted = false;
 
         private void InitializeLoading() {
             CurrentProgress = 0.0f;
-            SetLoadingProgress(0.0f);
-
+            IsLoadingStarted = true;
             ShowRandomTip();
+
+            StartCoroutine(MoveLoading());
         }
 
         public void SetLoadingProgress(float progress) {
-            StopCoroutine(MoveLoading());
             TargetProgress = progress;
-            StartCoroutine(MoveLoading());
         }
 
         public void ShowRandomTip() {
@@ -73,21 +73,20 @@ namespace UltimateCartFights.UI {
         private void SetLoading(float progress) {
             LoadingBar.value = progress;
             LoadingPercent.text = string.Format("{0:0.#} %", progress * 100);
-
-            Debug.Log(string.Format("[ * Debug * ] Loading Panel UI - Current Progress : {0}", progress));
         }
 
         private IEnumerator MoveLoading() {
-            const float DELTA_TIME = 0.05f;
+            const float DELTA_TIME = 0.02f;
 
-            while(CurrentProgress < TargetProgress) {
-                float LerpProgress = CurrentProgress + (DELTA_TIME * LOADING_SPEED / 1000f);
+            while(CurrentProgress < 1f) {
+                float LerpProgress = CurrentProgress + (DELTA_TIME * LOADING_SPEED / 100f);
                 CurrentProgress = Mathf.Min(TargetProgress, LerpProgress);
                 SetLoading(CurrentProgress);
 
+                Debug.Log(string.Format("[ * Debug * ] Loading Progress : {0} %", CurrentProgress * 100));
+
                 yield return new WaitForSeconds(DELTA_TIME);
             }
-
             yield return null;
         }
 
@@ -98,6 +97,14 @@ namespace UltimateCartFights.UI {
         public void Initialize() {
             InitializeProfiles();
             InitializeLoading();
+        }
+
+        public void Disabled() {
+            CurrentProgress = 0.0f;
+            TargetProgress = 0.0f;
+            IsLoadingStarted = false;
+
+            StopCoroutine(MoveLoading());
         }
 
         #endregion

@@ -10,11 +10,17 @@ namespace UltimateCartFights.Network {
             PanelUI.Instance.SetPanel(PanelUI.Panel.LOBBY);
             PanelUI.Instance.SetLoading();
             FusionSocket.JoinLobby();
+
+            ClientPlayer.Players.Clear();
         }
 
-        public void Abort() { }
+        public void Abort() {
+            PanelUI.Instance.DisableLoading();
+        }
 
-        public void Terminate() { }
+        public void Terminate() { 
+            PanelUI.Instance.DisableLoading();
+        }
 
         public void Update() { }
     }

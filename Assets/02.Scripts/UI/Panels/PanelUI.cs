@@ -25,7 +25,7 @@ namespace UltimateCartFights.UI {
 
         #region Panel UI METHOD
 
-        public enum Panel { INTRO, LOBBY, ROOM, LOADING, GAME }
+        public enum Panel { INTRO, LOBBY, ROOM, LOADING, GAME, RESULT, FADE }
         
         [Header("Panel")]
         [SerializedDictionary("Network State", "Panel GameObject")]
@@ -97,6 +97,8 @@ namespace UltimateCartFights.UI {
 
         public void InitializeLoading() => LoadingUI.Initialize();
 
+        public void DisableLoading() => LoadingUI.Disabled();
+
         public void SetLoadingProgress(float progress) => LoadingUI.SetLoadingProgress(progress);
 
         public void ShowRandomTip() => LoadingUI.ShowRandomTip();
@@ -108,8 +110,19 @@ namespace UltimateCartFights.UI {
         [Header("Game Panel UI")]
         [SerializeField] private GamePanelUI GameUI;
 
-        public void InitializeGame() {
-            GameUI.Initialize(ClientPlayer.Players);
+        public void InitializeGame() => GameUI.Initialize(ClientPlayer.Players);
+
+        public void DisableGameUI() => GameUI.Disabled();
+
+        #endregion
+
+        #region Result Panel UI Method
+
+        [Header("Result Panel UI")]
+        [SerializeField] private TMP_Text Winner;
+
+        public void InitializeResult(string winner) {
+            Winner.text = winner;
         }
 
         #endregion

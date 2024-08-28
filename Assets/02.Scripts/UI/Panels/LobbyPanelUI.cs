@@ -70,6 +70,11 @@ namespace UltimateCartFights.UI {
         }
 
         public void OnClickRefresh() {
+            if (!Search.text.IsNullOrEmpty()) {
+                OnClickSearch();
+                return;
+            }
+
             List<SessionInfo> result = (from session in GameLauncher.Sessions
                                         where IsValidRoom(session)
                                         select session).ToList();

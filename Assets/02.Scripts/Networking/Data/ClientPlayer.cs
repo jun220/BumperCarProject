@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using UltimateCartFights.Game;
 using UltimateCartFights.UI;
 using UltimateCartFights.Utility;
 using UnityEngine;
@@ -38,9 +39,9 @@ namespace UltimateCartFights.Network {
             }
         }
 
-        public bool IsLeader { get => PlayerID == 0; }
-
         public bool IsLocal { get => Local != null && Local.PlayerID == PlayerID; }
+
+        public bool IsLeader { get => PlayerID == 0; }
 
         #endregion
 
@@ -116,7 +117,7 @@ namespace UltimateCartFights.Network {
 
         [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
         public void RPC_SetCartColor(int color) {
-            if (isUsedColor(color)) return;
+            if (IsUsedColor(color)) return;
             CartColor = color;
 
             if (IsLeader) IsReady = CanReady;
@@ -125,7 +126,7 @@ namespace UltimateCartFights.Network {
 
         [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
         public void RPC_SetCharacter(int character) {
-            if (isUsedCharacter(character)) return;
+            if (IsUsedCharacter(character)) return;
             Character = character;
 
             if (IsLeader) IsReady = CanReady;
@@ -200,7 +201,7 @@ namespace UltimateCartFights.Network {
             return -1;
         }
 
-        private bool isUsedColor(int color) {
+        private bool IsUsedColor(int color) {
             if (color == -1) return false;
 
             foreach(ClientPlayer player in Players) {
@@ -211,7 +212,7 @@ namespace UltimateCartFights.Network {
             return false;
         }
 
-        private bool isUsedCharacter(int character) {
+        private bool IsUsedCharacter(int character) {
             if (character == -1) return false;
 
             foreach (ClientPlayer player in Players) {

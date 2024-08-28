@@ -7,7 +7,7 @@ using UnityEngine;
 using UltimateCartFights.Utility;
 
 namespace UltimateCartFights.Network {
-    public class FusionSocket : MonoBehaviour, INetworkRunnerCallbacks {
+    public class FusionSocket : NetworkBehaviour, INetworkRunnerCallbacks {
 
         #region FusionSocket Singleton
         
@@ -47,81 +47,37 @@ namespace UltimateCartFights.Network {
 
         public static bool IsNetworked {
             get {
-                switch(statemachine.State) {
+                switch(NetworkState) {
                     case INetworkState.STATE.CLOSED:
-                    case INetworkState.STATE.LOADING:
+                    case INetworkState.STATE.LOBBY_LOADING:
                         return false;
 
                     default:
                         return true;
-
                 }
             }
         }
 
-        public static bool InRoom {
-            get {
-                if (Runner == null) return false;
-                if (Runner.SessionInfo == null) return false;
-                return true;
-            }
-        }
-
-        public static bool IsHost {
-            get {
-                switch(statemachine.State) {
-                    case INetworkState.STATE.ROOM_RANDOM:
-                    case INetworkState.STATE.ROOM_GENERAL:
-                        return Runner.IsServer;
-
-                    default:
-                        return false;
-                }
-            }
-        }
-
-        public static bool IsServer {
-            get {
-                switch(statemachine.State) {
-                    case INetworkState.STATE.ROOM_RANDOM:
-                    case INetworkState.STATE.ROOM_GENERAL:
-                        return Runner.IsServer;
-
-                    default:
-                        return false;
-                }
-            }
-        }
-
-        public static bool IsRandomMatch {
-            get {
-                switch(statemachine.State) {
-                    case INetworkState.STATE.ROOM_RANDOM:
-                        return true;
-
-                    case INetworkState.STATE.GAME:
-                        return (bool) Runner.SessionInfo.Properties["IsRandom"];
-
-                    default:
-                        return false;
-                }
-            }
-        }
+        public static bool IsHost => Runner == null ? false : Runner.IsServer;
 
         #endregion
 
         #region FUSION NETWORK - PUBLIC
 
-        public static async Task Open() => await TryChangeNetworkState(open, INetworkState.STATE.LOADING);
+        public static async Task Open() => await TryChangeNetworkState(open, INetworkState.STATE.LOBBY_LOADING);
         public static async Task<StartGameResult> JoinLobby() => await TryChangeNetworkState(joinLobby, INetworkState.STATE.LOBBY);
         public static async Task<StartGameResult> CreateRoom(RoomInfo roomInfo) => await TryChangeNetworkState(createRoom, roomInfo, INetworkState.STATE.ROOM_GENERAL);
         public static async Task<StartGameResult> JoinRoom(RoomInfo roomInfo) => await TryChangeNetworkState(joinRoom, roomInfo, INetworkState.STATE.ROOM_GENERAL);
         public static async Task<StartGameResult> JoinQuickMatch() => await TryChangeNetworkState(joinQuickMatch, INetworkState.STATE.ROOM_RANDOM);
-        public static async Task LoadGameScene(SceneManager.SCENE scene) => await TryChangeNetworkState(loadGameScene, INetworkState.STATE.GAME_LOADING, scene);
+        public static async Task LoadGameScene(SceneManager.SCENE scene) => await TryChangeNetworkState(sceneManager.LoadScene, scene, INetworkState.STATE.GAME_LOADING);
         public static async Task Loading() => await TryChangeNetworkState(INetworkState.STATE.GAME_LOADING);
         public static async Task StartGame() => await TryChangeNetworkState(INetworkState.STATE.GAME);
+        public static async Task ShowGameResult() => await TryChangeNetworkState(INetworkState.STATE.RESULT);
         public static async Task ReturnRoom() => await TryChangeNetworkState(INetworkState.STATE.ROOM_GENERAL);
+        public static async Task ReturnLobby() => await TryChangeNetworkState(open, INetworkState.STATE.CLOSED);
         public static async Task Close() => await TryChangeNetworkState(close, INetworkState.STATE.CLOSED);
+
+        public static void LoadRoomScene() => sceneManager.LoadScene(SceneManager.SCENE.ROOM);
 
         #endregion
 
@@ -130,7 +86,7 @@ namespace UltimateCartFights.Network {
         private static async Task open() {
             // 만일 이미 실행중인 객체가 있다면 해당 객체를 제거한다
             if(Runner != null)
-                await Close();
+                await close();
 
             // 룸 접속을 위한 NetworkRunner 객체를 생성한다
             GameObject runnerObject = Instantiate(ResourceManager.Instance.Session);
@@ -162,6 +118,7 @@ namespace UltimateCartFights.Network {
             if (!result.Ok)
                 throw new Exception(result.ErrorMessage);
 
+            ClientInfo.IsInRandom = false;
             Debug.Log(string.Format("[ * Debug * ] Create Room {0} Complete!", SessionInfo.Name));
 
             return result;
@@ -180,6 +137,7 @@ namespace UltimateCartFights.Network {
             if (!result.Ok)
                 throw new Exception(result.ErrorMessage);
 
+            ClientInfo.IsInRandom = false;
             return result;
         }
 
@@ -195,20 +153,17 @@ namespace UltimateCartFights.Network {
             if (!result.Ok) 
                 throw new Exception(result.ErrorMessage);
 
+            ClientInfo.IsInRandom = true;
             return result;
-        }
-
-        private static void loadGameScene(SceneManager.SCENE scene) {
-            if (Runner == null) return;
-            SceneManager.LoadScene(scene);
         }
 
         private static async Task close() {
             if (Runner == null) return;
-                
-            await Runner.Shutdown();
 
-            Debug.Log(string.Format("[ * Debug * ] Runner Game Object : {0}", Runner));
+            ClientInfo.IsInRandom = false;
+
+            sceneManager.BackToLobby(); 
+            await Runner.Shutdown();
             Destroy(Runner.gameObject);
             Runner = null;
         }
@@ -227,7 +182,7 @@ namespace UltimateCartFights.Network {
 
         #region NETWORK EXCEPTION 
 
-        private static async Task TryChangeNetworkState(INetworkState.STATE state) {
+        private static async Task TryChangeNetworkState (INetworkState.STATE state) {
             try {
                 statemachine.ChangeState(state);
             } catch (Exception e) {
@@ -237,7 +192,7 @@ namespace UltimateCartFights.Network {
             }
         }
 
-        private static async Task TryChangeNetworkState<T> (Action<T> method, INetworkState.STATE state, T param) {
+        private static async Task TryChangeNetworkState<T> (Action<T> method, T param, INetworkState.STATE state) {
             try {
                 statemachine.ChangeState(state, method, param);
             } catch (Exception e) {
@@ -250,6 +205,16 @@ namespace UltimateCartFights.Network {
         private static async Task TryChangeNetworkState(Func<Task> method, INetworkState.STATE state) {
             try {
                 await statemachine.ChangeState(state, method);
+            } catch (Exception e) {
+                Debug.LogException(e);
+
+                await statemachine.Abort(close);
+            }
+        }
+
+        private static async Task TryChangeNetworkState<T> (Func<T, Task> method, T param, INetworkState.STATE state) {
+            try {
+                await statemachine.ChangeState(state, method, param);
             } catch (Exception e) {
                 Debug.LogException(e);
 

@@ -3,6 +3,8 @@ using Fusion.Sockets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UltimateCartFights.Game;
 using UltimateCartFights.Utility;
 using UnityEngine;
 
@@ -53,18 +55,66 @@ namespace UltimateCartFights.Network {
         public override void OnPlayerLeft(NetworkRunner runner, PlayerRef player) {
             base.OnPlayerLeft(runner, player);
             ClientPlayer.RemovePlayer(runner, player);
+
+            if (NetworkState == INetworkState.STATE.GAME) {
+                SendKnockedOutEvent(player);
+                CartController.RemoveCart(runner, player);
+                CheckGameEnded();
+            }
         }
 
         #endregion
 
         #region GAME EVENT METHOD
 
-        public override void OnSceneLoadStart(NetworkRunner runner) {
-            base.OnSceneLoadStart(runner);
+        public static Action GameStarted;
+        public static Action GameEnded;
+
+        public static int WinnerID;
+
+        public static void AddGameEvents() {
+            CartController.Knockedout += OnPlayerDead;
         }
 
-        public override void OnSceneLoadDone(NetworkRunner runner) {
-            base.OnSceneLoadDone(runner);
+        public static void RemoveGameEvents() {
+            CartController.Knockedout -= OnPlayerDead;
+        }
+
+        public static void CheckGameStarted() {
+            if (Map.IsGameStarted()) GameStarted?.Invoke();
+        }
+
+        public static void CheckGameEnded() {
+            if (CartController.Carts.Count != 1) return;
+            Debug.Log("[ * Debug * ] Game is end!");
+
+            int winner = CartController.Carts.First().PlayerID;
+            RPC_ShowGameResult(Runner, winner);
+        }
+
+        private static void OnPlayerDead(int playerID) {
+            if (!IsHost) return;
+            if (CartController.Carts.Count == 1) return;
+
+            CartController cart = CartController.Carts.FirstOrDefault(x => x.PlayerID == playerID);
+            if (cart == null) return;
+
+            Runner.Despawn(cart.Object);
+            CheckGameEnded();
+        }
+
+        private void SendKnockedOutEvent(PlayerRef player) {
+            CartController cart = CartController.Carts.FirstOrDefault(x => x.Object.InputAuthority == player);
+            if (cart == null) return;
+
+            CartController.Knockedout?.Invoke(cart.PlayerID);
+        }
+
+        [Rpc]
+        public static void RPC_ShowGameResult(NetworkRunner runner, int winner) {
+            WinnerID = winner;
+            GameEnded?.Invoke();
+            ShowGameResult();
         }
 
         #endregion

@@ -5,7 +5,17 @@ using UnityEngine;
 namespace UltimateCartFights.Network {
     public interface INetworkState {
 
-        public enum STATE { NONE, CLOSED, LOADING, LOBBY, ROOM_RANDOM, ROOM_GENERAL, GAME_LOADING, GAME };
+        public enum STATE { 
+            NONE, 
+            CLOSED, 
+            LOBBY_LOADING, 
+            LOBBY, 
+            ROOM_RANDOM, 
+            ROOM_GENERAL, 
+            GAME_LOADING, 
+            GAME, 
+            RESULT,
+        };
 
         public void Start();
         public void Update();

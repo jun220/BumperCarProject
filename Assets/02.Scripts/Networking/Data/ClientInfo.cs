@@ -9,5 +9,10 @@ namespace UltimateCartFights.Utility {
             get => PlayerPrefs.GetString("C_Nickname", string.Empty);
             set => PlayerPrefs.SetString("C_Nickname", value);
         }
+
+        public static bool IsInRandom {
+            get => PlayerPrefs.GetInt("IsRandomRoom", 0) == 1;
+            set => PlayerPrefs.SetInt("IsRandomRoom", value ? 1 : 0);
+        }
     }
 }

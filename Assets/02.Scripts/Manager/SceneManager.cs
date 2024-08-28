@@ -1,6 +1,9 @@
+using AYellowpaper.SerializedCollections;
 using Fusion;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UltimateCartFights.Game;
 using UltimateCartFights.UI;
 using UnityEngine;
 
@@ -9,27 +12,72 @@ namespace UltimateCartFights.Network {
 
         #region Scene Loading Method
 
-        public enum SCENE { CLOSE, LOBBY, ROOM, MAP_GROCERY, };
-        private static SCENE CurrentLoading;
+        public enum SCENE { ROOM, MAP_GROCERY, };
 
-        public static void LoadScene(SCENE scene) {
-            CurrentLoading = scene;
-            FusionSocket.Runner.LoadScene(SceneRef.FromIndex(GetSceneIndex(scene)));
+        [SerializedDictionary("Scene Type", "Scene Index Number")]
+        [SerializeField] private SerializedDictionary<SCENE, int> Scenes;
+
+         const int LOBBY_SCENE = 1;
+        
+        public void BackToLobby() {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(LOBBY_SCENE);
         }
 
-        protected override IEnumerator LoadSceneCoroutine(SceneRef sceneRef, NetworkLoadSceneParameters sceneParams) {
-            Debug.Log(string.Format("[ * Debug * ] SceneManager - OnLoadScene ( scene : {0} )", sceneRef.AsIndex));
+        public void LoadScene(SCENE scene) {
+            FusionSocket.Runner.LoadScene(SceneRef.FromIndex(Scenes[scene]));
+        }
 
-            if (!FusionSocket.IsServer && IsGameScene(sceneRef.AsIndex))
+        private bool IsGameScene(int sceneId) {
+            SCENE scene = Scenes.FirstOrDefault(x => x.Value == sceneId).Key;
+            return scene != SCENE.ROOM;
+        }
+
+        private void LoadGameObjects() {
+            foreach(ClientPlayer player in ClientPlayer.Players) {
+                Debug.Log(string.Format("[ * Debug * ] Cart Spawn - Player : {0}", player.PlayerID));
+                Map.Current.SpawnPlayer(Runner, player);
+            }
+        }
+
+        private bool IsAllSpawned => ClientPlayer.Players.Count == CartController.Carts.Count;
+
+        #endregion
+
+        #region Scene Loading Override Method
+
+        protected override IEnumerator LoadSceneCoroutine(SceneRef sceneRef, NetworkLoadSceneParameters sceneParams) {
+
+            if (!IsGameScene(sceneRef.AsIndex))
+                PanelUI.Instance.SetPanel(PanelUI.Panel.FADE);
+            else if (!FusionSocket.IsHost)
                 FusionSocket.Loading();
 
             yield return base.LoadSceneCoroutine(sceneRef, sceneParams);
-
             yield return null;
 
-            if(FusionSocket.IsServer) {
-                // 카트 생성
+            if (IsGameScene(sceneRef.AsIndex)) {
+                if(FusionSocket.IsHost) {
+                    LoadGameObjects();
+
+                    // Wait until all of objects are spawned
+                    yield return new WaitUntil(() => IsAllSpawned);
+
+                    Debug.Log("[ * Debug * ] Cart Loading Complete!");
+                }
+
+                // Wait until the loading animation is completed
+                ClientPlayer.Local.RPC_SetReadyState(false);
+                PanelUI.Instance.SetLoadingProgress(1f);
+                yield return new WaitUntil(() => LoadingPanelUI.IsLoadingComplete);
             }
+
+            Debug.Log("[ * Debug * ] Load Scene completed!");
+
+            // Change NetworkState
+            if (IsGameScene(sceneRef.AsIndex))
+                FusionSocket.StartGame();
+            else
+                FusionSocket.ReturnRoom();
         }
 
         /// <summary>
@@ -40,67 +88,7 @@ namespace UltimateCartFights.Network {
 
             if(IsGameScene(sceneRef.AsIndex))
                 PanelUI.Instance.SetLoadingProgress(progress);
-
-            Debug.Log(string.Format("[ * Debug * ] SceneManager - OnLoadSceneProgress ( progress : {0} )", progress));
         }
-
-        /// <summary>
-        /// 씬 로딩이 완료되었을 때 호출되는 함수
-        /// </summary>
-        protected override IEnumerator OnSceneLoaded(SceneRef sceneRef, UnityEngine.SceneManagement.Scene scene, NetworkLoadSceneParameters sceneParams) {
-            Debug.Log(string.Format("[ * Debug * ] SceneManager - Scene Loading Complete! ( scene : {0} )", sceneRef.AsIndex));
-
-            PanelUI.Instance.SetLoadingProgress(1f);
-            yield return new WaitUntil(() => LoadingPanelUI.IsLoadingComplete);
-
-            LoadNetwork(GetSceneType(sceneRef.AsIndex));
-
-            yield return base.OnSceneLoaded(sceneRef, scene, sceneParams);
-        }
-
-        #endregion
-
-        #region Others
-
-        private static int GetSceneIndex(SCENE scene) {
-            switch(scene) {
-                case SCENE.CLOSE:
-                case SCENE.LOBBY:
-                case SCENE.ROOM:
-                    return 1;
-
-                case SCENE.MAP_GROCERY:
-                    return 2;
-
-                default:
-                    return 0;
-            }
-        }
-
-        private static SCENE GetSceneType(int sceneID) {
-            if (sceneID == 1) return FusionSocket.InRoom ? SCENE.LOBBY : SCENE.ROOM;
-            if (sceneID == 2) return SCENE.MAP_GROCERY;
-
-            return SCENE.ROOM;
-        }
-
-        private async void LoadNetwork(SCENE scene) {
-            switch(scene) {
-                case SCENE.LOBBY:
-                    await FusionSocket.Open();
-                    break;
-
-                case SCENE.ROOM:
-                    await FusionSocket.ReturnRoom(); 
-                    break;
-
-                case SCENE.MAP_GROCERY:
-                    await FusionSocket.StartGame();
-                    break;
-            }
-        }
-
-        private bool IsGameScene(int sceneId) => sceneId > 1;
 
         #endregion
     }

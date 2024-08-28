@@ -2,13 +2,29 @@ using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using TMPro;
+using UltimateCartFights.Game;
 using UltimateCartFights.Network;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UltimateCartFights.UI {
     public class GamePanelUI : MonoBehaviour {
+
+        #region Unity LifeCycle Method
+
+        private void Update() {
+            if (CartController.Local == null) return;
+
+            try {
+                SetSpeed(Mathf.Abs(CartController.Local.AppliedSpeed));
+                SetDashCool(CartController.Local.DashCoolTime, CartController.DASH_COOLTIME);
+            } catch {
+            }
+        }
+
+        #endregion
 
         #region Profile Damage Event
 
@@ -28,6 +44,14 @@ namespace UltimateCartFights.UI {
                 
                 Profiles.Add(profile);
             }
+
+            CartController.GetDamage += OnGetDamage;
+            CartController.Knockedout += OnKnockedOut;
+        }
+
+        public void Disabled() {
+            CartController.GetDamage -= OnGetDamage;
+            CartController.Knockedout -= OnKnockedOut;
         }
 
         private void OnGetDamage(int playerID, float damage) {
@@ -35,6 +59,13 @@ namespace UltimateCartFights.UI {
 
             if (profile != null)
                 profile.SetDamage(damage);
+        }
+
+        private void OnKnockedOut(int playerID) {
+            ProfileUI profile = Profiles[playerID];
+
+            if (profile != null)
+                profile.Knockout();
         }
 
         #endregion
@@ -52,9 +83,9 @@ namespace UltimateCartFights.UI {
             return MainProfile;
         }
 
-        public void SetSpeed(float speed) => Speed.text = string.Format("{0:f2}", speed);
+        private void SetSpeed(float speed) => Speed.text = string.Format("{0:f2}", speed);
 
-        public void SetDashCool(float remain, float cooltime) {
+        private void SetDashCool(float remain, float cooltime) {
             Assert.Check(remain <= cooltime);
 
             DashCoolText.gameObject.SetActive((remain > 0));
