@@ -26,7 +26,7 @@ namespace UltimateCartFights.Game {
 
         /* Damage Property */
 
-        public const float DAMAGE_LIMIT = 100f;
+        public const float DAMAGE_LIMIT = 999.9f;
 
         public static Action<int, float> GetDamage;
 

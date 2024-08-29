@@ -26,8 +26,9 @@ namespace UltimateCartFights.UI {
         private List<ProfileUI> Profiles = new List<ProfileUI>();
 
         public void Initialize(List<ClientPlayer> players) {
-            foreach(ProfileUI profile in Profiles)
-                Destroy(profile);
+            ProfileUI[] others = OtherProfileGroup.GetComponentsInChildren<ProfileUI>();
+            foreach(ProfileUI other in others)
+                Destroy(other.gameObject);
 
             Profiles.Clear();
 
