@@ -26,12 +26,11 @@ namespace UltimateCartFights.UI {
         [SerializeField] private TMP_InputField Nickname;
 
         public void OnModifyNickname() {
-            if (Nickname.text.IsNullOrEmpty()) {
-                Nickname.text = ClientInfo.Nickname;
-            } else {
-                ClientInfo.Nickname = Nickname.text;
-                SetButtonInteractable(true);
-            }
+            if(!Nickname.text.Trim().IsNullOrEmpty())
+                ClientInfo.Nickname = Nickname.text.Trim();
+
+            Nickname.text = ClientInfo.Nickname;
+            SetButtonInteractable(!ClientInfo.Nickname.IsNullOrEmpty());
         }
 
         #endregion

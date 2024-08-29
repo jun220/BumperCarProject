@@ -176,6 +176,7 @@ namespace UltimateCartFights.UI {
         }
 
         public void OnStartGame() {
+            GameStartButton.interactable = false;
             FusionSocket.LoadGameScene(SceneManager.SCENE.MAP_GROCERY);
         }
 

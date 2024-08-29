@@ -573,6 +573,7 @@ MonoBehaviour:
   title: {fileID: 1140332355268215871}
   host: {fileID: 1941034330391959227}
   capacity: {fileID: 1301159716419183387}
+  entrance: {fileID: 7847215656979801153}
 --- !u!1 &4839777566702949645
 GameObject:
   m_ObjectHideFlags: 0

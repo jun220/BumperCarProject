@@ -34,8 +34,10 @@ namespace UltimateCartFights.UI {
             int integerNumber = (int) damage;
             int decimalNumber = ((int) damage * 10) % 10;
 
-            Damage.text = string.Format("<size={0}>{1}</size><size={2}>.{3}%</size>",
-                INTEGER_FONT_SIZE, integerNumber, DECIMAL_FONT_SIZE, decimalNumber);
+            string color = GetDamageColor(damage);
+
+            Damage.text = string.Format("<color={0}><size={1}>{2}</size><size={3}>.{4}%</size></color>",
+                color, INTEGER_FONT_SIZE, integerNumber, DECIMAL_FONT_SIZE, decimalNumber);
         }
 
         public void Knockout() {
@@ -49,6 +51,12 @@ namespace UltimateCartFights.UI {
 
             CartController cart = CartController.Carts.FirstOrDefault(x => x.PlayerID == PlayerID);
             if (cart != null) CartCamera.SetTarget(cart);
+        }
+
+        private string GetDamageColor(float damage) {
+            if (damage < (CartController.DAMAGE_LIMIT / 3f))        return "ffe404";
+            if (damage < (CartController.DAMAGE_LIMIT * 2f / 3f))   return "f77618";
+            return "f71818";
         }
     }
 }

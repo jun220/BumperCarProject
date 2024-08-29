@@ -40,6 +40,9 @@ namespace UltimateCartFights.Game {
             PlayerRef inputAuthority = player.Object.InputAuthority;
 
             NetworkObject cart = runner.Spawn(ResourceManager.Instance.Cart, point.position, point.rotation, inputAuthority);
+            CartCustom custom = cart.GetComponent<CartCustom>();
+            custom.SetCharacter(player.Character);
+            custom.SetColor(player.CartColor);
 
             cart.transform.name = string.Format("Cart_{0}_{1}", player.PlayerID, player.Nickname);
         }

@@ -16,6 +16,9 @@ namespace UltimateCartFights.Utility {
         [Header("Color Types")]
         public List<Color> Colors;
 
+        [Header("Cart Color Materials")]
+        public List<Material> ColorMaterials;
+
         public static ResourceManager Instance = null;
 
         private void Awake() {

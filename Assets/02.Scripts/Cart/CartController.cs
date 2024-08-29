@@ -236,16 +236,25 @@ namespace UltimateCartFights.Game {
             if (!IsInitialized) return;
             if (IsBumped) return;
 
-            if(collision.gameObject.layer == CART_LAYER) {
+            int layer = collision.gameObject.layer;
+            if(layer == CART_LAYER) {
                 Vector3 bounceDir = collision.impulse.normalized;
-                float bouncePower = Mathf.Max(collision.impulse.magnitude, 3f);
+                float bouncePower = Mathf.Max(collision.impulse.magnitude, 2f);
                 Rigidbody.AddForce(bounceDir * bouncePower * -COLLISION_FORCE_WEIGHT, ForceMode.Impulse);
 
-                if(FusionSocket.IsHost)
-                    Damage += collision.rigidbody.velocity.magnitude * COLLISION_DAMAGE_WEIGHT;
-
+                if(FusionSocket.IsHost) {
+                    float otherSpeed = collision.gameObject.GetComponent<CartController>().AppliedSpeed;
+                    Damage += otherSpeed * COLLISION_DAMAGE_WEIGHT;
+                }
+                
                 // 충돌 타이머 생성
                 BumpTimer = TickTimer.CreateFromSeconds(Runner, 0.3f);
+            } else if(layer == WALL_LAYER) {
+                Vector3 bounceDir = collision.impulse.normalized;
+                float bouncePower = Mathf.Max(collision.impulse.magnitude, 1f);
+                Rigidbody.AddForce(bounceDir * bouncePower * -COLLISION_FORCE_WEIGHT, ForceMode.Impulse);
+
+                BumpTimer = TickTimer.CreateFromSeconds(Runner, 0.6f);
             }
         }
 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UltimateCartFights.Utility;
+using UltimateCartFights.UI;
 
 namespace UltimateCartFights.Network {
     public class FusionSocket : NetworkBehaviour, INetworkRunnerCallbacks {
@@ -188,6 +189,7 @@ namespace UltimateCartFights.Network {
             } catch (Exception e) {
                 Debug.LogException(e);
 
+                PopupUI.Instance.OpenError(e.Message);
                 await statemachine.Abort(close);
             }
         }
@@ -198,6 +200,7 @@ namespace UltimateCartFights.Network {
             } catch (Exception e) {
                 Debug.LogException(e);
 
+                PopupUI.Instance.OpenError(e.Message);
                 await statemachine.Abort(close);
             }
         }
@@ -208,6 +211,7 @@ namespace UltimateCartFights.Network {
             } catch (Exception e) {
                 Debug.LogException(e);
 
+                PopupUI.Instance.OpenError(e.Message);
                 await statemachine.Abort(close);
             }
         }
@@ -218,6 +222,7 @@ namespace UltimateCartFights.Network {
             } catch (Exception e) {
                 Debug.LogException(e);
 
+                PopupUI.Instance.OpenError(e.Message);
                 await statemachine.Abort(close);
             }
         }
@@ -229,6 +234,7 @@ namespace UltimateCartFights.Network {
             } catch (Exception e) {
                 Debug.LogException(e);
 
+                PopupUI.Instance.OpenError(e.Message);
                 await statemachine.Abort(close);
             }
 
@@ -242,6 +248,7 @@ namespace UltimateCartFights.Network {
             } catch (Exception e) {
                 Debug.LogException(e);
 
+                PopupUI.Instance.OpenError(e.Message);
                 await statemachine.Abort(close);
             }
 
