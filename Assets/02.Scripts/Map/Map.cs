@@ -16,7 +16,7 @@ namespace UltimateCartFights.Game {
 
         [Networked] public TickTimer StartGameTimer { get; private set; }
 
-        private const float INTRO_DURATION = 5f;
+        private const float INTRO_DURATION = 9f;
 
         #endregion
 
@@ -49,6 +49,12 @@ namespace UltimateCartFights.Game {
             if (Current == null) return false;
 
             return Current.StartGameTimer.Expired(Current.Runner);
+        }
+
+        public static float GetRemainingTime() {
+            if (Current == null) return Mathf.Infinity;
+            if (!Current.StartGameTimer.IsRunning) return Mathf.Infinity;
+            return (float) Current.StartGameTimer.RemainingTime(Current.Runner);
         }
     }
 }

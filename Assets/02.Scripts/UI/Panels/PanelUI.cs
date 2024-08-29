@@ -23,6 +23,29 @@ namespace UltimateCartFights.UI {
 
         #endregion
 
+        #region Letterbox UI Method
+
+        [Header("Letterbox")]
+        [SerializeField] private GameObject Letterbox;
+
+        private void SetLetterbox(Panel type) {
+            switch(type) {
+                case Panel.INTRO:
+                case Panel.LOBBY:
+                case Panel.ROOM:
+                case Panel.LOADING:
+                case Panel.FADE:
+                    Letterbox.SetActive(true);
+                    break;
+
+                default:
+                    Letterbox.SetActive(false);
+                    break;
+            }
+        }
+
+        #endregion
+
         #region Panel UI METHOD
 
         public enum Panel { INTRO, LOBBY, ROOM, LOADING, GAME, RESULT, FADE }
@@ -38,6 +61,8 @@ namespace UltimateCartFights.UI {
 
             CurrentPanel = Panels[type];
             CurrentPanel.SetActive(true);
+
+            SetLetterbox(type);
         }
 
         #endregion

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace UltimateCartFights.Game {
@@ -20,6 +21,7 @@ namespace UltimateCartFights.Game {
         public readonly Vector3 LOOK_OFFSET = new Vector3(0, 0.5f, 0);
 
         private static CartController Target = null;
+        private static int TargetID = -1;
 
         private Camera MainCamera = null;
 
@@ -46,6 +48,10 @@ namespace UltimateCartFights.Game {
         }
 
         public static void SetTarget(CartController target) => Target = target;
+
+        public static void SetRandomTarget() => Target = CartController.Carts.First();
+
+        public static bool IsFocused(CartController target) => Target == target;
 
         private float GetFOV(float speed) {
             if (speed < MIN_SPEED) return MIN_FOV;

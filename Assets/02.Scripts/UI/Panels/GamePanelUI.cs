@@ -15,13 +15,8 @@ namespace UltimateCartFights.UI {
         #region Unity LifeCycle Method
 
         private void Update() {
-            if (CartController.Local == null) return;
-
-            try {
-                SetSpeed(Mathf.Abs(CartController.Local.AppliedSpeed));
-                SetDashCool(CartController.Local.DashCoolTime, CartController.DASH_COOLTIME);
-            } catch {
-            }
+            UpdateCount();
+            UpdateCartUI();
         }
 
         #endregion
@@ -31,6 +26,11 @@ namespace UltimateCartFights.UI {
         private List<ProfileUI> Profiles = new List<ProfileUI>();
 
         public void Initialize(List<ClientPlayer> players) {
+            foreach(ProfileUI profile in Profiles)
+                Destroy(profile);
+
+            Profiles.Clear();
+
             for(int i = 0; i < RoomInfo.MAX_PLAYER; i++) {
                 ClientPlayer player = players.FirstOrDefault(x => x.PlayerID == i);
                 ProfileUI profile = null;
@@ -44,6 +44,8 @@ namespace UltimateCartFights.UI {
                 
                 Profiles.Add(profile);
             }
+
+            IsCountStarted = false;
 
             CartController.GetDamage += OnGetDamage;
             CartController.Knockedout += OnKnockedOut;
@@ -79,7 +81,7 @@ namespace UltimateCartFights.UI {
         [SerializeField] private Image DashCoolIcon;
 
         private ProfileUI SetMainProfile(ClientPlayer player) {
-            MainProfile.Initialize((string) player.Nickname, player.Character);
+            MainProfile.Initialize(player.PlayerID, (string) player.Nickname, player.Character);
             return MainProfile;
         }
 
@@ -93,6 +95,13 @@ namespace UltimateCartFights.UI {
             DashCoolIcon.fillAmount = (remain / cooltime);
         }
 
+        private void UpdateCartUI() {
+            if (CartController.Local == null) return;
+
+            SetSpeed(Mathf.Abs(CartController.Local.AppliedSpeed));
+            SetDashCool(CartController.Local.DashCoolTime, CartController.DASH_COOLTIME);
+        }
+
         #endregion
 
         #region Other Profiles Section
@@ -103,11 +112,28 @@ namespace UltimateCartFights.UI {
 
         private ProfileUI SetOtherProfile(ClientPlayer player) {
             ProfileUI profile = Instantiate(ProfilePrefab, OtherProfileGroup);
-            profile.Initialize((string) player.Nickname, player.Character);
+            profile.Initialize(player.PlayerID, (string) player.Nickname, player.Character);
             return profile;
         }
 
         #endregion
 
+        #region Countdown Section
+
+        [Header("Countdown Section")]
+        [SerializeField] private Animation CountAnimation;
+
+        private bool IsCountStarted = false;
+
+        private void UpdateCount() {
+            if (IsCountStarted) return;
+
+            if(Map.GetRemainingTime() <= 3f) {
+                IsCountStarted = true;
+                CountAnimation.Play();
+            }
+        }
+
+        #endregion
     }
 }

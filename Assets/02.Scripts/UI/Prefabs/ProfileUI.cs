@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
+using UltimateCartFights.Game;
 using UltimateCartFights.Utility;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,11 +19,15 @@ namespace UltimateCartFights.UI {
         [SerializeField] private float INTEGER_FONT_SIZE;
         [SerializeField] private float DECIMAL_FONT_SIZE;
 
-        public void Initialize(string nickname, int character) {
+        private int PlayerID = -1;
+
+        public void Initialize(int playerID, string nickname, int character) {
             Character.sprite = ResourceManager.Instance.Characters[character];
             Nickname.text = nickname;
             SetDamage(0.0f);
             KnockoutUI.gameObject.SetActive(false);
+
+            PlayerID = playerID;
         }
 
         public void SetDamage(float damage) {
@@ -34,6 +40,15 @@ namespace UltimateCartFights.UI {
 
         public void Knockout() {
             KnockoutUI.gameObject.SetActive(true);
+        }
+
+        public void OnClickObserving() {
+            if (PlayerID == -1) return;
+            if (KnockoutUI.IsActive()) return;
+            if (CartController.Local != null) return;
+
+            CartController cart = CartController.Carts.FirstOrDefault(x => x.PlayerID == PlayerID);
+            if (cart != null) CartCamera.SetTarget(cart);
         }
     }
 }

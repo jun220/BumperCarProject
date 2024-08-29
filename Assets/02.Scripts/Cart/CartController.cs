@@ -148,6 +148,9 @@ namespace UltimateCartFights.Game {
             IsInitialized = false;
             Carts.Remove(this);
             RemoveGameEvents();
+
+            if (CartCamera.IsFocused(this))
+                CartCamera.SetRandomTarget();
         }
 
         #endregion
