@@ -21,7 +21,6 @@ namespace UltimateCartFights.Game {
         public readonly Vector3 LOOK_OFFSET = new Vector3(0, 0.5f, 0);
 
         private static CartController Target = null;
-        private static int TargetID = -1;
 
         private Camera MainCamera = null;
 
@@ -49,8 +48,10 @@ namespace UltimateCartFights.Game {
 
         public static void SetTarget(CartController target) => Target = target;
 
+        // -> 그냥 CartController.Carts.First()를 SetTarget 함수에 대입하는 걸로 해결
         public static void SetRandomTarget() => Target = CartController.Carts.First();
 
+        // -> 함수 사용 (프로퍼티 나오면 안되서)
         public static bool IsFocused(CartController target) => Target == target;
 
         private float GetFOV(float speed) {

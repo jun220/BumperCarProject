@@ -23,6 +23,7 @@ namespace UltimateCartFights.Network {
             UnityEngine.SceneManagement.SceneManager.LoadScene(LOBBY_SCENE);
         }
 
+        // -> 함수 자체를 GameLauncher로 넘겨도 괜찮을 듯
         public void LoadScene(SCENE scene) {
             FusionSocket.Runner.LoadScene(SceneRef.FromIndex(Scenes[scene]));
         }

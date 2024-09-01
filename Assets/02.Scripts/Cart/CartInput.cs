@@ -26,6 +26,10 @@ namespace UltimateCartFights.Game {
             public uint ButtonsDown;    // 이번 프레임에서 눌린 버튼
             public uint ButtonsUp;      // 이번 프레임에서 떼어진 버튼
 
+            // Acceleration & Steer & Dash 만 사용
+            // bool IsDashDown
+            // bool IsDash
+
             private int _acceleration;
             public float Acceleration {
                 get => _acceleration * 0.001f;
@@ -53,18 +57,24 @@ namespace UltimateCartFights.Game {
 
             Runner.AddCallbacks(this);
 
+            /*
             front = front.Clone();
             back = back.Clone();
             left = left.Clone();
             right = right.Clone();
+            */
+
             dash = dash.Clone();
             accelerate = accelerate.Clone();
             steer = steer.Clone();
 
+            /*
             front.Enable();
             back.Enable();
             left.Enable();
             right.Enable();
+            */
+
             dash.Enable();
             accelerate.Enable();
             steer.Enable();
@@ -85,10 +95,13 @@ namespace UltimateCartFights.Game {
 
         #region CART INPUT METHOD 
 
+        /*
         [SerializeField] private InputAction front;     // W키 눌렀을 때
         [SerializeField] private InputAction back;      // A키 눌렀을 때
         [SerializeField] private InputAction left;      // S키 눌렀을 때
         [SerializeField] private InputAction right;     // D키 눌렀을 때
+        */
+
         [SerializeField] private InputAction dash;      // 대시 키(Q) 눌렀을 때
 
         [SerializeField] private InputAction accelerate;
@@ -105,10 +118,12 @@ namespace UltimateCartFights.Game {
             current.Buttons = 0;
 
             // 각 버튼의 입력 상태를 ReadBool을 통해 설정
+            /*
             if (ReadBool(front)) current.Buttons |= (uint) NetworkInputData.ButtonType.ACCELERATION;
             if (ReadBool(back)) current.Buttons |= (uint) NetworkInputData.ButtonType.REVERSE;
             if (ReadBool(left)) current.Buttons |= (uint) NetworkInputData.ButtonType.LEFT_STEER;
             if (ReadBool(right)) current.Buttons |= (uint) NetworkInputData.ButtonType.RIGHT_STEER;
+            */
             if (ReadBool(dash)) current.Buttons |= (uint) NetworkInputData.ButtonType.DASH;
 
             // 가속 값과 조향 값을 가져옴
@@ -124,10 +139,13 @@ namespace UltimateCartFights.Game {
         }
 
         private void DisposeInputs() {
+            /*
             front.Disable();
             back.Disable();
             left.Disable();
             right.Disable();
+            */
+
             dash.Dispose();
             accelerate.Dispose();
             steer.Dispose();

@@ -42,6 +42,7 @@ namespace UltimateCartFights.Network {
 
         #region FUSION NETWORK FIELD
 
+        // protect로 구현 후 scene 로딩 함수는 여기서 대신 실행해주어도 괜찮을 듯
         public static NetworkRunner Runner { get; private set; } = null;
 
         public static SessionInfo SessionInfo { get => Runner.SessionInfo; }

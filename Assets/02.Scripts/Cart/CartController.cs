@@ -188,9 +188,9 @@ namespace UltimateCartFights.Game {
         private void RefreshAppliedSpeed() => AppliedSpeed = transform.InverseTransformDirection(Rigidbody.velocity).z;
 
         private void Move(CartInput.NetworkInputData input) {
-            if (input.GetButton(CartInput.NetworkInputData.ButtonType.ACCELERATION))
+            if (input.Acceleration > 0)
                 AppliedSpeed = Mathf.Lerp(AppliedSpeed, MaxSpeed, ACCELERATION * Runner.DeltaTime);
-            else if (input.GetButton(CartInput.NetworkInputData.ButtonType.REVERSE))
+            else if (input.Acceleration < 0)
                 AppliedSpeed = Mathf.Lerp(AppliedSpeed, -NORMAL_MAX_SPEED, ACCELERATION * Runner.DeltaTime);
             else
                 AppliedSpeed = Mathf.Lerp(AppliedSpeed, 0, DECELARATION * Runner.DeltaTime);
@@ -243,18 +243,12 @@ namespace UltimateCartFights.Game {
                 Rigidbody.AddForce(bounceDir * bouncePower * -COLLISION_FORCE_WEIGHT, ForceMode.Impulse);
 
                 if(FusionSocket.IsHost) {
-                    float otherSpeed = collision.gameObject.GetComponent<CartController>().AppliedSpeed;
+                    float otherSpeed = Mathf.Abs(collision.gameObject.GetComponent<CartController>().AppliedSpeed);
                     Damage += otherSpeed * COLLISION_DAMAGE_WEIGHT;
                 }
                 
                 // 충돌 타이머 생성
                 BumpTimer = TickTimer.CreateFromSeconds(Runner, 0.3f);
-            } else if(layer == WALL_LAYER) {
-                Vector3 bounceDir = collision.impulse.normalized;
-                float bouncePower = Mathf.Max(collision.impulse.magnitude, 1f);
-                Rigidbody.AddForce(bounceDir * bouncePower * -COLLISION_FORCE_WEIGHT, ForceMode.Impulse);
-
-                BumpTimer = TickTimer.CreateFromSeconds(Runner, 0.6f);
             }
         }
 

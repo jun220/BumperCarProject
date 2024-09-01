@@ -36,7 +36,7 @@ namespace UltimateCartFights.UI {
 
             string color = GetDamageColor(damage);
 
-            Damage.text = string.Format("<color={0}><size={1}>{2}</size><size={3}>.{4}%</size></color>",
+            Damage.text = string.Format("<#{0}><size={1}>{2}</size><size={3}>.{4}%</size></color>",
                 color, INTEGER_FONT_SIZE, integerNumber, DECIMAL_FONT_SIZE, decimalNumber);
         }
 
