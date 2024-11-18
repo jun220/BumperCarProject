@@ -7,10 +7,12 @@ namespace UltimateCartFights.Network {
     public class LoadingState : INetworkState {
 
         public void Start() {
+            // 3주차 내용
             PanelUI.Instance.SetPanel(PanelUI.Panel.LOBBY);
             PanelUI.Instance.SetLoading();
             FusionSocket.JoinLobby();
 
+            // 이후 추가
             ClientPlayer.Players.Clear();
         }
 

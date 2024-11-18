@@ -1,14 +1,9 @@
 using Fusion;
-using Photon.Realtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using UltimateCartFights.Game;
-using UltimateCartFights.UI;
 using UltimateCartFights.Utility;
 using UnityEngine;
-using WebSocketSharp;
 
 namespace UltimateCartFights.Network {
     public class ClientPlayer : NetworkBehaviour {
@@ -98,6 +93,9 @@ namespace UltimateCartFights.Network {
             if (Local == this)
                 Local = null;
 
+            // 자기 자신을 지운다면 OnPlayerLeft 함수를 받지 못한다
+            // 따라서 자기 자신을 지울 때는 Local 등의 변수 초기화를 진행해야 한다
+            // 근데 어차피 Host에서 Despawn()하면 해당 함수 호출되지 않나 -> 테스트 필요!
             Players.Remove(this);
             PlayerUpdated?.Invoke();
         }
@@ -105,6 +103,10 @@ namespace UltimateCartFights.Network {
         #endregion
 
         #region Client RPC Method
+
+        // [ Network Object의 권한 ]
+        // Input Authority : 해당 오브젝트의 조작 입력을 받을 Player (주로 해당 Client에서 담당)
+        // State Authority : 해당 오브젝트의 State를 Update할 권한이 있는 Player (주로 Host에서 모두 담당)
 
         [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
         public void RPC_SetPlayerStats(NetworkString<_32> nickname) {

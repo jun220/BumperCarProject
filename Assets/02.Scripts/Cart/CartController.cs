@@ -64,7 +64,7 @@ namespace UltimateCartFights.Game {
 
         [Networked] public float AppliedSpeed { get; private set; } = 0;
 
-        private bool CanDrive => IsInitialized && IsGameStarted && !IsBumped;
+        private bool CanDrive => IsInitialized && IsGameStarted && !BumpTimer.ExpiredOrNotRunning(Runner);
 
         /* Collider Property */
 
@@ -79,19 +79,16 @@ namespace UltimateCartFights.Game {
         [SerializeField, Layer] private int WALL_LAYER;
 
         [SerializeField] private Rigidbody Rigidbody;
-        
-        private bool IsBumped => !BumpTimer.ExpiredOrNotRunning(Runner);
 
         #endregion
 
         #region Cart LifeCycle Method
 
-        public bool IsMine { get => Object.HasInputAuthority; }
-
         private ChangeDetector changeDetector;
 
         public override void Spawned() {
             base.Spawned();
+
             changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
 
             Carts.Add(this);
@@ -99,7 +96,7 @@ namespace UltimateCartFights.Game {
             ClientPlayer client = ClientPlayer.Players.FirstOrDefault(x => x.Object.InputAuthority == Object.InputAuthority);
             if (client != null) PlayerID = client.PlayerID;
 
-            if (IsMine) {
+            if (Object.HasInputAuthority) {
                 Local = this;
                 CartCamera.SetTarget(this);
             }
@@ -234,7 +231,7 @@ namespace UltimateCartFights.Game {
 
         private void OnCollisionStay(Collision collision) {
             if (!IsInitialized) return;
-            if (IsBumped) return;
+            if (!BumpTimer.ExpiredOrNotRunning(Runner)) return;
 
             int layer = collision.gameObject.layer;
             if(layer == CART_LAYER) {

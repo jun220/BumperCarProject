@@ -17,7 +17,7 @@ namespace UltimateCartFights.Network {
             PanelUI.Instance.InitializeGame();
 
             GameLauncher.AddGameEvents();
-            GameLauncher.CheckGameEnded();
+            //GameLauncher.CheckGameEnded();
         }
 
         public void Update() {

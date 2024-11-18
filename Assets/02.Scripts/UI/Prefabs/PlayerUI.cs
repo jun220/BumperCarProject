@@ -54,7 +54,7 @@ namespace UltimateCartFights.UI {
             }
         }
 
-        public Texture2D ConvertSpriteToTexture(Sprite sprite) {
+        private Texture2D ConvertSpriteToTexture(Sprite sprite) {
             try {
                 if (sprite.rect.width != sprite.texture.width) {
                     Texture2D texture = new Texture2D((int) sprite.rect.width, (int) sprite.rect.height);

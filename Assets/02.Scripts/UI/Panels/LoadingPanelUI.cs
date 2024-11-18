@@ -55,6 +55,7 @@ namespace UltimateCartFights.UI {
 
         private void InitializeLoading() {
             CurrentProgress = 0.0f;
+            TargetProgress = 0.0f;
             IsLoadingStarted = true;
             ShowRandomTip();
 

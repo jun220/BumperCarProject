@@ -397,106 +397,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c036af62d3173644db504d539981dfe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  front:
-    m_Name: Front
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 169a284f-03a1-40b1-91be-c2e73f8a9507
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 0bdf7628-be86-4726-8de4-244166827114
-      m_Path: <Keyboard>/w
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Front
-      m_Flags: 0
-    - m_Name: 
-      m_Id: 85ffdbe9-2f98-48a8-905b-0749bda83b17
-      m_Path: <Keyboard>/upArrow
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Front
-      m_Flags: 0
-    m_Flags: 0
-  back:
-    m_Name: Back
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 7eafddf6-4c7b-423f-bb26-7ce1fe149d43
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 7040ba9b-32e0-45db-b6f2-272a03d311a0
-      m_Path: <Keyboard>/s
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Back
-      m_Flags: 0
-    - m_Name: 
-      m_Id: e60149b2-0d2b-4b10-b720-fec8aa718742
-      m_Path: <Keyboard>/downArrow
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Back
-      m_Flags: 0
-    m_Flags: 0
-  left:
-    m_Name: Left
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 5eabc0f2-5fa1-4bf4-a3f3-30b8f55fa333
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 29a7043b-ede3-4281-a6b6-dde365f87e6d
-      m_Path: <Keyboard>/a
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Left
-      m_Flags: 0
-    - m_Name: 
-      m_Id: 3eb9d1b1-8a3f-486c-b479-8c34a92044d8
-      m_Path: <Keyboard>/leftArrow
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Left
-      m_Flags: 0
-    m_Flags: 0
-  right:
-    m_Name: Right
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: bb9fd175-366b-4354-adf0-b2f0f47772de
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 4c2f01d0-4a84-496a-af81-dd143d433bfa
-      m_Path: <Keyboard>/d
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Right
-      m_Flags: 0
-    - m_Name: 
-      m_Id: 5990e6bc-4188-49c0-95cb-e0a733e594a6
-      m_Path: <Keyboard>/rightArrow
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Right
-      m_Flags: 0
-    m_Flags: 0
   dash:
     m_Name: Dash
     m_Type: 0
@@ -646,7 +546,7 @@ MonoBehaviour:
   _AppliedSpeed: 0
   CART_LAYER: 31
   WALL_LAYER: 30
-  Rigidbody: {fileID: 5694691654686937999}
+  Rigidbody: {fileID: 0}
 --- !u!114 &1471370769815880130
 MonoBehaviour:
   m_ObjectHideFlags: 0

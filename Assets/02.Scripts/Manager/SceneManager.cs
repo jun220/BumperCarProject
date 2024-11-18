@@ -12,7 +12,7 @@ namespace UltimateCartFights.Network {
 
         #region Scene Loading Method
 
-        public enum SCENE { ROOM, MAP_GROCERY, };
+        public enum SCENE { ROOM, MAP_GROCERY };
 
         [SerializedDictionary("Scene Type", "Scene Index Number")]
         [SerializeField] private SerializedDictionary<SCENE, int> Scenes;
@@ -56,6 +56,7 @@ namespace UltimateCartFights.Network {
             yield return base.LoadSceneCoroutine(sceneRef, sceneParams);
             yield return null;
 
+            // -> 여기까지 구현?
             if (IsGameScene(sceneRef.AsIndex)) {
                 if(FusionSocket.IsHost) {
                     LoadGameObjects();

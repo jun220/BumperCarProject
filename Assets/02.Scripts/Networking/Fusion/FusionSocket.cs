@@ -163,8 +163,9 @@ namespace UltimateCartFights.Network {
             if (Runner == null) return;
 
             ClientInfo.IsInRandom = false;
-
+            
             sceneManager.BackToLobby(); 
+
             await Runner.Shutdown();
             Destroy(Runner.gameObject);
             Runner = null;

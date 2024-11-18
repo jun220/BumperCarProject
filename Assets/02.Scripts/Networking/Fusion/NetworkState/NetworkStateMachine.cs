@@ -31,6 +31,8 @@ namespace UltimateCartFights.Network {
         
         public void Update() => current.Update();
         
+        // -> StopState / StartState 로 나누어서 진행?
+        
         public async Task ChangeState(INetworkState.STATE state, Func<Task> method) {
             current.Terminate();
             SetState(INetworkState.STATE.NONE);

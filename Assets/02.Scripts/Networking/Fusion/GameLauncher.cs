@@ -45,6 +45,7 @@ namespace UltimateCartFights.Network {
 
         #region ROOM EVENT METHOD
 
+        // 플레이어 참가 - Host 측에서 PlayerClient 프리팹 객체 생성
         public override void OnPlayerJoined(NetworkRunner runner, PlayerRef player) {
             base.OnPlayerJoined(runner, player);
             if (!runner.IsServer) return;
@@ -52,10 +53,12 @@ namespace UltimateCartFights.Network {
             runner.Spawn(ResourceManager.Instance.Client, Vector3.zero, Quaternion.identity, player);
         }
 
+        // 플레이어 탈퇴 - Host / Client 각자 해당 플레이어 PlayerClient 프리팹 객체 제거
         public override void OnPlayerLeft(NetworkRunner runner, PlayerRef player) {
             base.OnPlayerLeft(runner, player);
             ClientPlayer.RemovePlayer(runner, player);
 
+            // if문 검사는 게임 플레이 중 일어나는 경우 체크 -> 6주차 분량
             if (NetworkState == INetworkState.STATE.GAME) {
                 SendKnockedOutEvent(player);
                 CartController.RemoveCart(runner, player);
